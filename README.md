@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ipatalas/vscode-postfix-ts.svg?branch=master)](https://travis-ci.org/ipatalas/vscode-postfix-ts)
+
 # Postfix notation for TypeScript (and JS as well)
 
 ## Features
