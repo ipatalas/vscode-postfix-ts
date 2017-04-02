@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
-import { BaseExpressionTemplate } from './baseExpressionTemplate'
+import { BaseExpressionTemplate } from './baseTemplates'
 
 export class VarTemplate extends BaseExpressionTemplate {
 	constructor (private keyword: string) {

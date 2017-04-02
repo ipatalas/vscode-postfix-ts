@@ -23,6 +23,7 @@
 		"test": "node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
+		"@types/lodash": "^4.14.61",
 		"@types/mocha": "^2.2.32",
 		"@types/node": "^6.0.40",
 		"mocha": "^2.3.3",
@@ -33,6 +34,7 @@
 	},
 	"dependencies": {
 		"glob": "^7.1.1",
+		"lodash": "^4.17.4",
 		"typescript": "^2.2.2"
 	}
 }
