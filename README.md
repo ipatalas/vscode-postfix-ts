@@ -1,65 +1,42 @@
-# vscode-postfix-ts README
-
-This is the README for your extension "vscode-postfix-ts". After writing up a brief description, we recommend including the following sections.
+# Postfix notation for TypeScript (and JS as well)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+This extension features postfix templates that can be used to improve productivity.
+It's been inspired on former, great [R# extension](https://github.com/controlflow/resharper-postfix)
 
-For example if there is an image subfolder under your extension project workspace:
+I find it difficult to jump the cursor back and forth whenever I want to perform some simple operations. This extension makes it easier. I use this feature on daily basis in C# but was missing it in JS/TS until now.
 
-\!\[feature X\]\(images/feature-x.png\)
+A simple animation is worth more than words:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![feature X](images/demo.gif)
 
-## Requirements
+All available templates (`expr` means the expression on which the template is applied):
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+| Template          | Outcome |
+| -------:          | ------- |
+| **.if**           | `if (expr)` |
+| **.else**         | `if (!expr)` |
+| **.null**         | `if (expr === null)` |
+| **.notnull**      | `if (expr !== null)` |
+| **.undefined**    | `if (expr === undefined)` |
+| **.notundefined** | `if (expr !== undefined)` |
+| **.for**          | `for (let i = 0; i < expr.Length; i++)` |
+| **.forof**        | `for (let item of expr)` |
+| **.not**          | `!expr` |
+| **.return**       | `return expr` |
+| **.var**          | `var name = expr` |
+| **.let**          | `let name = expr` |
+| **.const**        | `const name = expr` |
 
-## Extension Settings
+## Known issues
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+It's a first release so there is not much validation in the extension. Sometimes it's possible that a specific template does not make much sense in some situations where it's suggested.
 
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Feel free to open issues for whatever you think may improve the extension's value. New ideas for more templates are also welcome. Most of them are pretty easy to implement.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release
