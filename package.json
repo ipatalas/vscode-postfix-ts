@@ -1,18 +1,21 @@
 {
 	"name": "vscode-postfix-ts",
-	"displayName": "TypeScript postfix",
-	"description": "Postfix notation for TypeScript",
-	"version": "0.0.1",
+	"displayName": "TS/JS postfix completion",
+	"description": "Postfix notation for TypeScript/Javascript",
+	"version": "1.0.0",
 	"license": "MIT",
 	"publisher": "ipatalas",
+	"preview": true,
 	"engines": {
 		"vscode": "^1.10.0"
 	},
+	"icon": "images/logo.png",
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:typescript"
+		"onLanguage:typescript",
+		"onLanguage:javascript"
 	],
 	"main": "./out/src/extension",
 	"contributes": {},
