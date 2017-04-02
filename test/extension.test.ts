@@ -4,19 +4,33 @@
 //
 
 // The module 'assert' provides assertion methods from node
-import * as assert from 'assert';
-
+import * as assert from 'assert'
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
-import * as vscode from 'vscode';
-import * as myExtension from '../src/extension';
+import * as vsc from 'vscode'
+import { VarTemplate } from '../src/templates/varTemplates'
 
-// Defines a Mocha test suite to group tests of similar kind together
-suite("Extension Tests", () => {
+suite('Templates Tests', () => {
+	test('var template', (done) => {
+		vsc.workspace.openTextDocument({ language: 'typescript' }).then((doc) => {
+			let template = new VarTemplate('var')
+			let item = template.buildCompletionItem('a * 3.', new vsc.Position(0, 6))
 
-    // Defines a Mocha unit test
-    test("Something 1", () => {
-        assert.equal(-1, [1, 2, 3].indexOf(5));
-        assert.equal(-1, [1, 2, 3].indexOf(0));
-    });
-});
+			return vsc.window.showTextDocument(doc).then(() => {
+				return vsc.window.activeTextEditor.edit(edit => {
+					edit.insert(new vsc.Position(0, 0), 'a * 3.')
+				})
+			}).then(() => {
+				return vsc.window.activeTextEditor.insertSnippet(item.insertText as vsc.SnippetString, item.range)
+			}).then(() => {
+				let result = doc.getText()
+				try {
+					assert.equal(result, 'var name = a * 3')
+					done()
+				} catch (err) {
+					done(err)
+				}
+			})
+		})
+	})
+})
