@@ -31,9 +31,9 @@
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.61",
-		"@types/mocha": "^2.2.32",
+		"@types/mocha": "^2.2.40",
 		"@types/node": "^6.0.40",
-		"mocha": "^2.3.3",
+		"mocha": "^3.2.0",
 		"tslint": "^5.0.0",
 		"tslint-config-standard": "^4.0.0",
 		"tslint-eslint-rules": "^3.5.1",
