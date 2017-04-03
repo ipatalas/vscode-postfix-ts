@@ -4,7 +4,7 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class VarTemplate extends BaseExpressionTemplate {
-	constructor (private keyword: string) {
+	constructor (private keyword: 'var' | 'let' | 'const') {
 		super()
 	}
 
