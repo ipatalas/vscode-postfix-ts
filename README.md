@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/ipatalas/vscode-postfix-ts.svg?branch=master)](https://travis-ci.org/ipatalas/vscode-postfix-ts)
+[![bitHound Dependencies](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/badges/dependencies.svg)](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/master/dependencies/npm)
+[![bitHound Code](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/badges/code.svg)](https://www.bithound.io/github/ipatalas/vscode-postfix-ts)
 
 # Postfix notation for TypeScript (and JS as well)
 
@@ -30,6 +32,9 @@ All available templates (`expr` means the expression on which the template is ap
 | **.var**          | `var name = expr` |
 | **.let**          | `let name = expr` |
 | **.const**        | `const name = expr` |
+| **.log**          | `console.log(expr)` |
+| **.error**        | `console.error(expr)` |
+| **.warn**         | `console.warn(expr)` |
 
 ## Known issues
 
@@ -38,6 +43,10 @@ It's a first release so there is not much validation in the extension. Sometimes
 Feel free to open issues for whatever you think may improve the extension's value. New ideas for more templates are also welcome. Most of them are pretty easy to implement.
 
 ## Release Notes
+
+### 1.1.0
+
+Added console templates (PR from @jrieken, thanks!)
 
 ### 1.0.0
 
