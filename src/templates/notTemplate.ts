@@ -4,8 +4,8 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 
 export class NotTemplate extends BaseTemplate {
-	buildCompletionItem (code: string, position: vsc.Position, node: ts.Node) {
-		code = node.parent.getText() + '.'
+	buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string) {
+		code = node.parent.getText() + suffix
 
 		let replacement = '{{expr}}'
 		if (this.isBinaryExpression(node.parent)) {

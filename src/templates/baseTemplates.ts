@@ -3,7 +3,7 @@ import * as vsc from 'vscode'
 import { IPostfixTemplate } from '../template'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
-	abstract buildCompletionItem (code: string, position: vsc.Position, node: ts.Node)
+	abstract buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string)
 	abstract canUse (node: ts.Node): boolean
 
 	protected isSimpleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ExpressionStatement

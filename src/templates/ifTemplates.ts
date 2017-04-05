@@ -48,6 +48,6 @@ export const build = () => [
 	new ElseTemplate(),
 	new IfEqualityTemplate('null', '===', null),
 	new IfEqualityTemplate('notnull', '!==', null),
-	new IfEqualityTemplate('undefined', '===', null),
-	new IfEqualityTemplate('notundefined', '!==', null)
+	new IfEqualityTemplate('undefined', '===', undefined),
+	new IfEqualityTemplate('notundefined', '!==', undefined)
 ]

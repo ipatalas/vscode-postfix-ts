@@ -45,7 +45,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
 		return this.templates
 			.filter(t => t.canUse(currentNode))
-			.map(t => t.buildCompletionItem(code, position, currentNode))
+			.map(t => t.buildCompletionItem(code, position, currentNode, line.text.substring(dotIdx, position.character)))
 	}
 }
 
