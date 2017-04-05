@@ -61,7 +61,7 @@ function testTemplate (initialText: string, template: string, expectedResult: st
 					editor.selection = new vsc.Selection(pos, pos)
 
 					return vsc.commands.executeCommand('editor.action.triggerSuggest').then(async value => {
-						await delay(400)
+						await delay(500)
 						return vsc.commands.executeCommand('acceptSelectedSuggestion')
 					})
 				})
