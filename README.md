@@ -44,6 +44,11 @@ Feel free to open issues for whatever you think may improve the extension's valu
 
 ## Release Notes
 
+### 1.1.1
+
+Added support for postfix templates on unary expressions (ie. i++)
+Some fixes after adding basic tests
+
 ### 1.1.0
 
 Added console templates (PR from @jrieken, thanks!)
