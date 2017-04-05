@@ -61,7 +61,7 @@ function testTemplate (initialText: string, template: string, expectedResult: st
 					editor.selection = new vsc.Selection(pos, pos)
 
 					return vsc.commands.executeCommand('editor.action.triggerSuggest').then(async value => {
-						await delay(700)
+						await delay(getCurrentDelay())
 						return vsc.commands.executeCommand('acceptSelectedSuggestion')
 					})
 				})
@@ -86,4 +86,14 @@ function delay (timeout) {
 	return new Promise<void>(resolve => {
 		setTimeout(resolve, timeout)
 	})
+}
+
+// for some reason editor.action.triggerSuggest needs more delay at the beginning when the process is not yet warmed up
+// let's start from high delays and then slowly go to lower delays
+let delaySteps = [1200, 900, 700, 500, 400, 300, 200]
+
+function getCurrentDelay () {
+	let currentDelay = (delaySteps.length > 1) ? delaySteps.shift() : delaySteps[0]
+
+	return currentDelay
 }
