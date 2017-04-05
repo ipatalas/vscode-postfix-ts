@@ -14,6 +14,7 @@ suite('Simple template tests', () => {
 	test('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
 	test('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
 	test('let template - property access expression', testTemplate('obj.a.b', 'let', 'let name = obj.a.b'))
+	test('let template - postifx unary operator', testTemplate('counter++', 'let', 'let name = counter++'))
 
 	test('var template', testTemplate('a.b', 'var', 'var name = a.b'))
 	test('const template', testTemplate('a.b', 'const', 'const name = a.b'))

@@ -22,6 +22,7 @@ export class NotTemplate extends BaseTemplate {
 	canUse (node: ts.Node) {
 		return node.parent && (this.isSimpleExpression(node.parent) ||
 							   this.isPropertyAccessExpression(node.parent) ||
+							   this.isPostfixUnaryExpression(node.parent) ||
 							   this.isBinaryExpression(node.parent) ||
 							   this.isCallExpression(node.parent))
 	}
