@@ -49,14 +49,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 	}
 }
 
-const getIndentCharacters = () => {
-	if (vsc.window.activeTextEditor.options.insertSpaces) {
-		return ' '.repeat(vsc.window.activeTextEditor.options.tabSize as number)
-	} else {
-		return '\t'
-	}
-}
-
 const findNodeAtPosition = (source: ts.SourceFile, character: number) => {
 	let matchingNodes: INode[] = []
 	source.statements.forEach(visitNode)
