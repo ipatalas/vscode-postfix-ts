@@ -17,7 +17,7 @@ export class IfTemplate extends BaseExpressionTemplate {
 export class ElseTemplate extends BaseExpressionTemplate {
 	buildCompletionItem (code: string, position: vsc.Position, node: ts.Node) {
 		let replacement = '{{expr}}'
-		if (node.kind === ts.SyntaxKind.BinaryExpression) {
+		if (node.parent.kind === ts.SyntaxKind.BinaryExpression) {
 			replacement = `(${replacement})`
 		}
 
