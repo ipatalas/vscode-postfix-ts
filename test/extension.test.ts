@@ -32,9 +32,9 @@ suite('Simple template tests', () => {
 
 	test('if template', testTemplate('expr', 'if', 'if(expr){}', true, 2))
 	test('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
-	test('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true, 1))
+	test('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true, 2))
 
-	test('null template', testTemplate('expr', 'null', 'if(expr===null){}', true))
+	test('null template', testTemplate('expr', 'null', 'if(expr===null){}', true, 1))
 	test('notnull template', testTemplate('expr', 'notnull', 'if(expr!==null){}', true))
 	test('undefined template', testTemplate('expr', 'undefined', 'if(expr===undefined){}', true))
 	test('notundefined template', testTemplate('expr', 'notundefined', 'if(expr!==undefined){}', true))
