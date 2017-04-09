@@ -6,13 +6,19 @@ import { NOT_COMMAND } from '../notCommand'
 
 export class NotTemplate extends BaseTemplate {
 	buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string) {
-		code = node.parent.getText() + suffix
+		let currentNode = node.parent
+		if (currentNode.parent.kind === ts.SyntaxKind.PrefixUnaryExpression) {
+			currentNode = currentNode.parent
+		}
+
+		code = currentNode.getText() + suffix
 
 		let completionBuilder = CompletionItemBuilder
 			.create('not', code)
 			.description('!expr')
 
-		let replacement = '{{expr}}'
+		let replacement = code.substr(0, code.lastIndexOf('.'))
+
 		if (this.isBinaryExpression(node.parent)) {
 			replacement = `(${replacement})`
 
@@ -29,15 +35,16 @@ export class NotTemplate extends BaseTemplate {
 			}
 		}
 
+		replacement = replacement.startsWith('!') ? replacement.substr(1) : '!' + replacement
 		return completionBuilder
-			.replace(`!${replacement}`, position)
+			.replace(replacement, position)
 			.build()
 	}
 
 	canUse (node: ts.Node) {
 		return node.parent && (this.isSimpleExpression(node.parent) ||
 			this.isPropertyAccessExpression(node.parent) ||
-			this.isPostfixUnaryExpression(node.parent) ||
+			this.isUnaryExpression(node.parent) ||
 			this.isBinaryExpression(node.parent) ||
 			this.isCallExpression(node.parent))
 	}

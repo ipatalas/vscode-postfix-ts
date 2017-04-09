@@ -11,7 +11,7 @@ export function notCommand (editor: vsc.TextEditor, position: vsc.Position, suff
 		node: node
 	})))
 		.then(value => {
-			editor.edit(e => {
+			return editor.edit(e => {
 				const expressionBody = value.node.getText()
 				const startPos = new vsc.Position(position.line, position.character - expressionBody.length - suffix.length)
 				const range = new vsc.Range(startPos, new vsc.Position(position.line, position.character - suffix.length + 1))
