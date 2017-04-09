@@ -16,6 +16,10 @@ A simple animation is worth more than words:
 
 ![feature X](images/demo.gif)
 
+There is also a special handling for `.not` template which allows you to select specific expression to negate when having more options:
+
+![feature X](images/demo-not.gif)
+
 All available templates (`expr` means the expression on which the template is applied):
 
 | Template          | Outcome |
@@ -45,15 +49,20 @@ Feel free to open issues for whatever you think may improve the extension's valu
 
 ## Release Notes
 
+## 1.2.0
+- `Not` template can now negate different parts of the expression (selected from Quick Pick)
+- Fixed issue #4 - Console templates are no longer suggested on console expression itself
+- Fixed issue #5 - Already negated expressions can now be "un-negated" by using `not` template on them again
+
 ### 1.1.1
 
-Added support for postfix templates on unary expressions (ie. i++)
-Some fixes after adding basic tests
+- Added support for postfix templates on unary expressions (ie. i++)
+- Some fixes after adding basic tests
 
 ### 1.1.0
 
-Added console templates (PR from @jrieken, thanks!)
+- Added console templates (PR from @jrieken, thanks!)
 
 ### 1.0.0
 
-Initial release
+- Initial release
