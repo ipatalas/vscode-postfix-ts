@@ -12,6 +12,16 @@ export class CompletionItemBuilder {
 
 	public static create = (keyword: string, code: string) => new CompletionItemBuilder(keyword, code)
 
+	public command = (command: vsc.Command) => {
+		this.item.command = command
+		return this
+	}
+
+	public insertText = (insertText?: string) => {
+		this.item.insertText = insertText
+		return this
+	}
+
 	public replace = (replacement: string, position: vsc.Position, useSnippets?: boolean): CompletionItemBuilder => {
 		const codeBeforeTheDot = this.code.substr(0, this.code.lastIndexOf('.'))
 
