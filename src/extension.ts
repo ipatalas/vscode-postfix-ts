@@ -3,7 +3,7 @@ import * as vsc from 'vscode'
 import { PostfixCompletionProvider } from './postfixCompletionProvider'
 import { notCommand, NOT_COMMAND } from './notCommand'
 
-const DOCUMENT_SELECTOR: vsc.DocumentSelector = ['typescript', 'javascript']
+const DOCUMENT_SELECTOR: vsc.DocumentSelector = process.env.NODE_ENV === 'test' ? 'tests' : ['typescript', 'javascript']
 
 export function activate (context: vsc.ExtensionContext) {
 	const provider = new PostfixCompletionProvider()

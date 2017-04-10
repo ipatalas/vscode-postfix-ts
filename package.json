@@ -19,10 +19,17 @@
 	},
 	"activationEvents": [
 		"onLanguage:typescript",
-		"onLanguage:javascript"
+		"onLanguage:javascript",
+		"onLanguage:tests"
 	],
 	"main": "./out/src/extension",
-	"contributes": {},
+	"contributes": {
+		"languages": [
+			{
+				"id": "tests"
+			}
+		]
+	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
 		"compile": "tsc -watch -p ./",

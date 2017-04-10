@@ -10,6 +10,8 @@ import * as assert from 'assert'
 import * as vsc from 'vscode'
 import { VarTemplate } from '../src/templates/varTemplates'
 
+const LANGUAGE = 'tests'
+
 suite('Simple template tests', () => {
 	test('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
 	test('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
@@ -47,7 +49,7 @@ suite('Simple template tests', () => {
 
 function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0) {
 	return (done: MochaDone) => {
-		vsc.workspace.openTextDocument({ language: 'typescript' }).then((doc) => {
+		vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
 			return selectAndAcceptSuggestion(
 				doc, initialText, template, skipSuggestions
 			).then(() => {
@@ -62,7 +64,7 @@ function testTemplate (initialText: string, template: string, expectedResult: st
 
 function testComplexNotTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0) {
 	return (done: MochaDone) => {
-		vsc.workspace.openTextDocument({ language: 'typescript' }).then((doc) => {
+		vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
 			return selectAndAcceptSuggestion(
 				doc, initialText, template
 			).then(async () => {
