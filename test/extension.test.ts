@@ -10,7 +10,7 @@ import * as assert from 'assert'
 import * as vsc from 'vscode'
 import { VarTemplate } from '../src/templates/varTemplates'
 
-const LANGUAGE = 'tests'
+const LANGUAGE = 'postfix'
 
 suite('Simple template tests', () => {
 	test('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
@@ -21,7 +21,7 @@ suite('Simple template tests', () => {
 	test('var template', testTemplate('a.b', 'var', 'var name = a.b'))
 	test('const template', testTemplate('a.b', 'const', 'const name = a.b'))
 
-	test('log template', testTemplate('expr', 'log', 'console.log(expr)', false, 1))
+	test('log template', testTemplate('expr', 'log', 'console.log(expr)', false))
 	test('warn template', testTemplate('expr', 'warn', 'console.warn(expr)'))
 	test('error template', testTemplate('expr', 'error', 'console.error(expr)'))
 
@@ -35,9 +35,9 @@ suite('Simple template tests', () => {
 	test('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
 	test('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
 
-	test('if template', testTemplate('expr', 'if', 'if(expr){}', true, 2))
+	test('if template', testTemplate('expr', 'if', 'if(expr){}', true))
 	test('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
-	test('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true, 2))
+	test('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true))
 
 	test('null template', testTemplate('expr', 'null', 'if(expr===null){}', true, 1))
 	test('notnull template', testTemplate('expr', 'notnull', 'if(expr!==null){}', true))

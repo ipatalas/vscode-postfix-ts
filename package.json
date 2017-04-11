@@ -19,22 +19,18 @@
 	},
 	"activationEvents": [
 		"onLanguage:typescript",
-		"onLanguage:javascript",
-		"onLanguage:tests"
+		"onLanguage:javascript"
 	],
 	"main": "./out/src/extension",
-	"contributes": {
-		"languages": [
-			{
-				"id": "tests"
-			}
-		]
-	},
+	"contributes": {},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
 		"compile": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "node ./node_modules/vscode/bin/test"
+		"test": "NODE_ENV=test node ./node_modules/vscode/bin/test",
+		"pretest": "node ./tasks.js addLanguage && tsc -p ./",
+		"prerun": "node ./tasks.js removeLanguage",
+		"build": "npm run prerun && npm run compile"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.61",
