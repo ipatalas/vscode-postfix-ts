@@ -7,6 +7,8 @@ import { CompletionItemBuilder } from './completionItemBuilder'
 import { IPostfixTemplate } from './template'
 import { build } from './templates/varTemplates'
 
+let currentSuggestion = undefined
+
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 	private templates: IPostfixTemplate[] = []
 	constructor () {
@@ -47,7 +49,14 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 			.filter(t => t.canUse(currentNode))
 			.map(t => t.buildCompletionItem(code, position, currentNode, line.text.substring(dotIdx, position.character)))
 	}
+
+	resolveCompletionItem (item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
+		currentSuggestion = item.label
+		return item
+	}
 }
+
+export const getCurrentSuggestion = () => currentSuggestion
 
 const findNodeAtPosition = (source: ts.SourceFile, character: number) => {
 	let matchingNodes: INode[] = []

@@ -9,6 +9,7 @@ import * as assert from 'assert'
 // as well as import your extension to test it
 import * as vsc from 'vscode'
 import { VarTemplate } from '../src/templates/varTemplates'
+import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 
 const LANGUAGE = 'postfix'
 
@@ -44,20 +45,20 @@ describe('Simple template tests', () => {
 	it('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
 	it('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true))
 
-	it('null template', testTemplate('expr', 'null', 'if(expr===null){}', true, 1))
+	it('null template', testTemplate('expr', 'null', 'if(expr===null){}', true))
 	it('notnull template', testTemplate('expr', 'notnull', 'if(expr!==null){}', true))
 	it('undefined template', testTemplate('expr', 'undefined', 'if(expr===undefined){}', true))
 	it('notundefined template', testTemplate('expr', 'notundefined', 'if(expr!==undefined){}', true))
 
 	it('forof template', testTemplate('expr', 'forof', 'for(letitemofexpr){}', true))
-	it('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true, 1))
+	it('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true))
 })
 
-function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0) {
+function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean) {
 	return (done: MochaDone) => {
 		vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
 			return selectAndAcceptSuggestion(
-				doc, initialText, template, skipSuggestions
+				doc, initialText, template
 			).then(() => {
 				assertText(doc, expectedResult, trimWhitespaces)
 				done()
@@ -95,7 +96,7 @@ function testTemplateWithOptions (initialText: string, template: string, expecte
 	}
 }
 
-function selectAndAcceptSuggestion (doc: vsc.TextDocument, initialText: string, template: string, skipSuggestions: number = 0) {
+function selectAndAcceptSuggestion (doc: vsc.TextDocument, initialText: string, template: string) {
 	return vsc.window.showTextDocument(doc, vsc.ViewColumn.One).then((editor) => {
 		let cursorIdx = initialText.indexOf('{cursor}')
 		if (cursorIdx > -1) {
@@ -114,8 +115,16 @@ function selectAndAcceptSuggestion (doc: vsc.TextDocument, initialText: string, 
 			await vsc.commands.executeCommand('editor.action.triggerSuggest')
 			await delay(getCurrentDelay())
 
-			for (let i = 0; i < skipSuggestions; i++) {
+			let current = getCurrentSuggestion()
+			const first = current
+
+			while (current !== template) {
 				await vsc.commands.executeCommand('selectNextSuggestion')
+				current = getCurrentSuggestion()
+
+				if (current === first) {
+					break
+				}
 			}
 
 			return vsc.commands.executeCommand('acceptSelectedSuggestion')
