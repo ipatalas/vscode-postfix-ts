@@ -4,8 +4,8 @@ import * as assert from 'assert'
 import * as vsc from 'vscode'
 import { getIndentCharacters } from '../src/utils'
 
-suite('Utils tests', () => {
-	test('getIndentCharacters when spaces', () => {
+describe('Utils tests', () => {
+	it('getIndentCharacters when spaces', () => {
 		vsc.window.activeTextEditor.options.insertSpaces = true
 		vsc.window.activeTextEditor.options.tabSize = 4
 
@@ -13,7 +13,7 @@ suite('Utils tests', () => {
 		assert.equal(result, '    ')
 	})
 
-	test('getIndentCharacters when tabs', () => {
+	it('getIndentCharacters when tabs', () => {
 		vsc.window.activeTextEditor.options.insertSpaces = false
 
 		let result = getIndentCharacters()
