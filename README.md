@@ -49,6 +49,9 @@ Feel free to open issues for whatever you think may improve the extension's valu
 
 ## Release Notes
 
+## 1.3.0
+- New `foreach` template (issue #6) and general improvements in `for*` templates
+
 ## 1.2.0
 - `Not` template can now negate different parts of the expression (selected from Quick Pick)
 - Fixed issue #4 - Console templates are no longer suggested on console expression itself

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.0] - 2017-04-11
+### Added:
+- New `foreach` template (issue #6) and general improvements in `for*` templates
+
 ## [1.2.0] - 2017-04-09
 ### Added:
 - `Not` template can now negate different parts of the expression (selected from Quick Pick)
