@@ -28,12 +28,13 @@ suite('Simple template tests', () => {
 	test('not template', testTemplate('expr', 'not', '!expr'))
 	test('not template - binary expression', testTemplate('x * 100', 'not', '!(x * 100)'))
 	test('not template - inside an if', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
-	test('not template - inside an if with complex conditions - first expression', testComplexNotTemplate('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
-	test('not template - inside an if with complex conditions - second expression', testComplexNotTemplate('if (a > b && x * 100{cursor})', 'not', 'if(!(a>b&&x*100))', true, 1))
+	test('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
+	test('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(!(a>b&&x*100))', true, 1))
+	test('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
 	test('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
 	test('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
 
-	test('if template', testTemplate('expr', 'if', 'if(expr){}', true, 2))
+	test('if template', testTemplate('expr', 'if', 'if(expr){}', true, 1))
 	test('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
 	test('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true, 2))
 
@@ -43,6 +44,7 @@ suite('Simple template tests', () => {
 	test('notundefined template', testTemplate('expr', 'notundefined', 'if(expr!==undefined){}', true))
 
 	test('forof template', testTemplate('expr', 'forof', 'for(letitemofexpr){}', true))
+	test('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true, 1))
 })
 
 function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0) {
@@ -60,17 +62,22 @@ function testTemplate (initialText: string, template: string, expectedResult: st
 	}
 }
 
-function testComplexNotTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0) {
+function testTemplateWithOptions (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) {
 	return (done: MochaDone) => {
 		vsc.workspace.openTextDocument({ language: 'typescript' }).then((doc) => {
 			return selectAndAcceptSuggestion(
 				doc, initialText, template
 			).then(async () => {
-				for (let i = 0; i < skipSuggestions; i++) {
-					await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
+				if (cancelQuickPick) {
+					await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
+				} else {
+					for (let i = 0; i < skipSuggestions; i++) {
+						await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
+					}
+
+					await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
 				}
 
-				await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
 				await delay(10)
 
 				assertText(doc, expectedResult, trimWhitespaces)
