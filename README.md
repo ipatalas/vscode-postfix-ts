@@ -32,6 +32,7 @@ All available templates (`expr` means the expression on which the template is ap
 | **.notundefined** | `if (expr !== undefined)` |
 | **.for**          | `for (let i = 0; i < expr.Length; i++)` |
 | **.forof**        | `for (let item of expr)` |
+| **.foreach**      | `expr.forEach(item => )` |
 | **.not**          | `!expr` |
 | **.return**       | `return expr` |
 | **.var**          | `var name = expr` |
