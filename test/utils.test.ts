@@ -1,8 +1,7 @@
 import * as assert from 'assert'
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vsc from 'vscode'
-import { getIndentCharacters } from '../src/utils'
+import * as ts from 'typescript'
+import { getIndentCharacters, invertBinaryExpression } from '../src/utils'
 
 describe('Utils tests', () => {
 	it('getIndentCharacters when spaces', () => {
@@ -19,4 +18,43 @@ describe('Utils tests', () => {
 		let result = getIndentCharacters()
 		assert.equal(result, '\t')
 	})
+
+	describe('invertBinaryExpression', () => {
+		describe('operators', () => {
+			testInvertBinaryExpression('x > y', 'x <= y')
+			testInvertBinaryExpression('x < y', 'x >= y')
+			testInvertBinaryExpression('x >= y', 'x < y')
+			testInvertBinaryExpression('x <= y', 'x > y')
+			testInvertBinaryExpression('x == y', 'x != y')
+			testInvertBinaryExpression('x === y', 'x !== y')
+			testInvertBinaryExpression('x != y', 'x == y')
+			testInvertBinaryExpression('x !== y', 'x === y')
+		})
+
+		describe('complex expressions', () => {
+			testInvertBinaryExpression('x > y && a', 'x <= y || !a')
+			testInvertBinaryExpression('x && a == b', '!x || a != b')
+			testInvertBinaryExpression('x && y', '!x || !y')
+			testInvertBinaryExpression('!x && !y', 'x || y')
+			testInvertBinaryExpression('x > y && a >= b', 'x <= y || a < b')
+			testInvertBinaryExpression('x > y || a >= b', 'x <= y && a < b')
+			testInvertBinaryExpression('x > y && a >= b || c == d', '(x <= y || a < b) && c != d')
+			testInvertBinaryExpression('x || y && z', '!x && (!y || !z)')
+			testInvertBinaryExpression('a && b && c', '!a || !b || !c')
+			testInvertBinaryExpression('a && b && c && d', '!a || !b || !c || !d')
+			testInvertBinaryExpression('a || b && c && d', '!a && (!b || !c || !d)')
+			testInvertBinaryExpression('a && b || c && d', '(!a || !b) && (!c || !d)')
+		})
+	})
 })
+
+function testInvertBinaryExpression (input: string, expected: string) {
+	it(`${input} should invert to ${expected}`, () => {
+		let source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
+		let expr = (source.statements[0] as ts.ExpressionStatement).expression as ts.BinaryExpression
+
+		let result = invertBinaryExpression(expr)
+
+		assert.equal(result, expected)
+	})
+}
