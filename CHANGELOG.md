@@ -1,12 +1,16 @@
 # Change Log
 
+## [1.4.0] - 2017-05-03
+### Improved:
+- `not` templates now really invert expressions (issue #7)
+
 ## [1.3.0] - 2017-04-11
 ### Added:
 - New `foreach` template (issue #6) and general improvements in `for*` templates
 
 ## [1.2.0] - 2017-04-09
 ### Added:
-- `Not` template can now negate different parts of the expression (selected from Quick Pick)
+- `not` template can now negate different parts of the expression (selected from Quick Pick)
 
 ### Fixed:
 - Fixed issue #4 - Console templates are no longer suggested on console expression itself

@@ -50,6 +50,9 @@ Feel free to open issues for whatever you think may improve the extension's valu
 
 ## Release Notes
 
+## 1.4.0
+- `not` templates now really invert expressions (issue #7)
+
 ## 1.3.0
 - New `foreach` template (issue #6) and general improvements in `for*` templates
 
