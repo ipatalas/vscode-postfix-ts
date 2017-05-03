@@ -3,6 +3,7 @@ import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { NOT_COMMAND } from '../notCommand'
+import { invertExpression } from '../utils'
 
 export class NotTemplate extends BaseTemplate {
 	buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string) {
@@ -17,11 +18,7 @@ export class NotTemplate extends BaseTemplate {
 			.create('not', code)
 			.description('!expr')
 
-		let replacement = code.substr(0, code.lastIndexOf('.'))
-
 		if (this.isBinaryExpression(node.parent)) {
-			replacement = `(${replacement})`
-
 			let expressions = this.getBinaryExpressions(node.parent)
 			if (expressions.length > 1) {
 				return completionBuilder
@@ -35,7 +32,7 @@ export class NotTemplate extends BaseTemplate {
 			}
 		}
 
-		replacement = replacement.startsWith('!') ? replacement.substr(1) : '!' + replacement
+		let replacement = invertExpression(currentNode)
 		return completionBuilder
 			.replace(replacement, position)
 			.build()

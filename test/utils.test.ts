@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
-import { getIndentCharacters, invertBinaryExpression } from '../src/utils'
+import { getIndentCharacters, invertBinaryExpression, invertExpression } from '../src/utils'
 
 describe('Utils tests', () => {
 	it('getIndentCharacters when spaces', () => {
@@ -19,7 +19,15 @@ describe('Utils tests', () => {
 		assert.equal(result, '\t')
 	})
 
+	describe('invertExpression', () => {
+		testInvertExpression('x', '!x')
+		testInvertExpression('!x', 'x')
+		testInvertExpression('x * 100', '!(x * 100)')
+		testInvertExpression('x && y * 100', '!x || !(y * 100)')
+	})
+
 	describe('invertBinaryExpression', () => {
+
 		describe('operators', () => {
 			testInvertBinaryExpression('x > y', 'x <= y')
 			testInvertBinaryExpression('x < y', 'x >= y')
@@ -54,6 +62,17 @@ function testInvertBinaryExpression (input: string, expected: string) {
 		let expr = (source.statements[0] as ts.ExpressionStatement).expression as ts.BinaryExpression
 
 		let result = invertBinaryExpression(expr)
+
+		assert.equal(result, expected)
+	})
+}
+
+function testInvertExpression (input: string, expected: string) {
+	it(`${input} should invert to ${expected}`, () => {
+		let source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
+		let expr = (source.statements[0] as ts.ExpressionStatement).expression
+
+		let result = invertExpression(expr)
 
 		assert.equal(result, expected)
 	})

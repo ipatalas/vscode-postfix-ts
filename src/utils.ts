@@ -39,11 +39,17 @@ export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets:
 	}
 }
 
-const invertExpression = (expr: ts.Expression, addOrBrackets: boolean) => {
+export const invertExpression = (expr: ts.Node, addOrBrackets: boolean = false) => {
+	let text = expr.getText()
+
 	if (expr.kind === ts.SyntaxKind.BinaryExpression) {
-		return invertBinaryExpression(expr as ts.BinaryExpression, addOrBrackets)
+		let result = invertBinaryExpression(expr as ts.BinaryExpression, addOrBrackets)
+		if (result) {
+			return result
+		}
+
+		return text.startsWith('!') ? text.substr(1) : `!(${text})`
 	}
 
-	let text = expr.getText()
 	return text.startsWith('!') ? text.substr(1) : `!${text}`
 }

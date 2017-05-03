@@ -37,7 +37,7 @@ describe('Simple template tests', () => {
 	it('not template - binary expression', testTemplate('x * 100', 'not', '!(x * 100)'))
 	it('not template - inside an if', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
 	it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
-	it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(!(a>b&&x*100))', true, 1))
+	it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
 	it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
 	it('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
 	it('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
