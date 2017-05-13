@@ -16,19 +16,35 @@
 		"type": "git",
 		"url": "https://github.com/ipatalas/vscode-postfix-ts"
 	},
+	"bugs": {
+		"url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
+	},
 	"activationEvents": [
-		"onLanguage:typescript",
-		"onLanguage:javascript"
+		"*"
 	],
 	"main": "./out/src/extension",
-	"contributes": {},
+	"contributes": {
+		"configuration": {
+			"title": "Postfix completion",
+			"properties": {
+				"postfix.languages": {
+					"type": "array",
+					"description": "A list of languages in which the completion will be available",
+					"default": [
+						"javascript",
+						"typescript"
+					]
+				}
+			}
+		}
+	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
 		"compile": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
 		"test": "NODE_ENV=test node ./node_modules/vscode/bin/test",
-		"pretest": "node ./tasks.js addLanguage && tsc -p ./",
-		"prerun": "node ./tasks.js removeLanguage",
+		"pretest": "node ./tasks.js pretest && tsc -p ./",
+		"prerun": "node ./tasks.js prerun",
 		"build": "npm run prerun && npm run compile"
 	},
 	"devDependencies": {

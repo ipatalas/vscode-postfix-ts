@@ -5,21 +5,21 @@ const ACTIVATION_EVENT = `onLanguage:${LANGUAGE}`
 const task = process.argv.length > 2 && process.argv[2]
 
 const tasksMap = new Map([
-	['removeLanguage', removeContributeLanguage],
-	['addLanguage', addContributeLanguage]
+	['prerun', prerun],
+	['pretest', pretest]
 ])
 
-function removeContributeLanguage() {
+function prerun() {
 	let pkg = readPackageJson()
 	delete pkg.contributes.languages
-	pkg.activationEvents = pkg.activationEvents.filter(x => x !== ACTIVATION_EVENT)
+	pkg.activationEvents = ['*']
 	writePackageJson(pkg)
 }
 
-function addContributeLanguage() {
+function pretest() {
 	let pkg = readPackageJson()
 	pkg.contributes.languages = [{id: LANGUAGE}]
-	pkg.activationEvents = pkg.activationEvents.filter(x => x !== ACTIVATION_EVENT).concat(ACTIVATION_EVENT)
+	pkg.activationEvents = [ACTIVATION_EVENT]
 	writePackageJson(pkg)
 }
 
