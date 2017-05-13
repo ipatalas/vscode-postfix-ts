@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.5.0] - 2017-05-13
+### Added:
+- Ability to activate extension in files other than JS/TS
+
 ## [1.4.0] - 2017-05-03
 ### Improved:
 - `not` templates now really invert expressions (issue #7)
