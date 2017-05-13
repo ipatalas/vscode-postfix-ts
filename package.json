@@ -48,21 +48,21 @@
 		"build": "npm run prerun && npm run compile"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.61",
-		"@types/mocha": "^2.2.40",
+		"@types/lodash": "^4.14.64",
+		"@types/mocha": "^2.2.41",
 		"@types/node": "^6.0.40",
 		"decache": "^4.1.0",
 		"istanbul": "^0.4.5",
-		"mocha": "^3.2.0",
+		"mocha": "^3.3.0",
 		"remap-istanbul": "^0.9.5",
-		"tslint": "^5.0.0",
-		"tslint-config-standard": "^4.0.0",
-		"tslint-eslint-rules": "^3.5.1",
+		"tslint": "^5.2.0",
+		"tslint-config-standard": "^5.0.2",
+		"tslint-eslint-rules": "^4.0.0",
 		"vscode": "^1.1.0"
 	},
 	"dependencies": {
 		"glob": "^7.1.1",
 		"lodash": "^4.17.4",
-		"typescript": "^2.2.2"
+		"typescript": "^2.3.2"
 	}
 }
