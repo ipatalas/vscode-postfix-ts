@@ -15,130 +15,130 @@ import { getCurrentDelay, delay } from './utils'
 const LANGUAGE = 'postfix'
 
 describe('Simple template tests', () => {
-	afterEach(done => {
-		vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
-	})
+  afterEach(done => {
+    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
+  })
 
-	it('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
-	it('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
-	it('let template - property access expression', testTemplate('obj.a.b', 'let', 'let name = obj.a.b'))
-	it('let template - postifx unary operator', testTemplate('counter++', 'let', 'let name = counter++'))
+  it('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
+  it('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
+  it('let template - property access expression', testTemplate('obj.a.b', 'let', 'let name = obj.a.b'))
+  it('let template - postifx unary operator', testTemplate('counter++', 'let', 'let name = counter++'))
 
-	it('var template', testTemplate('a.b', 'var', 'var name = a.b'))
-	it('const template', testTemplate('a.b', 'const', 'const name = a.b'))
+  it('var template', testTemplate('a.b', 'var', 'var name = a.b'))
+  it('const template', testTemplate('a.b', 'const', 'const name = a.b'))
 
-	it('log template', testTemplate('expr', 'log', 'console.log(expr)', false))
-	it('warn template', testTemplate('expr', 'warn', 'console.warn(expr)'))
-	it('error template', testTemplate('expr', 'error', 'console.error(expr)'))
+  it('log template', testTemplate('expr', 'log', 'console.log(expr)', false))
+  it('warn template', testTemplate('expr', 'warn', 'console.warn(expr)'))
+  it('error template', testTemplate('expr', 'error', 'console.error(expr)'))
 
-	it('return template', testTemplate('expr', 'return', 'return expr'))
+  it('return template', testTemplate('expr', 'return', 'return expr'))
 
-	it('not template', testTemplate('expr', 'not', '!expr'))
-	it('not template - binary expression', testTemplate('x * 100', 'not', '!(x * 100)'))
-	it('not template - inside an if', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
-	it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
-	it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
-	it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
-	it('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
-	it('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
+  it('not template', testTemplate('expr', 'not', '!expr'))
+  it('not template - binary expression', testTemplate('x * 100', 'not', '!(x * 100)'))
+  it('not template - inside an if', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
+  it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
+  it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
+  it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
+  it('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
+  it('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
 
-	it('if template', testTemplate('expr', 'if', 'if(expr){}', true))
-	it('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
-	it('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true))
+  it('if template', testTemplate('expr', 'if', 'if(expr){}', true))
+  it('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
+  it('else template - binary expression', testTemplate('x * 100', 'else', 'if(!(x*100)){}', true))
 
-	it('null template', testTemplate('expr', 'null', 'if(expr===null){}', true))
-	it('notnull template', testTemplate('expr', 'notnull', 'if(expr!==null){}', true))
-	it('undefined template', testTemplate('expr', 'undefined', 'if(expr===undefined){}', true))
-	it('notundefined template', testTemplate('expr', 'notundefined', 'if(expr!==undefined){}', true))
+  it('null template', testTemplate('expr', 'null', 'if(expr===null){}', true))
+  it('notnull template', testTemplate('expr', 'notnull', 'if(expr!==null){}', true))
+  it('undefined template', testTemplate('expr', 'undefined', 'if(expr===undefined){}', true))
+  it('notundefined template', testTemplate('expr', 'notundefined', 'if(expr!==undefined){}', true))
 
-	it('forof template', testTemplate('expr', 'forof', 'for(letitemofexpr){}', true))
-	it('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true))
+  it('forof template', testTemplate('expr', 'forof', 'for(letitemofexpr){}', true))
+  it('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true))
 })
 
 function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean) {
-	return (done: MochaDone) => {
-		vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
-			return selectAndAcceptSuggestion(
-				doc, initialText, template
-			).then(() => {
-				assertText(doc, expectedResult, trimWhitespaces)
-				done()
-			}).then(undefined, (reason) => {
-				done(reason)
-			})
-		})
-	}
+  return (done: MochaDone) => {
+    vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
+      return selectAndAcceptSuggestion(
+        doc, initialText, template
+      ).then(() => {
+        assertText(doc, expectedResult, trimWhitespaces)
+        done()
+      }).then(undefined, (reason) => {
+        done(reason)
+      })
+    })
+  }
 }
 
 function testTemplateWithOptions (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) {
-	return (done: MochaDone) => {
-		vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
-			return selectAndAcceptSuggestion(
-				doc, initialText, template
-			).then(async () => {
-				if (cancelQuickPick) {
-					await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
-				} else {
-					for (let i = 0; i < skipSuggestions; i++) {
-						await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
-					}
+  return (done: MochaDone) => {
+    vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
+      return selectAndAcceptSuggestion(
+        doc, initialText, template
+      ).then(async () => {
+        if (cancelQuickPick) {
+          await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
+        } else {
+          for (let i = 0; i < skipSuggestions; i++) {
+            await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
+          }
 
-					await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
-				}
+          await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
+        }
 
-				await delay(10)
+        await delay(10)
 
-				assertText(doc, expectedResult, trimWhitespaces)
-				done()
-			}).then(undefined, (reason) => {
-				done(reason)
-			})
-		})
-	}
+        assertText(doc, expectedResult, trimWhitespaces)
+        done()
+      }).then(undefined, (reason) => {
+        done(reason)
+      })
+    })
+  }
 }
 
 function selectAndAcceptSuggestion (doc: vsc.TextDocument, initialText: string, template: string) {
-	return vsc.window.showTextDocument(doc, vsc.ViewColumn.One).then((editor) => {
-		let cursorIdx = initialText.indexOf('{cursor}')
-		if (cursorIdx > -1) {
-			initialText = initialText.replace('{cursor}', `.${template}`)
-		} else {
-			initialText += `.${template}`
-			cursorIdx = initialText.length
-		}
+  return vsc.window.showTextDocument(doc, vsc.ViewColumn.One).then((editor) => {
+    let cursorIdx = initialText.indexOf('{cursor}')
+    if (cursorIdx > -1) {
+      initialText = initialText.replace('{cursor}', `.${template}`)
+    } else {
+      initialText += `.${template}`
+      cursorIdx = initialText.length
+    }
 
-		return editor.edit(edit => {
-			edit.insert(new vsc.Position(0, 0), initialText)
-		}).then(async () => {
-			let pos = new vsc.Position(0, cursorIdx + template.length + 1)
-			editor.selection = new vsc.Selection(pos, pos)
+    return editor.edit(edit => {
+      edit.insert(new vsc.Position(0, 0), initialText)
+    }).then(async () => {
+      let pos = new vsc.Position(0, cursorIdx + template.length + 1)
+      editor.selection = new vsc.Selection(pos, pos)
 
-			await vsc.commands.executeCommand('editor.action.triggerSuggest')
-			await delay(getCurrentDelay())
+      await vsc.commands.executeCommand('editor.action.triggerSuggest')
+      await delay(getCurrentDelay())
 
-			let current = getCurrentSuggestion()
-			const first = current
+      let current = getCurrentSuggestion()
+      const first = current
 
-			while (current !== template) {
-				await vsc.commands.executeCommand('selectNextSuggestion')
-				current = getCurrentSuggestion()
+      while (current !== template) {
+        await vsc.commands.executeCommand('selectNextSuggestion')
+        current = getCurrentSuggestion()
 
-				if (current === first) {
-					break
-				}
-			}
+        if (current === first) {
+          break
+        }
+      }
 
-			return vsc.commands.executeCommand('acceptSelectedSuggestion')
-		})
-	})
+      return vsc.commands.executeCommand('acceptSelectedSuggestion')
+    })
+  })
 }
 
 function assertText (doc: vsc.TextDocument, expectedResult: string, trimWhitespaces: boolean) {
-	let result = doc.getText()
+  let result = doc.getText()
 
-	if (trimWhitespaces) {
-		result = result.replace(/\s/g, '')
-	}
+  if (trimWhitespaces) {
+    result = result.replace(/\s/g, '')
+  }
 
-	assert.equal(result, expectedResult)
+  assert.equal(result, expectedResult)
 }

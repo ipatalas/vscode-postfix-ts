@@ -1,7 +1,7 @@
 export function delay (timeout) {
-	return new Promise<void>(resolve => {
-		setTimeout(resolve, timeout)
-	})
+  return new Promise<void>(resolve => {
+    setTimeout(resolve, timeout)
+  })
 }
 
 // for some reason editor.action.triggerSuggest needs more delay at the beginning when the process is not yet warmed up

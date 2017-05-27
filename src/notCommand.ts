@@ -13,7 +13,7 @@ export function notCommand (editor: vsc.TextEditor, position: vsc.Position, suff
 	})))
 		.then(value => {
 			if (!value) {
-				return
+        return undefined
 			}
 
 			editor.edit(e => {
