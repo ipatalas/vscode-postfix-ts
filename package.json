@@ -2,7 +2,7 @@
 	"name": "vscode-postfix-ts",
 	"displayName": "TS/JS postfix completion",
 	"description": "Postfix notation for TypeScript/Javascript",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"license": "MIT",
 	"publisher": "ipatalas",
 	"engines": {

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.5.1] - 2017-05-27
+### Added:
+- Fixed issue #9 - snippets always on top of suggestions
+
 ## [1.5.0] - 2017-05-13
 ### Added:
 - Ability to activate extension in files other than JS/TS

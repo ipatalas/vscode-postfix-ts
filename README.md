@@ -3,7 +3,7 @@
 [![bitHound Code](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/badges/code.svg)](https://www.bithound.io/github/ipatalas/vscode-postfix-ts)
 [![codecov](https://codecov.io/gh/ipatalas/vscode-postfix-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/ipatalas/vscode-postfix-ts)
 
-# Postfix notation for TypeScript (and JS as well)
+# Postfix templates for TypeScript/JavaScript
 
 ## Features
 
@@ -57,6 +57,9 @@ It's a first release so there is not much validation in the extension. Sometimes
 Feel free to open issues for whatever you think may improve the extension's value. New ideas for more templates are also welcome. Most of them are pretty easy to implement.
 
 ## Release Notes
+
+## 1.5.1
+- Fixed issue #9 - snippets always on top of suggestions
 
 ## 1.5.0
 - Ability to activate extension in files other than JS/TS
