@@ -34,6 +34,43 @@
 						"javascript",
 						"typescript"
 					]
+				},
+				"postfix.customTemplates": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": [
+							"name",
+							"body"
+						],
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Name of the template. It will be used in auto-complete suggestions"
+							},
+							"description": {
+								"type": "string",
+								"description": "Description of the template. It will be used in auto-complete suggestions"
+							},
+							"body": {
+								"type": "string",
+								"description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
+							},
+							"when": {
+								"type": "array",
+								"description": "Context in which the template should be suggested",
+								"items": {
+									"type": "string",
+									"enum": [
+										"expression",
+										"binary-expression",
+										"unary-expression",
+										"function-call"
+									]
+								}
+							}
+						}
+					}
 				}
 			}
 		}

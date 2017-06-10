@@ -3,8 +3,6 @@ import * as vsc from 'vscode'
 import { PostfixCompletionProvider } from './postfixCompletionProvider'
 import { notCommand, NOT_COMMAND } from './notCommand'
 
-const provider = new PostfixCompletionProvider()
-
 let completionProvider: vsc.Disposable
 
 export function activate (context: vsc.ExtensionContext) {
@@ -32,6 +30,8 @@ export function deactivate () {
 }
 
 function registerCompletionProvider (context: vsc.ExtensionContext) {
+  const provider = new PostfixCompletionProvider()
+
   let DOCUMENT_SELECTOR: vsc.DocumentSelector =
     process.env.NODE_ENV === 'test' ? 'postfix' : vsc.workspace.getConfiguration('postfix').get('languages')
 
