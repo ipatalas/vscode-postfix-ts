@@ -36,6 +36,7 @@ describe('Template usage', () => {
   testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
   testTemplateUsage('method call expression', 'expr.call()', ALL_TEMPLATES)
   testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
+  testTemplateUsage('element access expression', 'expr.a.b[c]', ALL_TEMPLATES)
   testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, FOR_TEMPLATES))
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
   testTemplateUsage('return expression', 'return x * 100', ['not'])

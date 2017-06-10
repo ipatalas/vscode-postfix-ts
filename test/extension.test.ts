@@ -22,6 +22,7 @@ describe('Simple template tests', () => {
   it('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
   it('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
   it('let template - property access expression', testTemplate('obj.a.b', 'let', 'let name = obj.a.b'))
+  it('let template - element access expression', testTemplate('obj.a[b]', 'let', 'let name = obj.a[b]'))
   it('let template - postifx unary operator', testTemplate('counter++', 'let', 'let name = counter++'))
 
   it('var template', testTemplate('a.b', 'var', 'var name = a.b'))

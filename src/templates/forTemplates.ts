@@ -11,8 +11,7 @@ abstract class BaseForTemplate extends BaseTemplate {
     return node.parent &&
       !this.inReturnStatement(node.parent) &&
       !this.inIfStatement(node.parent) &&
-      (this.isSimpleExpression(node.parent) ||
-        this.isPropertyAccessExpression(node.parent) ||
+      (this.isExpression(node.parent) ||
         this.isCallExpression(node.parent) ||
         this.isArrayLiteral(node.parent))
   }
