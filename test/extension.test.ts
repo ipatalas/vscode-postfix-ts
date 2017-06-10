@@ -35,11 +35,17 @@ describe('Simple template tests', () => {
   it('return template', testTemplate('expr', 'return', 'return expr'))
 
   it('not template', testTemplate('expr', 'not', '!expr'))
+  it('not template - inside a call expression', testTemplate('call.expression(expr{cursor})', 'not', 'call.expression(!expr)'))
+  it('not template - inside a call expression - negated', testTemplate('call.expression(!expr{cursor})', 'not', 'call.expression(expr)'))
   it('not template - binary expression', testTemplate('x * 100', 'not', '!(x * 100)'))
-  it('not template - inside an if', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
+  it('not template - inside an if - identifier', testTemplate('if (expr{cursor})', 'not', 'if(!expr)', true))
+  it('not template - inside an if - binary', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
   it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
   it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
   it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
+  it('not template - complex conditions - first expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&!(x*100)){}', true, 0))
+  it('not template - complex conditions - second expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a<=b||!(x*100)){}', true, 1))
+  it('not template - complex conditions - cancel quick pick - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&x*100.){}', true, 0, true))
   it('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
   it('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
 

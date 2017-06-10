@@ -7,7 +7,7 @@ import { invertExpression } from '../utils'
 
 export class NotTemplate extends BaseTemplate {
   buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string) {
-    let currentNode = node.parent
+    let currentNode = this.isIdentifier(node) ? node : node.parent
     if (currentNode.parent.kind === ts.SyntaxKind.PrefixUnaryExpression) {
       currentNode = currentNode.parent
     }
@@ -39,10 +39,12 @@ export class NotTemplate extends BaseTemplate {
   }
 
   canUse (node: ts.Node) {
-    return node.parent && (this.isExpression(node.parent) ||
-      this.isUnaryExpression(node.parent) ||
-      this.isBinaryExpression(node.parent) ||
-      this.isCallExpression(node.parent))
+    return node.parent && (
+        this.isExpression(node.parent) ||
+        this.isUnaryExpression(node.parent) ||
+        this.isBinaryExpression(node.parent) ||
+        this.isCallExpression(node.parent)
+      ) || this.isIdentifier(node)
   }
 
   private getBinaryExpressions = (node: ts.Node) => {

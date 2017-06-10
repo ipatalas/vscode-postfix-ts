@@ -62,6 +62,7 @@
 								"items": {
 									"type": "string",
 									"enum": [
+										"identifier",
 										"expression",
 										"binary-expression",
 										"unary-expression",

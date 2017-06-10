@@ -34,9 +34,8 @@ export class CompletionItemBuilder {
       this.item.insertText = replacement.replace('{{expr}}', codeBeforeTheDot)
     }
 
-    const dotPosition = position.translate(0, -(this.code.length - dotIdx - 1))
     this.item.additionalTextEdits = [
-      vsc.TextEdit.delete(new vsc.Range(position.translate(0, -this.code.length), dotPosition))
+      vsc.TextEdit.delete(new vsc.Range(position.translate(0, -codeBeforeTheDot.length - 1), position))
     ]
 
     return this
