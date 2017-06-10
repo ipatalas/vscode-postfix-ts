@@ -5,11 +5,14 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 
 export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
-    ['expression', (node: ts.Node) => this.isExpression(node)],
-    ['binary-expression', (node: ts.Node) => this.isBinaryExpression(node)],
-    ['unary-expression', (node: ts.Node) => this.isUnaryExpression(node)],
-    ['function-call', (node: ts.Node) => this.isCallExpression(node)]
+    ['identifier', (node: ts.Node) => this.isIdentifier(node)],
+    ['expression', (node: ts.Node) => this.isExpression(node.parent)],
+    ['binary-expression', (node: ts.Node) => this.isBinaryExpression(node.parent)],
+    ['unary-expression', (node: ts.Node) => this.isUnaryExpression(node.parent)],
+    ['function-call', (node: ts.Node) => this.isCallExpression(node.parent)]
   ])
+
+  private currentNode: ts.Node
 
   constructor (private name: string, private description: string, private body: string, private conditions: string[]) {
     super()
@@ -17,16 +20,16 @@ export class CustomTemplate extends BaseTemplate {
 
   buildCompletionItem (code: string, position: Position, node: ts.Node, suffix: string) {
     return CompletionItemBuilder
-      .create(this.name, code)
+      .create(this.name, this.currentNode.getText() + '.')
       .description(this.description)
       .replace(this.body, position, true)
       .build()
   }
 
   canUse (node: ts.Node): boolean {
-    let result = node.parent != null
+    this.currentNode = this.isIdentifier(node) ? node : node.parent
 
-    return node.parent && (this.conditions.length === 0 || this.conditions.some(c => this.condition(node.parent, c)))
+    return node.parent && (this.conditions.length === 0 || this.conditions.some(c => this.condition(node, c)))
   }
 
   condition = (node: ts.Node, condition: string) => {
