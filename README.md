@@ -44,7 +44,7 @@ All available templates (`expr` means the expression on which the template is ap
 
 ## Custom templates (1.6.0 and above)
 
-You can now add your own templates if the defaults are not enough. This will only work for simple ones as some templates require additional code.
+You can now add your own templates if the defaults are not enough. This will only work for simple ones as some templates require additional tricky handling.
 To configure a template you need to set `postfix.customTemplates` setting. It's an array of the following objects:
 
 ```JSON
@@ -67,7 +67,19 @@ Template body defines how will the expression before the cursor be replaced.
 It supports standard Visual Studio Code [Snippet syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax).
 There is also one special placeholder that can be used:
 
-- `{{expr}}`: this will be replaced by the expression before the cursor so `!{{expr}}` will simply negate the expression  
+- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression  
+
+### Template conditions
+
+`when` condition can be zero or more of the following options:
+
+- `identifier`: simple identifier, ie. `variableName` (inside an if statement or function call arguments)
+- `expression`: can be either a simple expression like `object.property.value` or `array[index]` or a combination of them
+- `binary-expression`: a binary expression, ie. `x > 3`, `x * 100`, `x && y`
+- `unary-expression`: an unary expression, ie. `!x`, `x++` or `++x`
+- `function-call`: a function call expression, ie. `func()`, `object.method()` and so on
+
+If no conditions are specified then given template will be available under all possible situations
 
 ## Configuration
 
@@ -107,15 +119,15 @@ Feel free to open issues for whatever you think may improve the extension's valu
 - Fixed issue #4 - Console templates are no longer suggested on console expression itself
 - Fixed issue #5 - Already negated expressions can now be "un-negated" by using `not` template on them again
 
-### 1.1.1
+## 1.1.1
 
 - Added support for postfix templates on unary expressions (ie. i++)
 - Some fixes after adding basic tests
 
-### 1.1.0
+## 1.1.0
 
 - Added console templates (PR from @jrieken, thanks!)
 
-### 1.0.0
+## 1.0.0
 
 - Initial release
