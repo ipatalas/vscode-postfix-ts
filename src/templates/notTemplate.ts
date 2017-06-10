@@ -7,10 +7,7 @@ import { invertExpression } from '../utils'
 
 export class NotTemplate extends BaseTemplate {
   buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string) {
-    let currentNode = this.isIdentifier(node) ? node : node.parent
-    if (currentNode.parent.kind === ts.SyntaxKind.PrefixUnaryExpression) {
-      currentNode = currentNode.parent
-    }
+    let currentNode = this.getCurrentNode(node)
 
     code = currentNode.getText() + suffix
 

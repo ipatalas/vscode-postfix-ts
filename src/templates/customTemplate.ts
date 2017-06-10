@@ -12,23 +12,21 @@ export class CustomTemplate extends BaseTemplate {
     ['function-call', (node: ts.Node) => this.isCallExpression(node.parent)]
   ])
 
-  private currentNode: ts.Node
-
   constructor (private name: string, private description: string, private body: string, private conditions: string[]) {
     super()
   }
 
   buildCompletionItem (code: string, position: Position, node: ts.Node, suffix: string) {
+    let currentNode = this.getCurrentNode(node)
+
     return CompletionItemBuilder
-      .create(this.name, this.currentNode.getText() + '.')
+      .create(this.name, currentNode.getText() + suffix)
       .description(this.description)
       .replace(this.body, position, true)
       .build()
   }
 
   canUse (node: ts.Node): boolean {
-    this.currentNode = this.isIdentifier(node) ? node : node.parent
-
     return node.parent && (this.conditions.length === 0 || this.conditions.some(c => this.condition(node, c)))
   }
 

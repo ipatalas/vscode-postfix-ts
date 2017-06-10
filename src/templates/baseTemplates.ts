@@ -17,6 +17,16 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
   protected inReturnStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
   protected inIfStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.IfStatement || (node.parent && this.inIfStatement(node.parent))
+
+  protected getCurrentNode = (node: ts.Node) => {
+    let currentNode = this.isIdentifier(node) && !this.isExpression(node.parent) ? node : node.parent
+
+    if (currentNode.parent.kind === ts.SyntaxKind.PrefixUnaryExpression) {
+      currentNode = currentNode.parent
+    }
+
+    return currentNode
+  }
 }
 
 export abstract class BaseExpressionTemplate extends BaseTemplate {
