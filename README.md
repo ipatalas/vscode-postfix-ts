@@ -42,11 +42,39 @@ All available templates (`expr` means the expression on which the template is ap
 | **.error**        | `console.error(expr)` |
 | **.warn**         | `console.warn(expr)` |
 
+## Custom templates (1.6.0 and above)
+
+You can now add your own templates if the defaults are not enough. This will only work for simple ones as some templates require additional code.
+To configure a template you need to set `postfix.customTemplates` setting. It's an array of the following objects:
+
+```JSON
+{
+  "name": "...",
+  "description": "...",
+  "body": "...",
+  "when": ["..."]
+}
+```
+
+`name` defines what will be the name of the suggestion  
+`description` will show additional optional description when suggestion panel is opened  
+`body` defines how the template will work (see below)  
+`when` defines conditions when the template should be suggested  
+
+### Template body
+
+Template body defines how will the expression before the cursor be replaced.  
+It supports standard Visual Studio Code [Snippet syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax).
+There is also one special placeholder that can be used:
+
+- `{{expr}}`: this will be replaced by the expression before the cursor so `!{{expr}}` will simply negate the expression  
+
 ## Configuration
 
 This plugin contributes the following [settings](https://code.visualstudio.com/docs/customization/userandworkspace):
 
 - `postfix.languages`: array of [language identifiers](https://code.visualstudio.com/docs/languages/identifiers) in which the extension will be available. Default value is  **['javascript', 'typescript']**
+- `postfix.customTemplates`: array of custom template definitions - see [Custom templates (1.6.0 and above)](#custom-templates-160-and-above)
 
 The `postfix.languages` setting can be used to make the extension available for inline JS/TS which is in other files like **.html**, **.vue** or others. You must still include `javascript` and `typescript` if you want the extension to be available there among the others.
 
@@ -57,6 +85,10 @@ It's a first release so there is not much validation in the extension. Sometimes
 Feel free to open issues for whatever you think may improve the extension's value. New ideas for more templates are also welcome. Most of them are pretty easy to implement.
 
 ## Release Notes
+
+## 1.6.0
+- Support for array access expressions so that `expr[i]` will display suggestions as well
+- Support for custom templates
 
 ## 1.5.1
 - Fixed issue #9 - snippets always on top of suggestions

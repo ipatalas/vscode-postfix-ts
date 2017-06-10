@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.6.0] - 2017-06-10
+### Added:
+- Support for array access expressions so that `expr[i]` will display suggestions as well
+- Support for simple custom templates
+
 ## [1.5.1] - 2017-05-27
 ### Added:
 - Fixed issue #9 - snippets always on top of suggestions
