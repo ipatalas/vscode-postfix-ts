@@ -16,7 +16,7 @@ const LANGUAGE = 'postfix'
 
 describe('Simple template tests', () => {
   afterEach(done => {
-    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
+    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(done, err => done(err))
   })
 
   it('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
@@ -60,6 +60,33 @@ describe('Simple template tests', () => {
 
   it('forof template', testTemplate('expr', 'forof', 'for(letitemofexpr){}', true))
   it('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true))
+
+  describe('custom template tests', () => {
+    const config = vsc.workspace.getConfiguration('postfix')
+
+    before(done => {
+      config.update('customTemplates', [{
+        'name': 'custom',
+        'body': '!{{expr}}',
+        'description': '!expr',
+        'when': [
+          'identifier', 'unary-expression', 'binary-expression', 'expression', 'function-call'
+        ]
+      }], true).then(done, err => done(err))
+    })
+
+    after(done => {
+      config.update('customTemplates', undefined, true).then(done, err => done(err))
+    })
+
+    it('identifier', testTemplate('expr', 'custom', '!expr'))
+    it('expression', testTemplate('expr.test', 'custom', '!expr.test'))
+    it('expression 2', testTemplate('expr[index]', 'custom', '!expr[index]'))
+    it('binary-expression', testTemplate('x > 100', 'custom', '!x > 100'))
+    it('unary-expression', testTemplate('!x', 'custom', '!!x'))
+    it('function-call', testTemplate('call()', 'custom', '!call()'))
+    it('function-call 2', testTemplate('test.call()', 'custom', '!test.call()'))
+  })
 })
 
 function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean) {
