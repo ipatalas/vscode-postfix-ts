@@ -19,13 +19,6 @@ describe('Simple template tests', () => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
 
-  it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
-  it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
-  it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
-  it('not template - complex conditions - first expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&!(x*100)){}', true, 0))
-  it('not template - complex conditions - second expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a<=b||!(x*100)){}', true, 1))
-  it('not template - complex conditions - cancel quick pick - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&x*100.){}', true, 0, true))
-
   it('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
   it('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
   it('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
@@ -49,6 +42,12 @@ describe('Simple template tests', () => {
   it('not template - inside an if - identifier', testTemplate('if (expr{cursor})', 'not', 'if(!expr)', true))
   it('not template - inside an if - binary', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
   it('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
+  it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
+  it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
+  it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
+  it('not template - complex conditions - first expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&!(x*100)){}', true, 0))
+  it('not template - complex conditions - second expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a<=b||!(x*100)){}', true, 1))
+  it('not template - complex conditions - cancel quick pick - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&x*100.){}', true, 0, true))
 
   it('if template', testTemplate('expr', 'if', 'if(expr){}', true))
   it('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
