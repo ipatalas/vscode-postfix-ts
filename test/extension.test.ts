@@ -16,7 +16,7 @@ const LANGUAGE = 'postfix'
 
 describe('Simple template tests', () => {
   afterEach(done => {
-    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(done, err => done(err))
+    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
 
   it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
@@ -73,7 +73,7 @@ describe('Simple template tests', () => {
         'when': [
           'identifier', 'unary-expression', 'binary-expression', 'expression', 'function-call'
         ]
-      }], true).then(done, err => done(err))
+      }], true).then(() => done(), err => done(err))
     })
 
     after(done => {
