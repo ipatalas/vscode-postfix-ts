@@ -87,6 +87,33 @@ describe('Simple template tests', () => {
     it('function-call', testTemplate('call()', 'custom', '!call()'))
     it('function-call 2', testTemplate('test.call()', 'custom', '!test.call()'))
   })
+
+  describe('custom template with multiple expr tests', () => {
+    const config = vsc.workspace.getConfiguration('postfix')
+
+    before(done => {
+      config.update('customTemplates', [{
+        'name': 'double',
+        'body': '{{expr}} + {{expr}}',
+        'description': 'double expr',
+        'when': [
+          'identifier', 'unary-expression', 'binary-expression', 'expression', 'function-call'
+        ]
+      }], true).then(() => done(), err => done(err))
+    })
+
+    after(done => {
+      config.update('customTemplates', undefined, true).then(done, err => done(err))
+    })
+
+    it('identifier', testTemplate('expr', 'double', 'expr + expr'))
+    it('expression', testTemplate('expr.test', 'double', 'expr.test + expr.test'))
+    it('expression 2', testTemplate('expr[index]', 'double', 'expr[index] + expr[index]'))
+    it('binary-expression', testTemplate('x > 100', 'double', 'x > 100 + x > 100'))
+    it('unary-expression', testTemplate('!x', 'double', '!x + !x'))
+    it('function-call', testTemplate('call()', 'double', 'call() + call()'))
+    it('function-call 2', testTemplate('test.call()', 'double', 'test.call() + test.call()'))
+  })
 })
 
 function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean) {

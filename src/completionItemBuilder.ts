@@ -29,9 +29,9 @@ export class CompletionItemBuilder {
     if (useSnippets) {
       const escapedCode = codeBeforeTheDot.replace('$', '\\$')
 
-      this.item.insertText = new vsc.SnippetString(replacement.replace('{{expr}}', escapedCode))
+      this.item.insertText = new vsc.SnippetString(replacement.replace(new RegExp('{{expr}}', 'g'), escapedCode))
     } else {
-      this.item.insertText = replacement.replace('{{expr}}', codeBeforeTheDot)
+      this.item.insertText = replacement.replace(new RegExp('{{expr}}', 'g'), codeBeforeTheDot)
     }
 
     this.item.additionalTextEdits = [
