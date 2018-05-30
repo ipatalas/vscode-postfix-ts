@@ -199,7 +199,7 @@ class CoverageRunner {
 
     _mkDirIfExists(reportingDir) // yes, do this again since some test runners could clean the dir initially created
 
-    fs.writeFileSync(coverageFile, JSON.stringify(cov), 'utf8')
+    fs.writeFileSync(coverageFile, JSON.stringify(cov), { encoding: 'utf8' })
 
     let remappedCollector = remapIstanbul.remap(cov, {
       warn: warning => {
