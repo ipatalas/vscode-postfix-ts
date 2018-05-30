@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.7.0] - 2017-05-30
+### Added:
+- Enable usage of multiple '{{here}}' placeholder in a custom template (PR from @AdrieanKhisbe, thanks!)
+
 ## [1.6.0] - 2017-06-10
 ### Added:
 - Support for array access expressions so that `expr[i]` will display suggestions as well
