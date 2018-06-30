@@ -41,6 +41,8 @@ All available templates (`expr` means the expression on which the template is ap
 | **.log**          | `console.log(expr)` |
 | **.error**        | `console.error(expr)` |
 | **.warn**         | `console.warn(expr)` |
+| **.cast**         | `(<SomeType>expr)` |
+| **.castas**         | `(expr as SomeType)` |
 
 ## Custom templates (1.6.0 and above)
 

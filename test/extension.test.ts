@@ -61,6 +61,9 @@ describe('Simple template tests', () => {
   it('forof template', testTemplate('expr', 'forof', 'for(letitemofexpr){}', true))
   it('foreach template', testTemplate('expr', 'foreach', 'expr.forEach(item=>)', true))
 
+  it('cast template', testTemplate('expr', 'cast', '(<>expr)'))
+  it('castas template', testTemplate('expr', 'castas', '(expr as )'))
+
   describe('custom template tests', () => {
     const config = vsc.workspace.getConfiguration('postfix')
 
