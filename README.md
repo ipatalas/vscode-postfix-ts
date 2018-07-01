@@ -97,39 +97,3 @@ The `postfix.languages` setting can be used to make the extension available for 
 It's a first release so there is not much validation in the extension. Sometimes it's possible that a specific template does not make much sense in some situations where it's suggested.
 
 Feel free to open issues for whatever you think may improve the extension's value. New ideas for more templates are also welcome. Most of them are pretty easy to implement.
-
-## Release Notes
-
-## 1.6.0
-- Support for array access expressions so that `expr[i]` will display suggestions as well
-- Support for custom templates
-
-## 1.5.1
-- Fixed issue #9 - snippets always on top of suggestions
-
-## 1.5.0
-- Ability to activate extension in files other than JS/TS
-
-## 1.4.0
-- `not` templates now really invert expressions (issue #7)
-
-## 1.3.0
-- New `foreach` template (issue #6) and general improvements in `for*` templates
-
-## 1.2.0
-- `Not` template can now negate different parts of the expression (selected from Quick Pick)
-- Fixed issue #4 - Console templates are no longer suggested on console expression itself
-- Fixed issue #5 - Already negated expressions can now be "un-negated" by using `not` template on them again
-
-## 1.1.1
-
-- Added support for postfix templates on unary expressions (ie. i++)
-- Some fixes after adding basic tests
-
-## 1.1.0
-
-- Added console templates (PR from @jrieken, thanks!)
-
-## 1.0.0
-
-- Initial release

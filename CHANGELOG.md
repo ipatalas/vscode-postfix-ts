@@ -1,6 +1,10 @@
 # Change Log
 
-## [1.7.0] - 2017-05-30
+## [1.8.0] - 2018-07-01
+### Added:
+- Merged [#16](https://github.com/ipatalas/vscode-postfix-ts/pull/16) - cast templates (thanks @Coffee0127!)
+
+## [1.7.0] - 2018-05-30
 ### Added:
 - Enable usage of multiple '{{here}}' placeholder in a custom template (PR from @AdrieanKhisbe, thanks!)
 
