@@ -19,11 +19,13 @@ const VAR_TEMPLATES = ['var', 'let', 'const']
 const FOR_TEMPLATES = ['for', 'forof', 'foreach']
 const CONSOLE_TEMPLATES = ['log', 'warn', 'error']
 const IF_TEMPLATES = ['if', 'else', 'null', 'notnull', 'undefined', 'notundefined']
+const CAST_TEMPLATES = ['cast', 'castas']
 const ALL_TEMPLATES = [
   ...VAR_TEMPLATES,
   ...FOR_TEMPLATES,
   ...CONSOLE_TEMPLATES,
   ...IF_TEMPLATES,
+  ...CAST_TEMPLATES,
   'not',
   'return'
 ]
