@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.8.1] - 2018-10-21
+### Fixed:
+- Fixed issue [#17](https://github.com/ipatalas/vscode-postfix-ts/issues/17) - suggestions should not be shown inside comments
+
 ## [1.8.0] - 2018-07-01
 ### Added:
 - Merged [#16](https://github.com/ipatalas/vscode-postfix-ts/pull/16) - cast templates (thanks @Coffee0127!)
