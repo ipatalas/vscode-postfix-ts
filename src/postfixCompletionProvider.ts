@@ -1,11 +1,8 @@
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
 import * as glob from 'glob'
-import * as path from 'path'
 import * as _ from 'lodash'
-import { CompletionItemBuilder } from './completionItemBuilder'
 import { IPostfixTemplate } from './template'
-import { build } from './templates/varTemplates'
 import { CustomTemplate } from './templates/customTemplate'
 
 let currentSuggestion = undefined
@@ -18,21 +15,25 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   provideCompletionItems (document: vsc.TextDocument, position: vsc.Position, token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {
-    let line = document.lineAt(position.line)
-    let dotIdx = line.text.lastIndexOf('.', position.character)
+    const line = document.lineAt(position.line)
+    const dotIdx = line.text.lastIndexOf('.', position.character)
 
     if (dotIdx === -1) {
       return []
     }
 
-    let codePiece = line.text.substring(line.firstNonWhitespaceCharacterIndex, dotIdx)
+    const codePiece = line.text.substring(line.firstNonWhitespaceCharacterIndex, dotIdx)
 
     let source = ts.createSourceFile('test.ts', codePiece, ts.ScriptTarget.ES5, true)
-    let statement = source.statements[0]
-    let code = line.text.substr(line.firstNonWhitespaceCharacterIndex)
+    const code = line.text.substr(line.firstNonWhitespaceCharacterIndex)
 
-    let currentNode = findNodeAtPosition(source, dotIdx - line.firstNonWhitespaceCharacterIndex - 1)
+    const currentNode = findNodeAtPosition(source, dotIdx - line.firstNonWhitespaceCharacterIndex - 1)
+
     if (!currentNode) {
+      return []
+    }
+
+    if (this.isInsideComment(document, position)) {
       return []
     }
 
@@ -44,6 +45,19 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   resolveCompletionItem (item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
     currentSuggestion = item.label
     return item
+  }
+
+  private isInsideComment (document: vsc.TextDocument, position: vsc.Position) {
+    const source = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES5, true)
+    const pos = source.getPositionOfLineAndCharacter(position.line, position.character)
+    const nodeKind = findNodeAtPosition(source, pos).kind
+    const commentKind = [
+      ts.SyntaxKind.JSDocComment,
+      ts.SyntaxKind.MultiLineCommentTrivia,
+      ts.SyntaxKind.SingleLineCommentTrivia
+    ]
+
+    return _.includes(commentKind, nodeKind)
   }
 
   private loadCustomTemplates = () => {
@@ -71,6 +85,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 }
 
 export const getCurrentSuggestion = () => currentSuggestion
+export const resetCurrentSuggestion = () => currentSuggestion = undefined
 
 const findNodeAtPosition = (source: ts.SourceFile, character: number) => {
   let matchingNodes: INode[] = []

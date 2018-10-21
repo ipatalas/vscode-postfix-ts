@@ -10,7 +10,7 @@ import * as _ from 'lodash'
 // as well as import your extension to test it
 import * as vsc from 'vscode'
 import { VarTemplate } from '../src/templates/varTemplates'
-import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
+import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'
 
 const LANGUAGE = 'postfix'
@@ -42,6 +42,8 @@ describe('Template usage', () => {
   testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, FOR_TEMPLATES))
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
   testTemplateUsage('return expression', 'return x * 100', ['not'])
+  testTemplateUsage('inside single line comment', '// expr', [])
+  testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 })
 
 function testTemplateUsage (testDescription: string, initialText: string, expectedTemplates: string[]) {
@@ -73,17 +75,19 @@ function getAvailableSuggestions (doc: vsc.TextDocument, initialText: string) {
       let pos = new vsc.Position(0, cursorIdx + 1)
       editor.selection = new vsc.Selection(pos, pos)
 
+      resetCurrentSuggestion()
       await vsc.commands.executeCommand('editor.action.triggerSuggest')
       await delay(getCurrentDelay())
 
-      const suggestions = [getCurrentSuggestion()]
+      const firstSuggestion = getCurrentSuggestion()
+      const suggestions = firstSuggestion ? [firstSuggestion] : []
 
       while (true) {
         await vsc.commands.executeCommand('selectNextSuggestion')
 
         let current = getCurrentSuggestion()
 
-        if (current === suggestions[0]) {
+        if (current === firstSuggestion) {
           break
         }
 
