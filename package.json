@@ -74,7 +74,7 @@
 					}
 				}
 			}
-		}
+			}
 	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
@@ -86,21 +86,21 @@
 		"build": "npm run prerun && npm run compile"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.109",
+		"@types/lodash": "^4.14.119",
 		"@types/mocha": "^5.2.0",
 		"@types/node": "^8.0.0",
-		"decache": "^4.4.0",
+		"decache": "^4.5.0",
 		"istanbul": "^0.4.5",
 		"mocha": "^5.2.0",
-		"remap-istanbul": "^0.11.1",
-		"tslint": "^5.10.0",
-		"tslint-config-standard": "^7.0.0",
-		"tslint-eslint-rules": "^5.3.1",
-		"vscode": "^1.1.21"
+		"remap-istanbul": "^0.12.0",
+		"tslint": "^5.12.0",
+		"tslint-config-standard": "^8.0.1",
+		"tslint-eslint-rules": "^5.4.0",
+		"vscode": "^1.1.26"
 	},
 	"dependencies": {
-		"glob": "^7.1.2",
-		"lodash": "^4.17.10",
-		"typescript": "^2.8.3"
+		"glob": "^7.1.3",
+		"lodash": "^4.17.11",
+		"typescript": "^3.2.2"
 	}
 }
