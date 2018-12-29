@@ -8,10 +8,10 @@ let completionProvider: vsc.Disposable
 export function activate (context: vsc.ExtensionContext) {
   registerCompletionProvider(context)
 
-  context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: any[]) => {
+  context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: any[]) => {
     let [position, suffix, ...expressions] = args
 
-    notCommand(editor, position, suffix, expressions)
+    await notCommand(editor, position, suffix, expressions)
   }))
 
   context.subscriptions.push(vsc.workspace.onDidChangeConfiguration(() => {

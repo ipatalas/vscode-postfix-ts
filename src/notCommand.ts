@@ -5,7 +5,7 @@ import { invertExpression } from './utils'
 export const NOT_COMMAND = 'complete.notTemplate'
 
 export function notCommand (editor: vsc.TextEditor, position: vsc.Position, suffix: string, expressions: ts.BinaryExpression[]) {
-  vsc.window.showQuickPick(expressions.map(node => ({
+  return vsc.window.showQuickPick(expressions.map(node => ({
     label: node.getText(),
     description: '',
     detail: 'Invert this expression',
