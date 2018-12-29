@@ -9,7 +9,6 @@ import * as _ from 'lodash'
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vsc from 'vscode'
-import { VarTemplate } from '../src/templates/varTemplates'
 import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'
 
@@ -87,7 +86,7 @@ function getAvailableSuggestions (doc: vsc.TextDocument, initialText: string) {
 
         let current = getCurrentSuggestion()
 
-        if (current === firstSuggestion) {
+        if (current === undefined || suggestions.indexOf(current) > -1) {
           break
         }
 

@@ -79,7 +79,7 @@ describe('Simple template tests', () => {
     })
 
     after(done => {
-      config.update('customTemplates', undefined, true).then(done, err => done(err))
+      config.update('customTemplates', undefined, true).then(() => done(), err => done(err))
     })
 
     it('identifier', testTemplate('expr', 'custom', '!expr'))
@@ -106,7 +106,7 @@ describe('Simple template tests', () => {
     })
 
     after(done => {
-      config.update('customTemplates', undefined, true).then(done, err => done(err))
+      config.update('customTemplates', undefined, true).then(() => done(), err => done(err))
     })
 
     it('identifier', testTemplate('expr', 'double', 'expr + expr'))
@@ -147,6 +147,7 @@ function testTemplateWithOptions (initialText: string, template: string, expecte
             await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
           }
 
+          await vsc.commands.executeCommand('workbench.action.focusQuickOpen')
           await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
         }
 
