@@ -15,10 +15,6 @@ import { getCurrentDelay, delay } from './utils'
 const LANGUAGE = 'postfix'
 
 describe('Simple template tests', () => {
-  afterEach(done => {
-    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
-  })
-
   it('not template - already negated expression', testTemplate('!expr', 'not', 'expr'))
   it('let template - binary expression', testTemplate('a * 3', 'let', 'let name = a * 3'))
   it('let template - method call', testTemplate('obj.call()', 'let', 'let name = obj.call()'))
@@ -42,12 +38,12 @@ describe('Simple template tests', () => {
   it('not template - inside an if - identifier', testTemplate('if (expr{cursor})', 'not', 'if(!expr)', true))
   it('not template - inside an if - binary', testTemplate('if (x * 100{cursor})', 'not', 'if(!(x*100))', true))
   it('not template - already negated expression - method call', testTemplate('!x.method()', 'not', 'x.method()'))
-  it('not template - complex conditions - first expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
-  it('not template - complex conditions - second expression', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
-  it('not template - complex conditions - cancel quick pick', testTemplateWithOptions('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
-  it('not template - complex conditions - first expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&!(x*100)){}', true, 0))
-  it('not template - complex conditions - second expression - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a<=b||!(x*100)){}', true, 1))
-  it('not template - complex conditions - cancel quick pick - alt', testTemplateWithOptions('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&x*100.){}', true, 0, true))
+  it('not template - complex conditions - first expression', testTemplateWithQuickPick('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&!(x*100))', true, 0))
+  it('not template - complex conditions - second expression', testTemplateWithQuickPick('if (a > b && x * 100{cursor})', 'not', 'if(a<=b||!(x*100))', true, 1))
+  it('not template - complex conditions - cancel quick pick', testTemplateWithQuickPick('if (a > b && x * 100{cursor})', 'not', 'if(a>b&&x*100.)', true, 0, true))
+  it('not template - complex conditions - first expression - alt', testTemplateWithQuickPick('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&!(x*100)){}', true, 0))
+  it('not template - complex conditions - second expression - alt', testTemplateWithQuickPick('if (a > b && x * 100{cursor}) {}', 'not', 'if(a<=b||!(x*100)){}', true, 1))
+  it('not template - complex conditions - cancel quick pick - alt', testTemplateWithQuickPick('if (a > b && x * 100{cursor}) {}', 'not', 'if(a>b&&x*100.){}', true, 0, true))
 
   it('if template', testTemplate('expr', 'if', 'if(expr){}', true))
   it('else template', testTemplate('expr', 'else', 'if(!expr){}', true))
@@ -119,47 +115,42 @@ describe('Simple template tests', () => {
   })
 })
 
-function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean) {
+function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, preAssertAction?: () => Thenable<void>) {
   return (done: MochaDone) => {
     vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
       return selectAndAcceptSuggestion(
         doc, initialText, template
-      ).then(() => {
+      ).then(async () => {
+        if (preAssertAction) {
+          await preAssertAction()
+        }
+
         assertText(doc, expectedResult, trimWhitespaces)
+        await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
         done()
-      }).then(undefined, (reason) => {
+      }).then(undefined, async (reason) => {
+        await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
         done(reason)
       })
     })
   }
 }
 
-function testTemplateWithOptions (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) {
-  return (done: MochaDone) => {
-    vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
-      return selectAndAcceptSuggestion(
-        doc, initialText, template
-      ).then(async () => {
-        if (cancelQuickPick) {
-          await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
-        } else {
-          for (let i = 0; i < skipSuggestions; i++) {
-            await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
-          }
+function testTemplateWithQuickPick (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) {
+  return testTemplate(initialText, template, expectedResult, trimWhitespaces, async () => {
+    if (cancelQuickPick) {
+      await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
+    } else {
+      for (let i = 0; i < skipSuggestions; i++) {
+        await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
+      }
 
-          await vsc.commands.executeCommand('workbench.action.focusQuickOpen')
-          await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
-        }
+      await vsc.commands.executeCommand('workbench.action.focusQuickOpen')
+      await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
+    }
 
-        await delay(10)
-
-        assertText(doc, expectedResult, trimWhitespaces)
-        done()
-      }).then(undefined, (reason) => {
-        done(reason)
-      })
-    })
-  }
+    await delay(10)
+  })
 }
 
 function selectAndAcceptSuggestion (doc: vsc.TextDocument, initialText: string, template: string) {
