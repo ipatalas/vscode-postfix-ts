@@ -1,7 +1,9 @@
+# vscode-postfix-ts
+
 [![Build Status](https://travis-ci.org/ipatalas/vscode-postfix-ts.svg?branch=master)](https://travis-ci.org/ipatalas/vscode-postfix-ts)
 [![codecov](https://codecov.io/gh/ipatalas/vscode-postfix-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/ipatalas/vscode-postfix-ts)
 
-# Postfix templates for TypeScript/JavaScript
+> Postfix templates for TypeScript/JavaScript
 
 ## Features
 
