@@ -1,9 +1,10 @@
+# vscode-postfix-ts
+
+[![MarketPlace Tag](https://vsmarketplacebadge.apphb.com/version-short/ipatalas.vscode-postfix-ts.svg)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
 [![Build Status](https://travis-ci.org/ipatalas/vscode-postfix-ts.svg?branch=master)](https://travis-ci.org/ipatalas/vscode-postfix-ts)
-[![bitHound Dependencies](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/badges/dependencies.svg)](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/master/dependencies/npm)
-[![bitHound Code](https://www.bithound.io/github/ipatalas/vscode-postfix-ts/badges/code.svg)](https://www.bithound.io/github/ipatalas/vscode-postfix-ts)
 [![codecov](https://codecov.io/gh/ipatalas/vscode-postfix-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/ipatalas/vscode-postfix-ts)
 
-# Postfix templates for TypeScript/JavaScript
+> Postfix templates for TypeScript/JavaScript
 
 ## Features
 

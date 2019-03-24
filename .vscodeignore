@@ -11,4 +11,3 @@ tslint.json
 *.vsix
 coverage/**
 .travis.yml
-.bithoundrc
