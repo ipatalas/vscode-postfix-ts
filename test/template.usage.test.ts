@@ -46,7 +46,7 @@ describe('Template usage', () => {
 })
 
 function testTemplateUsage (testDescription: string, initialText: string, expectedTemplates: string[]) {
-  it(testDescription, (done: MochaDone) => {
+  it(testDescription, (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
       return getAvailableSuggestions(doc, initialText).then(templates => {
         assert.deepEqual(_.sortBy(templates), _.sortBy(expectedTemplates))
