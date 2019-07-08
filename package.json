@@ -1,106 +1,110 @@
 {
-	"name": "vscode-postfix-ts",
-	"displayName": "TS/JS postfix completion",
-	"description": "Postfix templates for TypeScript/Javascript",
-	"version": "1.8.1",
-	"license": "MIT",
-	"publisher": "ipatalas",
-	"engines": {
-		"vscode": "^1.20.0"
-	},
-	"icon": "images/logo.png",
-	"categories": [
-		"Other"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ipatalas/vscode-postfix-ts"
-	},
-	"bugs": {
-		"url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
-	},
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/src/extension",
-	"contributes": {
-		"configuration": {
-			"title": "Postfix completion",
-			"properties": {
-				"postfix.languages": {
-					"type": "array",
-					"description": "A list of languages in which the completion will be available",
-					"default": [
-						"javascript",
-						"typescript"
-					]
-				},
-				"postfix.customTemplates": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"required": [
-							"name",
-							"body"
-						],
-						"properties": {
-							"name": {
-								"type": "string",
-								"description": "Name of the template. It will be used in auto-complete suggestions"
-							},
-							"description": {
-								"type": "string",
-								"description": "Description of the template. It will be used in auto-complete suggestions"
-							},
-							"body": {
-								"type": "string",
-								"description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
-							},
-							"when": {
-								"type": "array",
-								"description": "Context in which the template should be suggested",
-								"items": {
-									"type": "string",
-									"enum": [
-										"identifier",
-										"expression",
-										"binary-expression",
-										"unary-expression",
-										"function-call"
-									]
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
-		"compile": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "NODE_ENV=test node ./node_modules/vscode/bin/test",
-		"pretest": "node ./tasks.js pretest && tsc -p ./",
-		"prerun": "node ./tasks.js prerun",
-		"build": "npm run prerun && npm run compile"
-	},
-	"devDependencies": {
-		"@types/lodash": "^4.14.133",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^8.0.0",
-		"decache": "^4.5.1",
-		"istanbul": "^0.4.5",
-		"mocha": "^5.2.0",
-		"remap-istanbul": "^0.13.0",
-		"tslint": "^5.17.0",
-		"tslint-config-standard": "^8.0.1",
-		"tslint-eslint-rules": "^5.4.0",
-		"vscode": "^1.1.34"
-	},
-	"dependencies": {
-		"glob": "^7.1.4",
-		"lodash": "^4.17.11",
-		"typescript": "^3.5.1"
-	}
+  "name": "vscode-postfix-ts",
+  "displayName": "TS/JS postfix completion",
+  "description": "Postfix templates for TypeScript/Javascript",
+  "version": "1.8.1",
+  "license": "MIT",
+  "publisher": "ipatalas",
+  "engines": {
+    "vscode": "^1.20.0"
+  },
+  "icon": "images/logo.png",
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipatalas/vscode-postfix-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "configuration": {
+      "title": "Postfix completion",
+      "properties": {
+        "postfix.languages": {
+          "type": "array",
+          "description": "A list of languages in which the completion will be available",
+          "default": [
+            "javascript",
+            "typescript"
+          ]
+        },
+        "postfix.customTemplates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "body"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the template. It will be used in auto-complete suggestions"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the template. It will be used in auto-complete suggestions"
+              },
+              "body": {
+                "type": "string",
+                "description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
+              },
+              "when": {
+                "type": "array",
+                "description": "Context in which the template should be suggested",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "identifier",
+                    "expression",
+                    "binary-expression",
+                    "unary-expression",
+                    "function-call"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "NODE_ENV=test node ./node_modules/vscode/bin/test",
+    "pretest": "node ./tasks.js pretest && tsc -p ./",
+    "prerun": "node ./tasks.js prerun",
+    "build": "npm run prerun && npm run compile",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.133",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^8.0.0",
+    "decache": "^4.5.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "remap-istanbul": "^0.13.0",
+    "tslint": "^5.17.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "vscode": "^1.1.34"
+  },
+  "dependencies": {
+    "glob": "^7.1.4",
+    "lodash": "^4.17.11",
+    "typescript": "^3.5.1",
+    "snyk": "^1.192.4"
+  },
+  "snyk": true
 }
