@@ -100,7 +100,7 @@
 	},
 	"dependencies": {
 		"glob": "^7.1.4",
-		"lodash": "^4.17.11",
+		"lodash": "^4.17.13",
 		"typescript": "^3.5.1"
 	}
 }
