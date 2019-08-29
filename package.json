@@ -32,7 +32,9 @@
 					"description": "A list of languages in which the completion will be available",
 					"default": [
 						"javascript",
-						"typescript"
+						"typescript",
+						"javascriptreact",
+						"typescriptreact"
 					]
 				},
 				"postfix.customTemplates": {
