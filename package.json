@@ -88,21 +88,21 @@
 		"build": "npm run prerun && npm run compile"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.133",
+		"@types/lodash": "^4.14.138",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^8.0.0",
 		"decache": "^4.5.1",
 		"istanbul": "^0.4.5",
 		"mocha": "^5.2.0",
 		"remap-istanbul": "^0.13.0",
-		"tslint": "^5.17.0",
+		"tslint": "^5.19.0",
 		"tslint-config-standard": "^8.0.1",
 		"tslint-eslint-rules": "^5.4.0",
-		"vscode": "^1.1.34"
+		"vscode": "^1.1.36"
 	},
 	"dependencies": {
 		"glob": "^7.1.4",
-		"lodash": "^4.17.13",
-		"typescript": "^3.5.1"
+		"lodash": "^4.17.15",
+		"typescript": "^3.6.2"
 	}
 }
