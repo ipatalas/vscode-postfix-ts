@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.8.2] - 2019-09-01
+### Changed:
+- Merged PR [#25](https://github.com/ipatalas/vscode-postfix-ts/pull/25) - Enable extension in JSX/TSX by default
+
 ## [1.8.1] - 2018-10-21
 ### Fixed:
 - Fixed issue [#17](https://github.com/ipatalas/vscode-postfix-ts/issues/17) - suggestions should not be shown inside comments
