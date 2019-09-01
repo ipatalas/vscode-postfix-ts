@@ -90,7 +90,7 @@
 	"devDependencies": {
 		"@types/lodash": "^4.14.138",
 		"@types/mocha": "^5.2.7",
-		"@types/node": "^8.0.0",
+		"@types/node": "^10.14.17",
 		"decache": "^4.5.1",
 		"istanbul": "^0.4.5",
 		"mocha": "^5.2.0",
