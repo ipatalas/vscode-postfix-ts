@@ -9,6 +9,7 @@ export class CustomTemplate extends BaseTemplate {
     ['expression', (node: ts.Node) => this.isExpression(node.parent)],
     ['binary-expression', (node: ts.Node) => this.isBinaryExpression(node.parent)],
     ['unary-expression', (node: ts.Node) => this.isUnaryExpression(node.parent)],
+    ['new-expression', (node: ts.Node) => this.isNewExpression(node.parent)],
     ['function-call', (node: ts.Node) => this.isCallExpression(node.parent)]
   ])
 
