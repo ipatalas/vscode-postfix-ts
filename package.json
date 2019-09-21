@@ -20,7 +20,7 @@
 		"url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
 	},
 	"activationEvents": [
-		"onLanguage:postfix"
+		"*"
 	],
 	"main": "./out/src/extension",
 	"contributes": {
@@ -76,12 +76,7 @@
 					}
 				}
 			}
-		},
-		"languages": [
-			{
-				"id": "postfix"
-			}
-		]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
