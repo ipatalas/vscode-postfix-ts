@@ -116,7 +116,7 @@ describe('Simple template tests', () => {
 })
 
 function testTemplate (initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, preAssertAction?: () => Thenable<void>) {
-  return (done: MochaDone) => {
+  return (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
       return selectAndAcceptSuggestion(
         doc, initialText, template
@@ -196,5 +196,5 @@ function assertText (doc: vsc.TextDocument, expectedResult: string, trimWhitespa
     result = result.replace(/\s/g, '')
   }
 
-  assert.equal(result, expectedResult)
+  assert.strictEqual(result, expectedResult)
 }

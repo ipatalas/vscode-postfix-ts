@@ -49,7 +49,7 @@ function testTemplateUsage (testDescription: string, initialText: string, expect
   it(testDescription, (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
       return getAvailableSuggestions(doc, initialText).then(templates => {
-        assert.deepEqual(_.sortBy(templates), _.sortBy(expectedTemplates))
+        assert.deepStrictEqual(_.sortBy(templates), _.sortBy(expectedTemplates))
         done()
       }).then(undefined, (reason) => {
         done(reason)
