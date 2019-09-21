@@ -15,6 +15,10 @@ export class VarTemplate extends BaseExpressionTemplate {
       .replace(this.keyword + ' ${1:name} = {{expr}}$0', position, true)
       .build()
   }
+
+  canUse (node: ts.Node) {
+    return super.canUse(node) || this.isNewExpression(node.parent)
+  }
 }
 
 export const build = () => [

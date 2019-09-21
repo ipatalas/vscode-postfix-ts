@@ -29,11 +29,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const currentNode = findNodeAtPosition(source, dotIdx - line.firstNonWhitespaceCharacterIndex - 1)
 
-    if (!currentNode) {
-      return []
-    }
-
-    if (this.isInsideComment(document, position)) {
+    if (!currentNode || this.isInsideComment(document, position)) {
       return []
     }
 

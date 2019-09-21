@@ -15,6 +15,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isBinaryExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.BinaryExpression
   protected isUnaryExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PostfixUnaryExpression || node.kind === ts.SyntaxKind.PrefixUnaryExpression
   protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
+  protected isNewExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.NewExpression
   protected inReturnStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
   protected inIfStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.IfStatement || (node.parent && this.inIfStatement(node.parent))
 

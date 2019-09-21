@@ -1,3 +1,4 @@
+import * as ts from 'typescript'
 import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
@@ -20,6 +21,10 @@ export class CastTemplate extends BaseExpressionTemplate {
       .description(`(<SomeType>expr)`)
       .replace('(<$1>{{expr}})$0', position, true)
       .build()
+  }
+
+  canUse (node: ts.Node) {
+    return super.canUse(node) || this.isNewExpression(node.parent)
   }
 }
 

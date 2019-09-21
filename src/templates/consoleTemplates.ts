@@ -20,7 +20,7 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
   isConsoleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.Identifier && (node as ts.Identifier).text === 'console'
 
   canUse (node: ts.Node) {
-    return super.canUse(node) && !this.isConsoleExpression(node)
+    return super.canUse(node) && !this.isConsoleExpression(node) || this.isNewExpression(node.parent)
   }
 }
 
