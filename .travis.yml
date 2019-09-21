@@ -14,7 +14,6 @@ before_install:
 script:
   - yarn
   - yarn vscode:prepublish
-  - echo ">>> Run integration tests"
   - yarn test
 
 after_success:
