@@ -14,8 +14,8 @@ export class NotTemplate extends BaseTemplate {
     let completionBuilder = CompletionItemBuilder
       .create('not', code)
 
-    if (this.isBinaryExpression(node.parent)) {
-      let expressions = this.getBinaryExpressions(node.parent)
+    if (this.isBinaryExpression(currentNode)) {
+      let expressions = this.getBinaryExpressions(currentNode)
       if (expressions.length > 1) {
         return completionBuilder
           .insertText('')
@@ -37,12 +37,12 @@ export class NotTemplate extends BaseTemplate {
   }
 
   canUse (node: ts.Node) {
-    return node.parent && (
-        this.isExpression(node.parent) ||
-        this.isUnaryExpression(node.parent) ||
-        this.isBinaryExpression(node.parent) ||
-        this.isCallExpression(node.parent)
-      ) || this.isIdentifier(node)
+    return this.isExpression(node)
+        || this.isUnaryExpression(node)
+        || this.isUnaryExpression(node.parent)
+        || this.isBinaryExpression(node)
+        || this.isCallExpression(node)
+        || this.isIdentifier(node)
   }
 
   private getBinaryExpressions = (node: ts.Node) => {

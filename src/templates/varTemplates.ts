@@ -4,11 +4,11 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class VarTemplate extends BaseExpressionTemplate {
-  constructor (private keyword: 'var' | 'let' | 'const') {
+  constructor(private keyword: 'var' | 'let' | 'const') {
     super()
   }
 
-  buildCompletionItem (code: string, position: vsc.Position) {
+  buildCompletionItem(code: string, position: vsc.Position) {
     return CompletionItemBuilder
       .create(this.keyword, code)
       .description(`${this.keyword} name = expr`)
@@ -16,8 +16,8 @@ export class VarTemplate extends BaseExpressionTemplate {
       .build()
   }
 
-  canUse (node: ts.Node) {
-    return super.canUse(node) || this.isNewExpression(node.parent)
+  canUse(node: ts.Node) {
+    return super.canUse(node) || this.isNewExpression(node)
   }
 }
 

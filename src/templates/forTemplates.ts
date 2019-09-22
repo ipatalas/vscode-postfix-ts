@@ -1,19 +1,20 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
-import { BaseExpressionTemplate, BaseTemplate } from './baseTemplates'
+import { BaseTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 abstract class BaseForTemplate extends BaseTemplate {
   abstract buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string)
 
   canUse (node: ts.Node): boolean {
-    return node.parent &&
-      !this.inReturnStatement(node.parent) &&
-      !this.inIfStatement(node.parent) &&
-      (this.isExpression(node.parent) ||
-        this.isCallExpression(node.parent) ||
-        this.isArrayLiteral(node.parent))
+    return !this.inReturnStatement(node) &&
+      !this.inIfStatement(node) &&
+      (this.isIdentifier(node) ||
+        this.isPropertyAccessExpression(node.parent) ||
+        this.isElementAccessExpression(node) ||
+        this.isCallExpression(node) ||
+        this.isArrayLiteral(node))
   }
 
   protected isArrayLiteral = (node: ts.Node) => node.kind === ts.SyntaxKind.ArrayLiteralExpression
@@ -29,7 +30,7 @@ export class ForTemplate extends BaseForTemplate {
   }
 
   canUse (node: ts.Node) {
-    return super.canUse(node) && !this.isArrayLiteral(node.parent)
+    return super.canUse(node) && !this.isArrayLiteral(node)
   }
 }
 
@@ -50,10 +51,6 @@ export class ForEachTemplate extends BaseForTemplate {
       .description('expr.forEach()')
       .replace(`{{expr}}.forEach(\${1:item} => \${2})`, position, true)
       .build()
-  }
-
-  canUse (node: ts.Node) {
-    return super.canUse(node)
   }
 }
 

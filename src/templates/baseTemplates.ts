@@ -20,9 +20,9 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected inIfStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.IfStatement || (node.parent && this.inIfStatement(node.parent))
 
   protected getCurrentNode = (node: ts.Node) => {
-    let currentNode = this.isIdentifier(node) && !this.isExpression(node.parent) ? node : node.parent
+    let currentNode = node
 
-    if (currentNode.parent.kind === ts.SyntaxKind.PrefixUnaryExpression) {
+    if (ts.isPrefixUnaryExpression(currentNode.parent) || ts.isPropertyAccessExpression(currentNode.parent)) {
       currentNode = currentNode.parent
     }
 
@@ -35,11 +35,14 @@ export abstract class BaseExpressionTemplate extends BaseTemplate {
 
   canUse (node: ts.Node) {
     return node.parent &&
-      !this.inReturnStatement(node.parent) &&
-      !this.inIfStatement(node.parent) &&
-      (this.isExpression(node.parent) ||
-        this.isUnaryExpression(node.parent) ||
-        this.isBinaryExpression(node.parent) ||
-        this.isCallExpression(node.parent))
+      !this.inReturnStatement(node) &&
+      !this.inIfStatement(node) &&
+      (this.isIdentifier(node) ||
+        this.isSimpleExpression(node) ||
+        this.isPropertyAccessExpression(node.parent) ||
+        this.isElementAccessExpression(node) ||
+        this.isUnaryExpression(node) ||
+        this.isBinaryExpression(node) ||
+        this.isCallExpression(node))
   }
 }

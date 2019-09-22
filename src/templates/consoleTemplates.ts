@@ -5,11 +5,11 @@ import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ConsoleTemplate extends BaseExpressionTemplate {
 
-  constructor (private level: 'log' | 'warn' | 'error') {
+  constructor(private level: 'log' | 'warn' | 'error') {
     super()
   }
 
-  buildCompletionItem (code: string, position: vsc.Position, node: ts.Node) {
+  buildCompletionItem(code: string, position: vsc.Position) {
     return CompletionItemBuilder
       .create(this.level, code)
       .description(`console.${this.level}(expr)`)
@@ -19,8 +19,8 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
 
   isConsoleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.Identifier && (node as ts.Identifier).text === 'console'
 
-  canUse (node: ts.Node) {
-    return super.canUse(node) && !this.isConsoleExpression(node) || this.isNewExpression(node.parent)
+  canUse(node: ts.Node) {
+    return super.canUse(node) && !this.isConsoleExpression(node) || this.isNewExpression(node)
   }
 }
 
