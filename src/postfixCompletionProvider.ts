@@ -9,12 +9,13 @@ let currentSuggestion = undefined
 
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
-  constructor () {
+
+  constructor() {
     this.loadBuiltinTemplates()
     this.loadCustomTemplates()
   }
 
-  provideCompletionItems (document: vsc.TextDocument, position: vsc.Position, token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {
+  provideCompletionItems(document: vsc.TextDocument, position: vsc.Position, token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {
     const line = document.lineAt(position.line)
     const dotIdx = line.text.lastIndexOf('.', position.character)
 
@@ -34,9 +35,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     try {
-    return this.templates
-      .filter(t => t.canUse(currentNode))
-      .map(t => t.buildCompletionItem(code, position, currentNode, line.text.substring(dotIdx, position.character)))
+      return this.templates
+        .filter(t => t.canUse(currentNode))
+        .map(t => t.buildCompletionItem(code, position, currentNode, line.text.substring(dotIdx, position.character)))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -45,12 +46,12 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 
-  resolveCompletionItem (item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
+  resolveCompletionItem(item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
     currentSuggestion = item.label
     return item
   }
 
-  private isInsideComment (document: vsc.TextDocument, position: vsc.Position) {
+  private isInsideComment(document: vsc.TextDocument, position: vsc.Position) {
     const source = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES5, true)
     const pos = source.getPositionOfLineAndCharacter(position.line, position.character)
     const nodeKind = findNodeAtPosition(source, pos).kind
@@ -97,11 +98,12 @@ const findNodeAtPosition = (source: ts.SourceFile, character: number) => {
 
   return sortedNodes.length > 0 && sortedNodes[0].node
 
-  function visitNode (node: ts.Node, depth: number = 0) {
+  function visitNode(node: ts.Node, depth: number = 0) {
     const start = node.getStart(source)
     const end = node.getEnd()
+    const isToken = ts.isToken(node) && !ts.isIdentifier(node)
 
-    if (start <= character && character < end) {
+    if (!isToken && start <= character && character < end) {
       matchingNodes.push({
         depth,
         node,
