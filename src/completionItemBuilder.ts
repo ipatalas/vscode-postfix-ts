@@ -5,7 +5,7 @@ const COMPLETION_ITEM_TITLE = 'Postfix templates'
 export class CompletionItemBuilder {
   private item: vsc.CompletionItem
 
-  constructor (private keyword: string, private code: string) {
+  constructor (keyword: string, private code: string) {
     this.item = new vsc.CompletionItem(keyword, vsc.CompletionItemKind.Snippet)
     this.item.detail = COMPLETION_ITEM_TITLE
   }
@@ -42,7 +42,10 @@ export class CompletionItemBuilder {
   }
 
   public description = (description: string): CompletionItemBuilder => {
-    this.item.documentation = description
+    const dotIdx = this.code.lastIndexOf('.')
+    const codeBeforeTheDot = this.code.substr(0, dotIdx)
+
+    this.item.documentation = description.replace('expr', codeBeforeTheDot)
 
     return this
   }

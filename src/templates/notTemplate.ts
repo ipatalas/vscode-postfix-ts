@@ -13,7 +13,6 @@ export class NotTemplate extends BaseTemplate {
 
     let completionBuilder = CompletionItemBuilder
       .create('not', code)
-      .description('!expr')
 
     if (this.isBinaryExpression(node.parent)) {
       let expressions = this.getBinaryExpressions(node.parent)
@@ -25,12 +24,14 @@ export class NotTemplate extends BaseTemplate {
             command: NOT_COMMAND,
             arguments: [position, suffix, ...expressions]
           })
+          .description('!expr - [multiple options]')
           .build()
       }
     }
 
     let replacement = invertExpression(currentNode)
     return completionBuilder
+      .description(replacement)
       .replace(replacement, position)
       .build()
   }
