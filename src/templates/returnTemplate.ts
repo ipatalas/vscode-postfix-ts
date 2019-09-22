@@ -11,6 +11,10 @@ export class ReturnTemplate extends BaseExpressionTemplate {
       .replace('return {{expr}}', position)
       .build()
   }
+
+  canUse (node: ts.Node) {
+    return super.canUse(node) || this.isNewExpression(node)
+  }
 }
 
 export const build = () => new ReturnTemplate()
