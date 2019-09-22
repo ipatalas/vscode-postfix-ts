@@ -1,14 +1,7 @@
-//
-// Note: This example test is leveraging the Mocha test framework.
-// Please refer to their documentation on https://mochajs.org/ for help.
-//
-
-// The module 'assert' provides assertion methods from node
 import * as assert from 'assert'
 import * as _ from 'lodash'
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 import * as vsc from 'vscode'
+
 import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'
 
@@ -35,7 +28,7 @@ describe('Template usage', () => {
   })
 
   testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
-  testTemplateUsage('method call expression', 'expr.call()', ALL_TEMPLATES)
+  testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for']))
   testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
   testTemplateUsage('element access expression', 'expr.a.b[c]', ALL_TEMPLATES)
   testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, FOR_TEMPLATES))

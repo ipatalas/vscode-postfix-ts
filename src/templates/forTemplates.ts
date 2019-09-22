@@ -30,7 +30,7 @@ export class ForTemplate extends BaseForTemplate {
   }
 
   canUse (node: ts.Node) {
-    return super.canUse(node) && !this.isArrayLiteral(node)
+    return super.canUse(node) && !this.isArrayLiteral(node) && !this.isCallExpression(node)
   }
 }
 
