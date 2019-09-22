@@ -17,11 +17,11 @@ export class CustomTemplate extends BaseTemplate {
     super()
   }
 
-  buildCompletionItem (code: string, position: Position, node: ts.Node, suffix: string) {
+  buildCompletionItem(node: ts.Node, position: Position, suffix: string) {
     let currentNode = this.getCurrentNode(node)
 
     return CompletionItemBuilder
-      .create(this.name, currentNode.getText() + suffix)
+      .create(this.name, currentNode)
       .description(this.description)
       .replace(this.body, position, true)
       .build()

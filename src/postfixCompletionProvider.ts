@@ -24,11 +24,13 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     const codePiece = line.text.substring(line.firstNonWhitespaceCharacterIndex, dotIdx)
+    const source = ts.createSourceFile('test.ts', codePiece, ts.ScriptTarget.ES5, true)
 
-    let source = ts.createSourceFile('test.ts', codePiece, ts.ScriptTarget.ES5, true)
-    const code = line.text.substr(line.firstNonWhitespaceCharacterIndex)
+    let currentNode = findNodeAtPosition(source, dotIdx - line.firstNonWhitespaceCharacterIndex - 1)
 
-    const currentNode = findNodeAtPosition(source, dotIdx - line.firstNonWhitespaceCharacterIndex - 1)
+    if (ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
+      currentNode = currentNode.parent
+    }
 
     if (!currentNode || this.isInsideComment(document, position)) {
       return []
@@ -37,7 +39,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     try {
       return this.templates
         .filter(t => t.canUse(currentNode))
-        .map(t => t.buildCompletionItem(code, position, currentNode, line.text.substring(dotIdx, position.character)))
+        .map(t => t.buildCompletionItem(currentNode, position, line.text.substring(dotIdx, position.character)))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)

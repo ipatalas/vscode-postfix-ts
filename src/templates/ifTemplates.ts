@@ -5,9 +5,9 @@ import { BaseExpressionTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 export class IfTemplate extends BaseExpressionTemplate {
-  buildCompletionItem (code: string, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position) {
     return CompletionItemBuilder
-      .create('if', code)
+      .create('if', node)
       .description(`if (expr)`)
       .replace(`if ({{expr}}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
       .build()
@@ -15,14 +15,14 @@ export class IfTemplate extends BaseExpressionTemplate {
 }
 
 export class ElseTemplate extends BaseExpressionTemplate {
-  buildCompletionItem (code: string, position: vsc.Position, node: ts.Node) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position) {
     let replacement = '{{expr}}'
     if (ts.isBinaryExpression(node)) {
       replacement = `(${replacement})`
     }
 
     return CompletionItemBuilder
-      .create('else', code)
+      .create('else', node)
       .description(`if (!expr)`)
       .replace(`if (!${replacement}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
       .build()
@@ -34,9 +34,9 @@ export class IfEqualityTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem (code: string, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position) {
     return CompletionItemBuilder
-      .create(this.keyword, code)
+      .create(this.keyword, node)
       .description(`if (expr ${this.operator} ${this.operand})`)
       .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
       .build()

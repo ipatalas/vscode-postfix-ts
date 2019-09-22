@@ -3,7 +3,7 @@ import * as vsc from 'vscode'
 import { IPostfixTemplate } from '../template'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
-  abstract buildCompletionItem (code: string, position: vsc.Position, node: ts.Node, suffix: string)
+  abstract buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string)
   abstract canUse (node: ts.Node): boolean
 
   protected isSimpleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ExpressionStatement
@@ -31,16 +31,13 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 }
 
 export abstract class BaseExpressionTemplate extends BaseTemplate {
-  abstract buildCompletionItem (code: string, position: vsc.Position, node: ts.Node)
+  abstract buildCompletionItem(node: ts.Node, position: vsc.Position)
 
   canUse (node: ts.Node) {
-    return node.parent &&
-      !this.inReturnStatement(node) &&
+    return !this.inReturnStatement(node) &&
       !this.inIfStatement(node) &&
       (this.isIdentifier(node) ||
-        this.isSimpleExpression(node) ||
-        this.isPropertyAccessExpression(node.parent) ||
-        this.isElementAccessExpression(node) ||
+        this.isExpression(node) ||
         this.isUnaryExpression(node) ||
         this.isBinaryExpression(node) ||
         this.isCallExpression(node))

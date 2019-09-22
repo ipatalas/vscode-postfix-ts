@@ -9,8 +9,8 @@ export class CastTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem (code: string, position: vsc.Position) {
-    const completionitembuilder = CompletionItemBuilder.create(this.keyword, code)
+  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+    const completionitembuilder = CompletionItemBuilder.create(this.keyword, node)
     if (this.keyword === 'castas') {
       return completionitembuilder
         .description(`(expr as SomeType)`)
