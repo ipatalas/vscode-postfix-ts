@@ -33,9 +33,16 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
+    try {
     return this.templates
       .filter(t => t.canUse(currentNode))
       .map(t => t.buildCompletionItem(code, position, currentNode, line.text.substring(dotIdx, position.character)))
+    } catch (err) {
+      console.error('Error while building postfix autocomplete items:')
+      console.error(err)
+
+      return []
+    }
   }
 
   resolveCompletionItem (item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
