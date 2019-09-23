@@ -5,8 +5,6 @@ import { BaseTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 abstract class BaseForTemplate extends BaseTemplate {
-  abstract buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string)
-
   canUse (node: ts.Node): boolean {
     return !this.inReturnStatement(node) &&
       !this.inIfStatement(node) &&

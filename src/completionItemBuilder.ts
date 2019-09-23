@@ -39,8 +39,8 @@ export class CompletionItemBuilder {
     const nodeEnd = ts.getLineAndCharacterOfPosition(src, this.node.getEnd())
 
     const rangeToDelete = new vsc.Range(
-      new vsc.Position(position.line, nodeStart.character),
-      position.with({ character: nodeEnd.character + 1 }) // accomodate 1 character for the dot
+      new vsc.Position(nodeStart.line, nodeStart.character),
+      new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
     )
 
     this.item.additionalTextEdits = [

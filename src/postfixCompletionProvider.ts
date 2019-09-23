@@ -2,6 +2,7 @@ import * as vsc from 'vscode'
 import * as ts from 'typescript'
 import * as glob from 'glob'
 import * as _ from 'lodash'
+
 import { IPostfixTemplate } from './template'
 import { CustomTemplate } from './templates/customTemplate'
 
@@ -23,14 +24,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const codePiece = line.text.substring(0, dotIdx)
-    const source = ts.createSourceFile('test.ts', codePiece, ts.ScriptTarget.ES5, true)
-
-    let currentNode = findNodeAtPosition(source, dotIdx - 1)
-
-    if (ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
-      currentNode = currentNode.parent
-    }
+    const currentNode = this.getNodeBeforeTheDot(document, position, dotIdx)
 
     if (!currentNode || this.isInsideComment(document, position)) {
       return []
@@ -51,6 +45,24 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   resolveCompletionItem(item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
     currentSuggestion = item.label
     return item
+  }
+
+  private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {
+    const codeBeforeTheDot = document.getText(new vsc.Range(
+      new vsc.Position(0, 0),
+      new vsc.Position(position.line, dotIdx)
+    ))
+
+    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ES5, true)
+    const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
+
+    let currentNode = findNodeAtPosition(source, beforeTheDotPosition)
+
+    if (currentNode && ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
+      currentNode = currentNode.parent
+    }
+
+    return currentNode
   }
 
   private isInsideComment(document: vsc.TextDocument, position: vsc.Position) {

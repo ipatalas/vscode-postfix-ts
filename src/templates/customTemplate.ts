@@ -17,7 +17,7 @@ export class CustomTemplate extends BaseTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: Position, suffix: string) {
+  buildCompletionItem(node: ts.Node, position: Position, _suffix: string) {
     let currentNode = this.getCurrentNode(node)
 
     return CompletionItemBuilder
