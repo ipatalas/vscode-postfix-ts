@@ -14,7 +14,7 @@ export const loadCustomTemplates = () => {
 export const loadBuiltinTemplates = () => {
   const templates: IPostfixTemplate[] = []
 
-  let files = glob.sync('./templates/*.js', { cwd: __dirname })
+  let files = glob.sync('../templates/*.js', { cwd: __dirname })
 
   files.forEach(path => {
     let builder: () => IPostfixTemplate | IPostfixTemplate[] = require(path).build
