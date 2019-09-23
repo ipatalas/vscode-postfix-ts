@@ -4,7 +4,7 @@ import { IPostfixTemplate } from '../template'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   abstract buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string)
-  abstract canUse (node: ts.Node): boolean
+  abstract canUse(node: ts.Node): boolean
 
   protected isSimpleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ExpressionStatement
   protected isPropertyAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PropertyAccessExpression
@@ -17,7 +17,14 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
   protected isNewExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.NewExpression
   protected inReturnStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
-  protected inIfStatement = (node: ts.Node) => node.kind === ts.SyntaxKind.IfStatement || (node.parent && this.inIfStatement(node.parent))
+
+  protected inIfStatement = (node: ts.Node, expressionNode?: ts.Node) => {
+    if (ts.isIfStatement(node)) {
+      return !expressionNode || node.expression === expressionNode
+    }
+
+    return node.parent && this.inIfStatement(node.parent, node)
+  }
 
   protected getCurrentNode = (node: ts.Node) => {
     let currentNode = node
@@ -33,7 +40,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 export abstract class BaseExpressionTemplate extends BaseTemplate {
   abstract buildCompletionItem(node: ts.Node, position: vsc.Position)
 
-  canUse (node: ts.Node) {
+  canUse(node: ts.Node) {
     return !this.inReturnStatement(node) &&
       !this.inIfStatement(node) &&
       (this.isIdentifier(node) ||
