@@ -5,6 +5,7 @@ import * as _ from 'lodash'
 
 import { IPostfixTemplate } from './template'
 import { CustomTemplate } from './templates/customTemplate'
+import { AllTabs, AllSpaces } from './utils'
 
 let currentSuggestion = undefined
 
@@ -30,10 +31,12 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
+    const indentSize = this.getIndentSize(document, currentNode)
+
     try {
       return this.templates
         .filter(t => t.canUse(currentNode))
-        .map(t => t.buildCompletionItem(currentNode, position, line.text.substring(dotIdx, position.character)))
+        .map(t => t.buildCompletionItem(currentNode, position, line.text.substring(dotIdx, position.character), indentSize))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -42,7 +45,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 
-  resolveCompletionItem(item: vsc.CompletionItem, token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
+  resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
     currentSuggestion = item.label
     return item
   }
@@ -63,6 +66,22 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     return currentNode
+  }
+
+  private getIndentSize(document: vsc.TextDocument, node: ts.Node): number | undefined {
+    const source = node.getSourceFile()
+    const position = ts.getLineAndCharacterOfPosition(source, node.getStart(source))
+
+    const line = document.lineAt(position.line)
+    const whitespaces = line.text.substring(0, line.firstNonWhitespaceCharacterIndex)
+
+    if (AllTabs.test(whitespaces)) {
+      return whitespaces.length
+    }
+
+    if (AllSpaces.test(whitespaces)) {
+      return whitespaces.length / (vsc.window.activeTextEditor.options.tabSize as number)
+    }
   }
 
   private isInsideComment(document: vsc.TextDocument, position: vsc.Position) {

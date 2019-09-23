@@ -5,26 +5,26 @@ import { BaseExpressionTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 export class IfTemplate extends BaseExpressionTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create('if', node)
+      .create('if', node, indentSize)
       .description(`if (expr)`)
-      .replace(`if ({{expr}}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
+      .replace(`if ({{expr}}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 }
 
 export class ElseTemplate extends BaseExpressionTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     let replacement = '{{expr}}'
     if (ts.isBinaryExpression(node)) {
       replacement = `(${replacement})`
     }
 
     return CompletionItemBuilder
-      .create('else', node)
+      .create('else', node, indentSize)
       .description(`if (!expr)`)
-      .replace(`if (!${replacement}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
+      .replace(`if (!${replacement}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 }
@@ -34,11 +34,11 @@ export class IfEqualityTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create(this.keyword, node)
+      .create(this.keyword, node, indentSize)
       .description(`if (expr ${this.operator} ${this.operand})`)
-      .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
+      .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 }

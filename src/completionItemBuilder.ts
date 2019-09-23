@@ -1,5 +1,6 @@
 import * as vsc from 'vscode'
 import ts = require('typescript')
+import { adjustMultilineIndentation } from './utils'
 
 const COMPLETION_ITEM_TITLE = 'Postfix templates'
 
@@ -7,13 +8,13 @@ export class CompletionItemBuilder {
   private item: vsc.CompletionItem
   private code: string
 
-  constructor(keyword: string, private node: ts.Node) {
+  constructor(keyword: string, private node: ts.Node, indentSize?: number) {
     this.item = new vsc.CompletionItem(keyword, vsc.CompletionItemKind.Snippet)
     this.item.detail = COMPLETION_ITEM_TITLE
-    this.code = node.getText()
+    this.code = adjustMultilineIndentation(node.getText(), indentSize)
   }
 
-  public static create = (keyword: string, node: ts.Node) => new CompletionItemBuilder(keyword, node)
+  public static create = (keyword: string, node: ts.Node, indentSize?: number) => new CompletionItemBuilder(keyword, node, indentSize)
 
   public command = (command: vsc.Command) => {
     this.item.command = command
@@ -25,7 +26,7 @@ export class CompletionItemBuilder {
     return this
   }
 
-  public replace = (replacement: string, position: vsc.Position, useSnippets?: boolean): CompletionItemBuilder => {
+  public replace = (replacement: string, useSnippets?: boolean): CompletionItemBuilder => {
     if (useSnippets) {
       const escapedCode = this.code.replace('$', '\\$')
 

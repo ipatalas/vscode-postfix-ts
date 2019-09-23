@@ -9,11 +9,11 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create(this.level, node)
+      .create(this.level, node, indentSize)
       .description(`console.${this.level}(expr)`)
-      .replace(`console.${this.level}({{expr}})`, position)
+      .replace(`console.${this.level}({{expr}})`)
       .build()
   }
 

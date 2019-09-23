@@ -6,11 +6,11 @@ import { NOT_COMMAND } from '../notCommand'
 import { invertExpression } from '../utils'
 
 export class NotTemplate extends BaseTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     let currentNode = this.getCurrentNode(node)
 
     let completionBuilder = CompletionItemBuilder
-      .create('not', currentNode)
+      .create('not', currentNode, indentSize)
 
     if (this.isBinaryExpression(currentNode)) {
       let expressions = this.getBinaryExpressions(currentNode)
@@ -27,10 +27,10 @@ export class NotTemplate extends BaseTemplate {
       }
     }
 
-    let replacement = invertExpression(currentNode)
+    let replacement = invertExpression(currentNode, undefined, indentSize)
     return completionBuilder
       .description(replacement)
-      .replace(replacement, position)
+      .replace(replacement)
       .build()
   }
 

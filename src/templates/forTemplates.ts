@@ -19,11 +19,11 @@ abstract class BaseForTemplate extends BaseTemplate {
 }
 
 export class ForTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create('for', node)
+      .create('for', node, indentSize)
       .description('for (let i = 0; i < expr.Length; i++)')
-      .replace(`for (let \${1:i} = 0; \${1} < \${2:{{expr}}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`, position, true)
+      .replace(`for (let \${1:i} = 0; \${1} < \${2:{{expr}}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 
@@ -33,21 +33,21 @@ export class ForTemplate extends BaseForTemplate {
 }
 
 export class ForOfTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create('forof', node)
+      .create('forof', node, indentSize)
       .description('for (let item of expr)')
-      .replace(`for (let \${1:item} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, position, true)
+      .replace(`for (let \${1:item} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 }
 
 export class ForEachTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create('foreach', node)
+      .create('foreach', node, indentSize)
       .description('expr.forEach()')
-      .replace(`{{expr}}.forEach(\${1:item} => \${2})`, position, true)
+      .replace(`{{expr}}.forEach(\${1:item} => \${2})`, true)
       .build()
   }
 }

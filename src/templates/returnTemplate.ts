@@ -4,11 +4,11 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ReturnTemplate extends BaseExpressionTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position) {
+  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
     return CompletionItemBuilder
-      .create('return', node)
+      .create('return', node, indentSize)
       .description(`return expr`)
-      .replace('return {{expr}}', position)
+      .replace('return {{expr}}')
       .build()
   }
 
