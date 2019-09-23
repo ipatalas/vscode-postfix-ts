@@ -9,14 +9,14 @@ describe('Utils tests', () => {
     vsc.window.activeTextEditor.options.tabSize = 4
 
     let result = getIndentCharacters()
-    assert.equal(result, '    ')
+    assert.strictEqual(result, '    ')
   })
 
   it('getIndentCharacters when tabs', () => {
     vsc.window.activeTextEditor.options.insertSpaces = false
 
     let result = getIndentCharacters()
-    assert.equal(result, '\t')
+    assert.strictEqual(result, '\t')
   })
 
   describe('invertExpression', () => {
@@ -63,7 +63,7 @@ function testInvertBinaryExpression (input: string, expected: string) {
 
     let result = invertBinaryExpression(expr)
 
-    assert.equal(result, expected)
+    assert.strictEqual(result, expected)
   })
 }
 
@@ -74,6 +74,6 @@ function testInvertExpression (input: string, expected: string) {
 
     let result = invertExpression(expr)
 
-    assert.equal(result, expected)
+    assert.strictEqual(result, expected)
   })
 }
