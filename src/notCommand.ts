@@ -1,6 +1,6 @@
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
-import { invertExpression } from './utils'
+import { invertExpression } from './utils/invert-expression'
 
 export const NOT_COMMAND = 'complete.notTemplate'
 

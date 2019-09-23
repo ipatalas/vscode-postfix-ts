@@ -1,6 +1,6 @@
 import * as vsc from 'vscode'
 import ts = require('typescript')
-import { adjustMultilineIndentation } from './utils'
+import { adjustMultilineIndentation } from './utils/multiline-expressions'
 
 const COMPLETION_ITEM_TITLE = 'Postfix templates'
 

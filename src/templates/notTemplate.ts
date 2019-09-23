@@ -3,7 +3,7 @@ import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { NOT_COMMAND } from '../notCommand'
-import { invertExpression } from '../utils'
+import { invertExpression } from '../utils/invert-expression'
 
 export class NotTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {

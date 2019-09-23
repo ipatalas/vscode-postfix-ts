@@ -1,7 +1,8 @@
 import * as assert from 'assert'
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
-import { getIndentCharacters, invertBinaryExpression, invertExpression } from '../src/utils'
+import { getIndentCharacters } from '../src/utils'
+import { invertBinaryExpression, invertExpression } from '../src/utils/invert-expression'
 
 describe('Utils tests', () => {
   it('getIndentCharacters when spaces', () => {
