@@ -23,10 +23,10 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const codePiece = line.text.substring(line.firstNonWhitespaceCharacterIndex, dotIdx)
+    const codePiece = line.text.substring(0, dotIdx)
     const source = ts.createSourceFile('test.ts', codePiece, ts.ScriptTarget.ES5, true)
 
-    let currentNode = findNodeAtPosition(source, dotIdx - line.firstNonWhitespaceCharacterIndex - 1)
+    let currentNode = findNodeAtPosition(source, dotIdx - 1)
 
     if (ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
       currentNode = currentNode.parent

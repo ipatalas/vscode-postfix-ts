@@ -7,7 +7,7 @@ export class CompletionItemBuilder {
   private item: vsc.CompletionItem
   private code: string
 
-  constructor (keyword: string, node: ts.Node) {
+  constructor(keyword: string, private node: ts.Node) {
     this.item = new vsc.CompletionItem(keyword, vsc.CompletionItemKind.Snippet)
     this.item.detail = COMPLETION_ITEM_TITLE
     this.code = node.getText()
@@ -34,8 +34,17 @@ export class CompletionItemBuilder {
       this.item.insertText = replacement.replace(new RegExp('{{expr}}', 'g'), this.code)
     }
 
+    const src = this.node.getSourceFile()
+    const nodeStart = ts.getLineAndCharacterOfPosition(src, this.node.getStart(src))
+    const nodeEnd = ts.getLineAndCharacterOfPosition(src, this.node.getEnd())
+
+    const rangeToDelete = new vsc.Range(
+      new vsc.Position(position.line, nodeStart.character),
+      position.with({ character: nodeEnd.character + 1 }) // accomodate 1 character for the dot
+    )
+
     this.item.additionalTextEdits = [
-      vsc.TextEdit.delete(new vsc.Range(position.translate(0, -this.code.length - 1), position))
+      vsc.TextEdit.delete(rangeToDelete)
     ]
 
     return this
