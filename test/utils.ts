@@ -1,12 +1,15 @@
 import * as vsc from 'vscode'
-import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import * as assert from 'assert'
+import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 
 const EOL = require('os').EOL
 const LANGUAGE = 'postfix'
 
-export function delay (timeout) {
+const config = vsc.workspace.getConfiguration('editor')
+export const TabSize = config.get<number>('tabSize')
+
+export function delay(timeout) {
   return new Promise<void>(resolve => {
     setTimeout(resolve, timeout)
   })
@@ -92,9 +95,12 @@ function assertText(doc: vsc.TextDocument, expectedResult: string, trimWhitespac
     result = result.replace(/\s/g, '')
   }
 
-  assert.strictEqual(normalizeEOL(result), normalizeEOL(expectedResult))
+  assert.strictEqual(normalizeWhitespaces(result), normalizeWhitespaces(expectedResult))
 }
 
-function normalizeEOL(text: string) {
-  return text.replace(/\r?\n/g, EOL)
+function normalizeWhitespaces(text: string) {
+  return text
+    .split(/\r?\n/g)
+    .map(line => line.replace(/\t/g, ' '.repeat(TabSize)))
+    .join(EOL)
 }

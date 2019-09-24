@@ -1,9 +1,7 @@
-import * as vsc from 'vscode'
 import { runTestMultiline as Test } from './runner'
+import { TabSize } from './utils'
 
-const config = vsc.workspace.getConfiguration('editor')
-const tabSize = config.get<number>('tabSize')
-const indent = (size: number) => ' '.repeat(size * tabSize)
+const indent = (size: number) => ' '.repeat(size * TabSize)
 
 describe('Multiline template tests', () => {
   Test(`let template - method call
