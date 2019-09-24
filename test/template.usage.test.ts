@@ -27,9 +27,9 @@ describe('Template usage', () => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
 
-  testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
+  testTemplateUsage('identifier expression', 'expr', [...ALL_TEMPLATES, 'new'])
   testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for']))
-  testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
+  testTemplateUsage('property access expression', 'expr.a.b.c', [...ALL_TEMPLATES, 'new'])
   testTemplateUsage('element access expression', 'expr.a.b[c]', ALL_TEMPLATES)
   testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, FOR_TEMPLATES))
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
