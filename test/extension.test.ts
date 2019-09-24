@@ -47,6 +47,7 @@ describe('Single line template tests', () => {
   Test('not template - binary expression                        | x * 100{not}                >> !(x * 100)')
   Test('not template - inside an if - identifier                | if (expr{not})              >> if(!expr)', true)
   Test('not template - inside an if - binary                    | if (x * 100{not})           >> if(!(x*100))', true)
+  Test('not template - inside an if - brackets                  | if ((x * 100){not})         >> if(!(x*100))', true)
   Test('not template - already negated expression - method call | !x.method(){not}            >> x.method()')
 
   QuickPick('not template - complex conditions - first expression        | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
