@@ -4,7 +4,7 @@ import { invertExpression } from './utils/invert-expression'
 
 export const NOT_COMMAND = 'complete.notTemplate'
 
-export function notCommand (editor: vsc.TextEditor, position: vsc.Position, suffix: string, expressions: ts.BinaryExpression[]) {
+export function notCommand(editor: vsc.TextEditor, position: vsc.Position, suffix: string, expressions: ts.BinaryExpression[]) {
   return vsc.window.showQuickPick(expressions.map(node => ({
     label: node.getText(),
     description: '',
@@ -17,9 +17,16 @@ export function notCommand (editor: vsc.TextEditor, position: vsc.Position, suff
       }
 
       editor.edit(e => {
-        const expressionBody = value.node.getText()
-        const startPos = new vsc.Position(position.line, position.character - expressionBody.length - suffix.length)
-        const range = new vsc.Range(startPos, new vsc.Position(position.line, position.character - suffix.length + 1))
+        const node = value.node
+
+        const src = node.getSourceFile()
+        const nodeStart = ts.getLineAndCharacterOfPosition(src, node.getStart(src))
+        const nodeEnd = ts.getLineAndCharacterOfPosition(src, node.getEnd())
+
+        const range = new vsc.Range(
+          new vsc.Position(nodeStart.line, nodeStart.character),
+          new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
+        )
 
         e.replace(range, invertExpression(value.node))
       })
