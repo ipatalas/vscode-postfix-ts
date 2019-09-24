@@ -1,16 +1,7 @@
-//
-// Note: This example test is leveraging the Mocha test framework.
-// Please refer to their documentation on https://mochajs.org/ for help.
-//
-
-import * as assert from 'assert'
 import * as vsc from 'vscode'
-
-import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
-import { getCurrentDelay, delay } from './utils'
 import { runTest as Test, runTestQuickPick as QuickPick } from './runner'
 
-const LANGUAGE = 'postfix'
+const config = vsc.workspace.getConfiguration('postfix')
 
 describe('Single line template tests', () => {
   Test('not template - already negated expression | !expr{not}             >> expr')
@@ -31,21 +22,6 @@ describe('Single line template tests', () => {
   Test('return template | expr{return}       >> return expr')
   Test('return template | new Type(){return} >> return new Type()')
 
-  Test('not template                                            | expr{not}                   >> !expr')
-  Test('not template - inside a call expression                 | call.expression(expr{not})  >> call.expression(!expr)')
-  Test('not template - inside a call expression - negated       | call.expression(!expr{not}) >> call.expression(expr)')
-  Test('not template - binary expression                        | x * 100{not}                >> !(x * 100)')
-  Test('not template - inside an if - identifier                | if (expr{not})              >> if(!expr)', true)
-  Test('not template - inside an if - binary                    | if (x * 100{not})           >> if(!(x*100))', true)
-  Test('not template - already negated expression - method call | !x.method(){not}            >> x.method()')
-
-  QuickPick('not template - complex conditions - first expression        | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
-  QuickPick('not template - complex conditions - second expression       | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
-  QuickPick('not template - complex conditions - cancel quick pick       | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
-  QuickPick('not template - complex conditions - first expression - alt  | if (a > b && x * 100{not}) {} >> if(a>b&&!(x*100)){}', true, 0)
-  QuickPick('not template - complex conditions - second expression - alt | if (a > b && x * 100{not}) {} >> if(a<=b||!(x*100)){}', true, 1)
-  QuickPick('not template - complex conditions - cancel quick pick - alt | if (a > b && x * 100{not}) {} >> if(a>b&&x*100.){}', true, 0, true)
-
   Test('if template                       | expr{if}      >> if(expr){}', true)
   Test('else template                     | expr{else}    >> if(!expr){}', true)
   Test('else template - binary expression | x * 100{else} >> if(!(x*100)){}', true)
@@ -61,142 +37,78 @@ describe('Single line template tests', () => {
   Test('cast template   | expr{cast}   >> (<>expr)')
   Test('castas template | expr{castas} >> (expr as )')
 
+  Test('not template                                            | expr{not}                   >> !expr')
+  Test('not template - inside a call expression                 | call.expression(expr{not})  >> call.expression(!expr)')
+  Test('not template - inside a call expression - negated       | call.expression(!expr{not}) >> call.expression(expr)')
+  Test('not template - binary expression                        | x * 100{not}                >> !(x * 100)')
+  Test('not template - inside an if - identifier                | if (expr{not})              >> if(!expr)', true)
+  Test('not template - inside an if - binary                    | if (x * 100{not})           >> if(!(x*100))', true)
+  Test('not template - already negated expression - method call | !x.method(){not}            >> x.method()')
+
+  QuickPick('not template - complex conditions - first expression        | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
+  QuickPick('not template - complex conditions - second expression       | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
+  QuickPick('not template - complex conditions - cancel quick pick       | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
+  QuickPick('not template - complex conditions - first expression - alt  | if (a > b && x * 100{not}) {} >> if(a>b&&!(x*100)){}', true, 0)
+  QuickPick('not template - complex conditions - second expression - alt | if (a > b && x * 100{not}) {} >> if(a<=b||!(x*100)){}', true, 1)
+  QuickPick('not template - complex conditions - cancel quick pick - alt | if (a > b && x * 100{not}) {} >> if(a>b&&x*100.){}', true, 0, true)
+
   describe('custom template tests', () => {
-    const config = vsc.workspace.getConfiguration('postfix')
+    const setCustomNotTemplate = (when: string[]) => setCustomTemplate(config, 'custom', '!{{expr}}', when)
+    const run = (when: string, ...tests: string[]) =>
+      describe(when, () => {
+        before(setCustomNotTemplate([when]))
+        after(resetCustomTemplates(config))
 
-    before(done => {
-      config.update('customTemplates', [{
-        'name': 'custom',
-        'body': '!{{expr}}',
-        'description': '!expr',
-        'when': [
-          'identifier', 'unary-expression', 'binary-expression', 'expression', 'function-call', 'new-expression'
-        ]
-      }], true).then(() => done(), err => done(err))
-    })
+        tests.forEach(t => Test(t))
+      })
 
-    after(done => {
-      config.update('customTemplates', undefined, true).then(() => done(), err => done(err))
-    })
-
-    Test('identifier        | expr{custom}        >> !expr')
-    Test('expression        | expr.test{custom}   >> !expr.test')
-    Test('expression 2      | expr[index]{custom} >> !expr[index]')
-    Test('binary-expression | x > 100{custom}     >> !x > 100')
-    Test('unary-expression  | !x{custom}          >> !!x')
-    Test('function-call     | call(){custom}      >> !call()')
-    Test('function-call 2   | test.call(){custom} >> !test.call()')
-    Test('new-expression    | new Type(){custom}  >> !new Type()')
+    run('identifier', 'expr{custom}           | expr{custom}        >> !expr')
+    run('expression',
+      '  expr.test{custom}                    | expr.test{custom}   >> !expr.test',
+      '  expr[index]{custom}                  | expr[index]{custom} >> !expr[index]')
+    run('binary-expression', 'x > 100{custom} | x > 100{custom}     >> !x > 100')
+    run('unary-expression', ' !x{custom}      | !x{custom}          >> !!x')
+    run('function-call',
+      '  call(){custom}                       | call(){custom}      >> !call()',
+      '  test.call(){custom}                  | test.call(){custom} >> !test.call()')
+    run('new-expression', 'new Type(){custom} | new Type(){custom}  >> !new Type()')
   })
 
   describe('custom template with multiple expr tests', () => {
-    const config = vsc.workspace.getConfiguration('postfix')
+    const setCustomDoubleTemplate = (when: string[]) => setCustomTemplate(config, 'double', '{{expr}} + {{expr}}', when)
+    const run = (when: string, ...tests: string[]) =>
+      describe(when, () => {
+        before(setCustomDoubleTemplate([when]))
+        after(resetCustomTemplates(config))
 
-    before(done => {
-      config.update('customTemplates', [{
-        'name': 'double',
-        'body': '{{expr}} + {{expr}}',
-        'description': 'double expr',
-        'when': [
-          'identifier', 'unary-expression', 'binary-expression', 'expression', 'function-call'
-        ]
-      }], true).then(() => done(), err => done(err))
-    })
+        tests.forEach(t => Test(t))
+      })
 
-    after(done => {
-      config.update('customTemplates', undefined, true).then(() => done(), err => done(err))
-    })
-
-    Test('identifier        | expr{double}        >> expr + expr')
-    Test('expression        | expr.test{double}   >> expr.test + expr.test')
-    Test('expression 2      | expr[index]{double} >> expr[index] + expr[index]')
-    Test('binary-expression | x > 100{double}     >> x > 100 + x > 100')
-    Test('unary-expression  | !x{double}          >> !x + !x')
-    Test('function-call     | call(){double}      >> call() + call()')
-    Test('function-call 2   | test.call(){double} >> test.call() + test.call()')
+    run('identifier', 'expr{double}           | expr{double}        >> expr + expr')
+    run('expression',
+      '  expr.test{double}                    | expr.test{double}   >> expr.test + expr.test',
+      '  expr[index]{double}                  | expr[index]{double} >> expr[index] + expr[index]')
+    run('binary-expression', 'x > 100{double} | x > 100{double}     >> x > 100 + x > 100')
+    run('unary-expression', '!x{double}       | !x{double}          >> !x + !x')
+    run('function-call',
+      '  call(){double}                       | call(){double}      >> call() + call()',
+      '  test.call(){double}                  | test.call(){double} >> test.call() + test.call()')
   })
 })
 
-function testTemplate(initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, preAssertAction?: () => Thenable<void>) {
+function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: string, when: string[]) {
   return (done: Mocha.Done) => {
-    vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
-      return selectAndAcceptSuggestion(
-        doc, initialText, template
-      ).then(async () => {
-        if (preAssertAction) {
-          await preAssertAction()
-        }
-
-        assertText(doc, expectedResult, trimWhitespaces)
-        await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
-        done()
-      }).then(undefined, async (reason) => {
-        await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
-        done(reason)
-      })
-    })
+    config.update('customTemplates', [{
+      'name': name,
+      'body': body,
+      'description': 'custom description',
+      'when': when
+    }], true).then(done, done)
   }
 }
 
-function testTemplateWithQuickPick(initialText: string, template: string, expectedResult: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) {
-  return testTemplate(initialText, template, expectedResult, trimWhitespaces, async () => {
-    if (cancelQuickPick) {
-      await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
-    } else {
-      for (let i = 0; i < skipSuggestions; i++) {
-        await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
-      }
-
-      await vsc.commands.executeCommand('workbench.action.focusQuickOpen')
-      await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
-    }
-
-    await delay(10)
-  })
-}
-
-function selectAndAcceptSuggestion(doc: vsc.TextDocument, initialText: string, template: string) {
-  return vsc.window.showTextDocument(doc, vsc.ViewColumn.One).then((editor) => {
-    let cursorIdx = initialText.indexOf('{cursor}')
-    if (cursorIdx > -1) {
-      initialText = initialText.replace('{cursor}', `.${template}`)
-    } else {
-      initialText += `.${template}`
-      cursorIdx = initialText.length
-    }
-
-    return editor.edit(edit => {
-      edit.insert(new vsc.Position(0, 0), initialText)
-    }).then(async () => {
-      let pos = new vsc.Position(0, cursorIdx + template.length + 1)
-      editor.selection = new vsc.Selection(pos, pos)
-
-      await vsc.commands.executeCommand('editor.action.triggerSuggest')
-      await delay(getCurrentDelay())
-
-      let current = getCurrentSuggestion()
-      const first = current
-
-      while (current !== template) {
-        await vsc.commands.executeCommand('selectNextSuggestion')
-        current = getCurrentSuggestion()
-
-        if (current === first) {
-          break
-        }
-      }
-
-      return vsc.commands.executeCommand('acceptSelectedSuggestion')
-    })
-  })
-}
-
-function assertText(doc: vsc.TextDocument, expectedResult: string, trimWhitespaces: boolean) {
-  let result = doc.getText()
-
-  if (trimWhitespaces) {
-    result = result.replace(/\s/g, '')
+function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
+  return (done: Mocha.Done) => {
+    config.update('customTemplates', undefined, true).then(done, done)
   }
-
-  assert.strictEqual(result, expectedResult)
 }

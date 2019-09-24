@@ -7,7 +7,7 @@ runTest.skip = (test: string, trimWhitespaces?: boolean) => __runTest(it.skip.bi
 
 function __runTest(func: (title: string, fn?: Func) => Test, test: string, trimWhitespaces?: boolean) {
   const [title, ...dsl] = test.split('|')
-  func(title, testTemplate('|' + dsl.join('|'), trimWhitespaces))
+  func(title.trim(), testTemplate('|' + dsl.join('|'), trimWhitespaces))
 }
 
 export const runTestQuickPick = (test: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) =>
@@ -21,5 +21,5 @@ runTestQuickPick.skip =  (test, trimWhitespaces?: boolean, skipSuggestions?: num
 
 function __runTestQuickPick(func: (title: string, fn?: Func) => Test, test: string, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) {
   const [title, ...dsl] = test.split('|')
-  func(title, testTemplateWithQuickPick('|' + dsl.join('|'), trimWhitespaces, skipSuggestions, cancelQuickPick))
+  func(title.trim(), testTemplateWithQuickPick('|' + dsl.join('|'), trimWhitespaces, skipSuggestions, cancelQuickPick))
 }
