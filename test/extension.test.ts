@@ -12,8 +12,9 @@ describe('Single line template tests', () => {
   Test('let template - postifx unary operator     | counter++{let}         >> let name = counter++')
   Test('let template - new expression             | new Type(1, 2, 3){let} >> let name = new Type(1, 2, 3)')
 
-  Test('var template   | a.b{var}   >> var name = a.b')
-  Test('const template | a.b{const} >> const name = a.b')
+  Test('var template          | a.b{var}   >> var name = a.b')
+  Test('var template (indent) | \ta.b{var} >> \tvar name = a.b')
+  Test('const template        | a.b{const} >> const name = a.b')
 
   Test('log template   | expr{log}   >> console.log(expr)')
   Test('warn template  | expr{warn}  >> console.warn(expr)')
