@@ -16,7 +16,9 @@ export class VarTemplate extends BaseExpressionTemplate {
   }
 
   canUse(node: ts.Node) {
-    return (super.canUse(node) || this.isNewExpression(node)) && !this.inFunctionArgument(node)
+    return (super.canUse(node) || this.isNewExpression(node))
+      && !this.inReturnStatement(node)
+      && !this.inFunctionArgument(node)
   }
 }
 

@@ -20,6 +20,7 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
 
   canUse(node: ts.Node) {
     return (super.canUse(node) || this.isNewExpression(node))
+      && !this.inReturnStatement(node)
       && !this.isConsoleExpression(node)
       && !this.inFunctionArgument(node)
   }

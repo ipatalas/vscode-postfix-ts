@@ -5,7 +5,9 @@ import { getIndentCharacters } from '../utils'
 
 abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
   canUse(node: ts.Node) {
-    return super.canUse(node) && !this.inFunctionArgument(node)
+    return super.canUse(node)
+      && !this.inReturnStatement(node)
+      && !this.inFunctionArgument(node)
   }
 }
 
