@@ -14,7 +14,11 @@ export function activate (context: vsc.ExtensionContext) {
     await notCommand(editor, position, suffix, expressions)
   }))
 
-  context.subscriptions.push(vsc.workspace.onDidChangeConfiguration(() => {
+  context.subscriptions.push(vsc.workspace.onDidChangeConfiguration(e => {
+    if (!e.affectsConfiguration('postfix')) {
+      return
+    }
+
     if (completionProvider) {
       let idx = context.subscriptions.indexOf(completionProvider)
       context.subscriptions.splice(idx, 1)
