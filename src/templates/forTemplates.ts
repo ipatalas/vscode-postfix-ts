@@ -4,9 +4,10 @@ import { BaseTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 abstract class BaseForTemplate extends BaseTemplate {
-  canUse (node: ts.Node): boolean {
+  canUse(node: ts.Node): boolean {
     return !this.inReturnStatement(node) &&
       !this.inIfStatement(node) &&
+      !this.inFunctionArgument(node) &&
       (this.isIdentifier(node) ||
         this.isPropertyAccessExpression(node) ||
         this.isElementAccessExpression(node) ||
@@ -26,8 +27,10 @@ export class ForTemplate extends BaseForTemplate {
       .build()
   }
 
-  canUse (node: ts.Node) {
-    return super.canUse(node) && !this.isArrayLiteral(node) && !this.isCallExpression(node)
+  canUse(node: ts.Node) {
+    return super.canUse(node)
+      && !this.isArrayLiteral(node)
+      && !this.isCallExpression(node)
   }
 }
 

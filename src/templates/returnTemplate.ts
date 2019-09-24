@@ -12,7 +12,7 @@ export class ReturnTemplate extends BaseExpressionTemplate {
   }
 
   canUse (node: ts.Node) {
-    return super.canUse(node) || this.isNewExpression(node)
+    return (super.canUse(node) || this.isNewExpression(node)) && !this.inFunctionArgument(node)
   }
 }
 

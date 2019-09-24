@@ -35,6 +35,7 @@ describe('Template usage', () => {
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
   testTemplateUsage('return expression', 'return x * 100', ['not'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
+  testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 })

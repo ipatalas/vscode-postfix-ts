@@ -3,7 +3,13 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
-export class IfTemplate extends BaseExpressionTemplate {
+abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
+  canUse(node: ts.Node) {
+    return super.canUse(node) && !this.inFunctionArgument(node)
+  }
+}
+
+export class IfTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('if', node, indentSize)
@@ -13,7 +19,7 @@ export class IfTemplate extends BaseExpressionTemplate {
   }
 }
 
-export class ElseTemplate extends BaseExpressionTemplate {
+export class ElseTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     let replacement = '{{expr}}'
     if (ts.isBinaryExpression(node)) {
@@ -28,7 +34,7 @@ export class ElseTemplate extends BaseExpressionTemplate {
   }
 }
 
-export class IfEqualityTemplate extends BaseExpressionTemplate {
+export class IfEqualityTemplate extends BaseIfElseTemplate {
   constructor (private keyword: string, private operator: string, private operand: string) {
     super()
   }
