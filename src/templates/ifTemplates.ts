@@ -1,11 +1,10 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 export class IfTemplate extends BaseExpressionTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('if', node, indentSize)
       .description(`if (expr)`)
@@ -15,7 +14,7 @@ export class IfTemplate extends BaseExpressionTemplate {
 }
 
 export class ElseTemplate extends BaseExpressionTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     let replacement = '{{expr}}'
     if (ts.isBinaryExpression(node)) {
       replacement = `(${replacement})`
@@ -34,7 +33,7 @@ export class IfEqualityTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
       .description(`if (expr ${this.operator} ${this.operand})`)

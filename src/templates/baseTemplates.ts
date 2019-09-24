@@ -1,9 +1,8 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { IPostfixTemplate } from '../template'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
-  abstract buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number)
+  abstract buildCompletionItem(node: ts.Node, indentSize?: number)
   abstract canUse(node: ts.Node): boolean
 
   protected isSimpleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ExpressionStatement
@@ -38,7 +37,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 }
 
 export abstract class BaseExpressionTemplate extends BaseTemplate {
-  abstract buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number)
+  abstract buildCompletionItem(node: ts.Node, indentSize?: number)
 
   canUse(node: ts.Node) {
     return !this.inReturnStatement(node) &&

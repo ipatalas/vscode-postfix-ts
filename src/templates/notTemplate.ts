@@ -1,12 +1,11 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { NOT_COMMAND } from '../notCommand'
 import { invertExpression } from '../utils/invert-expression'
 
 export class NotTemplate extends BaseTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     let currentNode = this.getCurrentNode(node)
 
     let completionBuilder = CompletionItemBuilder
@@ -20,7 +19,7 @@ export class NotTemplate extends BaseTemplate {
           .command({
             title: '',
             command: NOT_COMMAND,
-            arguments: [position, suffix, ...expressions]
+            arguments: expressions
           })
           .description('!expr - [multiple options]')
           .build()

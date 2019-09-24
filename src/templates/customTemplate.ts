@@ -1,6 +1,5 @@
-import { BaseTemplate } from './baseTemplates'
-import { Position } from 'vscode'
 import * as ts from 'typescript'
+import { BaseTemplate } from './baseTemplates'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 
 export class CustomTemplate extends BaseTemplate {
@@ -17,7 +16,7 @@ export class CustomTemplate extends BaseTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: Position, _suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     let currentNode = this.getCurrentNode(node)
 
     return CompletionItemBuilder

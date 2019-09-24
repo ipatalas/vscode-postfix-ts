@@ -1,5 +1,4 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
@@ -19,7 +18,7 @@ abstract class BaseForTemplate extends BaseTemplate {
 }
 
 export class ForTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('for', node, indentSize)
       .description('for (let i = 0; i < expr.Length; i++)')
@@ -33,7 +32,7 @@ export class ForTemplate extends BaseForTemplate {
 }
 
 export class ForOfTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('forof', node, indentSize)
       .description('for (let item of expr)')
@@ -43,7 +42,7 @@ export class ForOfTemplate extends BaseForTemplate {
 }
 
 export class ForEachTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
       .description('expr.forEach()')

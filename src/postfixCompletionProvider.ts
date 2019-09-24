@@ -38,7 +38,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     try {
       return this.templates
         .filter(t => t.canUse(currentNode))
-        .map(t => t.buildCompletionItem(currentNode, position, line.text.substring(dotIdx, position.character), indentSize))
+        .map(t => t.buildCompletionItem(currentNode, indentSize))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)

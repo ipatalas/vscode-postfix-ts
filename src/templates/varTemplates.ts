@@ -1,5 +1,4 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 
@@ -8,7 +7,7 @@ export class VarTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
       .description(`${this.keyword} name = expr`)

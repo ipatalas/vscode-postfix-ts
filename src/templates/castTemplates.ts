@@ -1,5 +1,4 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 
@@ -9,7 +8,7 @@ export class CastTemplate extends BaseExpressionTemplate {
     super()
   }
 
-  buildCompletionItem(node: ts.Node, position: vsc.Position, suffix: string, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentSize?: number) {
     const completionitembuilder = CompletionItemBuilder.create(this.keyword, node, indentSize)
 
     if (this.keyword === 'castas') {

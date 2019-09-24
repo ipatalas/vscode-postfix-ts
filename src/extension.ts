@@ -9,9 +9,9 @@ export function activate (context: vsc.ExtensionContext) {
   registerCompletionProvider(context)
 
   context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: any[]) => {
-    let [position, suffix, ...expressions] = args
+    let [...expressions] = args
 
-    await notCommand(editor, position, suffix, expressions)
+    await notCommand(editor, expressions)
   }))
 
   context.subscriptions.push(vsc.workspace.onDidChangeConfiguration(e => {
