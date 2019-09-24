@@ -41,7 +41,7 @@ describe('Template usage', () => {
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 })
 
-function testTemplateUsage (testDescription: string, initialText: string, expectedTemplates: string[]) {
+function testTemplateUsage(testDescription: string, initialText: string, expectedTemplates: string[]) {
   it(testDescription, (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
       return getAvailableSuggestions(doc, initialText).then(templates => {
@@ -54,42 +54,40 @@ function testTemplateUsage (testDescription: string, initialText: string, expect
   })
 }
 
-function getAvailableSuggestions (doc: vsc.TextDocument, initialText: string) {
-  return vsc.window.showTextDocument(doc, vsc.ViewColumn.One).then((editor) => {
-    let cursorIdx = initialText.indexOf('{cursor}')
-    if (cursorIdx > -1) {
-      initialText = initialText.replace('{cursor}', '.')
-    } else {
-      initialText += '.'
-      cursorIdx = initialText.length
-    }
+async function getAvailableSuggestions(doc: vsc.TextDocument, initialText: string) {
+  const editor = await vsc.window.showTextDocument(doc, vsc.ViewColumn.One)
 
-    return editor.edit(edit => {
-      edit.insert(new vsc.Position(0, 0), initialText)
-    }).then(async () => {
-      let pos = new vsc.Position(0, cursorIdx + 1)
-      editor.selection = new vsc.Selection(pos, pos)
+  let cursorIdx = initialText.indexOf('{cursor}')
+  if (cursorIdx > -1) {
+    initialText = initialText.replace('{cursor}', '.')
+  } else {
+    initialText += '.'
+    cursorIdx = initialText.length
+  }
 
-      resetCurrentSuggestion()
-      await vsc.commands.executeCommand('editor.action.triggerSuggest')
-      await delay(getCurrentDelay())
+  if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), initialText))) {
+    let pos = new vsc.Position(0, cursorIdx + 1)
+    editor.selection = new vsc.Selection(pos, pos)
 
-      const firstSuggestion = getCurrentSuggestion()
-      const suggestions = firstSuggestion ? [firstSuggestion] : []
+    resetCurrentSuggestion()
+    await vsc.commands.executeCommand('editor.action.triggerSuggest')
+    await delay(getCurrentDelay())
 
-      while (true) {
-        await vsc.commands.executeCommand('selectNextSuggestion')
+    const firstSuggestion = getCurrentSuggestion()
+    const suggestions = firstSuggestion ? [firstSuggestion] : []
 
-        let current = getCurrentSuggestion()
+    while (true) {
+      await vsc.commands.executeCommand('selectNextSuggestion')
 
-        if (current === undefined || suggestions.indexOf(current) > -1) {
-          break
-        }
+      let current = getCurrentSuggestion()
 
-        suggestions.push(current)
+      if (current === undefined || suggestions.indexOf(current) > -1) {
+        break
       }
 
-      return suggestions
-    })
-  })
+      suggestions.push(current)
+    }
+
+    return suggestions
+  }
 }

@@ -59,33 +59,31 @@ export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: b
   })
 }
 
-function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
-  return vsc.window.showTextDocument(doc, vsc.ViewColumn.One).then((editor) => {
-    return editor.edit(edit => {
-      edit.insert(new vsc.Position(0, 0), dsl.input)
-    }).then(async () => {
-      let pos = new vsc.Position(dsl.cursorPosition.line, dsl.cursorPosition.character)
+async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
+  const editor = await vsc.window.showTextDocument(doc, vsc.ViewColumn.One)
 
-      editor.selection = new vsc.Selection(pos, pos)
+  if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), dsl.input))) {
+    let pos = new vsc.Position(dsl.cursorPosition.line, dsl.cursorPosition.character)
 
-      await vsc.commands.executeCommand('editor.action.triggerSuggest')
-      await delay(getCurrentDelay())
+    editor.selection = new vsc.Selection(pos, pos)
 
-      let current = getCurrentSuggestion()
-      const first = current
+    await vsc.commands.executeCommand('editor.action.triggerSuggest')
+    await delay(getCurrentDelay())
 
-      while (current !== dsl.template) {
-        await vsc.commands.executeCommand('selectNextSuggestion')
-        current = getCurrentSuggestion()
+    let current = getCurrentSuggestion()
+    const first = current
 
-        if (current === first) {
-          break
-        }
+    while (current !== dsl.template) {
+      await vsc.commands.executeCommand('selectNextSuggestion')
+      current = getCurrentSuggestion()
+
+      if (current === first) {
+        break
       }
+    }
 
-      return vsc.commands.executeCommand('acceptSelectedSuggestion')
-    })
-  })
+    return vsc.commands.executeCommand('acceptSelectedSuggestion')
+  }
 }
 
 function assertText(doc: vsc.TextDocument, expectedResult: string, trimWhitespaces: boolean) {
