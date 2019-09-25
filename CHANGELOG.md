@@ -1,5 +1,19 @@
 # Change Log
 
+## [1.9.0] - 2019-09-25
+### Added:
+- Support for multiline expressions!
+- New `.new` template for expressions (Type.new -> new Type())
+- Support for `new SomeType().` scope
+### Changed:
+- [Show more templates in return statement](https://github.com/ipatalas/vscode-postfix-ts/commit/ba3f09c90a6a7dcffb93fdfbf748c7a1b2b9aa3c#diff-8c49ec2779bc5b36c7347b60d5d79f08)
+- [Do not show all templates when expression is a function argument](https://github.com/ipatalas/vscode-postfix-ts/commit/3518a7a75dd75d6dc0320313f11e8b897d86e268#diff-8c49ec2779bc5b36c7347b60d5d79f08)
+- [Do not show all templates when expression is inside variable declaration or assignment](https://github.com/ipatalas/vscode-postfix-ts/commit/d1c69a3de69e11c40f89d091c8d438b1e42f5279#diff-8c49ec2779bc5b36c7347b60d5d79f08)
+- Description in autocomplete now show the actual replacement instead of abstract one
+### Fixed:
+- [Binary expressions did not work when surrounded by brackets](https://github.com/ipatalas/vscode-postfix-ts/commit/52111da175ec3058184e199a5e65ee19fb90a296#diff-579bc502e2c0744db6d55afe38b9f3d9)
+- Reload extension only when it's own configuration has been changed ([my bad!](https://github.com/ipatalas/vscode-postfix-ts/commit/8515485bfec38af2723be9b939066b1197725e46))
+
 ## [1.8.2] - 2019-09-01
 ### Changed:
 - Merged PR [#25](https://github.com/ipatalas/vscode-postfix-ts/pull/25) - Enable extension in JSX/TSX by default

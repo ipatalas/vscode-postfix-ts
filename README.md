@@ -18,7 +18,11 @@ A simple animation is worth more than words:
 
 ![feature X](images/demo.gif)
 
-There is also a special handling for `.not` template which allows you to select specific expression to negate when having more options:
+It also works pretty well with multiline expressions (v1.9.0+):
+
+![feature X](images/demo-multiline.gif)
+
+There is also a special handling for `.not` template which allows you to select specific expression to invert when having more options:
 
 ![feature X](images/demo-not.gif)
 
@@ -44,7 +48,8 @@ All available templates (`expr` means the expression on which the template is ap
 | **.error**        | `console.error(expr)` |
 | **.warn**         | `console.warn(expr)` |
 | **.cast**         | `(<SomeType>expr)` |
-| **.castas**         | `(expr as SomeType)` |
+| **.castas**       | `(expr as SomeType)` |
+| **.new**          | `new expr()` |
 
 ## Custom templates (1.6.0 and above)
 
@@ -96,7 +101,5 @@ This plugin contributes the following [settings](https://code.visualstudio.com/d
 The `postfix.languages` setting can be used to make the extension available for inline JS/TS which is in other files like **.html**, **.vue** or others. You must still include `javascript` and `typescript` if you want the extension to be available there among the others.
 
 ## Known issues
-
-It's a first release so there is not much validation in the extension. Sometimes it's possible that a specific template does not make much sense in some situations where it's suggested.
 
 Feel free to open issues for whatever you think may improve the extension's value. New ideas for more templates are also welcome. Most of them are pretty easy to implement.
