@@ -10,8 +10,9 @@
 	},
 	"icon": "images/logo.png",
 	"categories": [
+    "Snippets",
 		"Other"
-	],
+  ],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ipatalas/vscode-postfix-ts"
