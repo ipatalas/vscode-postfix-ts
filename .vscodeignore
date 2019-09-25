@@ -11,3 +11,5 @@ tslint.json
 *.vsix
 coverage/**
 .travis.yml
+/tasks.js
+/coverconfig.json
