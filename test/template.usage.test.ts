@@ -22,7 +22,7 @@ const ALL_TEMPLATES = [
   'return'
 ]
 
-describe.only('Template usage', () => {
+describe('Template usage', () => {
   afterEach(done => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
