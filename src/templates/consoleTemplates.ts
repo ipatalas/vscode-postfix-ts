@@ -23,6 +23,8 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
       && !this.inReturnStatement(node)
       && !this.isConsoleExpression(node)
       && !this.inFunctionArgument(node)
+      && !this.inVariableDeclaration(node)
+      && !this.inAssignmentStatement(node)
   }
 }
 

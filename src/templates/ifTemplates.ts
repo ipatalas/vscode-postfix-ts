@@ -8,6 +8,8 @@ abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
     return super.canUse(node)
       && !this.inReturnStatement(node)
       && !this.inFunctionArgument(node)
+      && !this.inVariableDeclaration(node)
+      && !this.inAssignmentStatement(node)
   }
 }
 

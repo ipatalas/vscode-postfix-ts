@@ -22,7 +22,7 @@ const ALL_TEMPLATES = [
   'return'
 ]
 
-describe('Template usage', () => {
+describe.only('Template usage', () => {
   afterEach(done => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
@@ -36,7 +36,9 @@ describe('Template usage', () => {
   testTemplateUsage('return expression', 'return x * 100', [...CAST_TEMPLATES, 'not'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
   testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
-  testTemplateUsage('inside return', 'return expr.{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
+  testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
+  testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
+  testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 })

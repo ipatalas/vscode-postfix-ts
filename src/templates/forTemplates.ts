@@ -8,6 +8,8 @@ abstract class BaseForTemplate extends BaseTemplate {
     return !this.inReturnStatement(node) &&
       !this.inIfStatement(node) &&
       !this.inFunctionArgument(node) &&
+      !this.inVariableDeclaration(node) &&
+      !this.inAssignmentStatement(node) &&
       (this.isIdentifier(node) ||
         this.isPropertyAccessExpression(node) ||
         this.isElementAccessExpression(node) ||

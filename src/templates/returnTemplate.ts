@@ -15,6 +15,8 @@ export class ReturnTemplate extends BaseExpressionTemplate {
     return (super.canUse(node) || this.isNewExpression(node))
       && !this.inReturnStatement(node)
       && !this.inFunctionArgument(node)
+      && !this.inVariableDeclaration(node)
+      && !this.inAssignmentStatement(node)
   }
 }
 
