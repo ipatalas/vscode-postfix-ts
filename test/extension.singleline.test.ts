@@ -11,6 +11,7 @@ describe('Single line template tests', () => {
   Test('let template - element access expression  | obj.a[b]{let}          >> let name = obj.a[b]')
   Test('let template - postifx unary operator     | counter++{let}         >> let name = counter++')
   Test('let template - new expression             | new Type(1, 2, 3){let} >> let name = new Type(1, 2, 3)')
+  Test('let template - awaited expression         | await expr{let}        >> let name = await expr')
 
   Test('var template          | a.b{var}   >> var name = a.b')
   Test('var template (indent) | \ta.b{var} >> \tvar name = a.b')
@@ -32,8 +33,11 @@ describe('Single line template tests', () => {
   Test('undefined template    | expr{undefined}    >> if(expr===undefined){}', true)
   Test('notundefined template | expr{notundefined} >> if(expr!==undefined){}', true)
 
-  Test('forof template   | expr{forof}   >> for(letitemofexpr){}', true)
-  Test('foreach template | expr{foreach} >> expr.forEach(item=>)', true)
+  Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', true)
+  Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', true)
+  Test('forof template   | expr{forof}         >> for(letitemofexpr){}', true)
+  Test('foreach template | expr{foreach}       >> expr.forEach(item=>)', true)
+  Test('awaited foreach  | await expr{foreach} >> (await expr).forEach(item => )')
 
   Test('cast template   | expr{cast}   >> (<>expr)')
   Test('castas template | expr{castas} >> (expr as )')

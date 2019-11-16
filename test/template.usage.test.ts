@@ -29,6 +29,7 @@ describe('Template usage', () => {
   })
 
   testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
+  testTemplateUsage('awaited expression', 'await expr', _.difference(ALL_TEMPLATES, ['new']))
   testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for', 'new']))
   testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
   testTemplateUsage('element access expression', 'expr.a.b[c]', _.difference(ALL_TEMPLATES, ['new']))

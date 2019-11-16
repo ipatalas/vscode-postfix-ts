@@ -7,8 +7,14 @@ const COMPLETION_ITEM_TITLE = 'Postfix templates'
 export class CompletionItemBuilder {
   private item: vsc.CompletionItem
   private code: string
+  private node: ts.Node
 
-  constructor(keyword: string, private node: ts.Node, indentSize?: number) {
+  constructor(keyword: string, node: ts.Node, indentSize?: number) {
+    if (ts.isAwaitExpression(node.parent)) {
+      node = node.parent
+    }
+
+    this.node = node
     this.item = new vsc.CompletionItem(keyword, vsc.CompletionItemKind.Snippet)
     this.item.detail = COMPLETION_ITEM_TITLE
     this.code = adjustMultilineIndentation(node.getText(), indentSize)

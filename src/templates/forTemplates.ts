@@ -22,10 +22,14 @@ abstract class BaseForTemplate extends BaseTemplate {
 
 export class ForTemplate extends BaseForTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
+    const prefix = isAwaited ? '(' : ''
+    const suffix = isAwaited ? ')' : ''
+
     return CompletionItemBuilder
       .create('for', node, indentSize)
-      .description('for (let i = 0; i < expr.Length; i++)')
-      .replace(`for (let \${1:i} = 0; \${1} < \${2:{{expr}}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .description(`for (let i = 0; i < ${prefix}expr${suffix}.Length; i++)`)
+      .replace(`for (let \${1:i} = 0; \${1} < \${2:${prefix}{{expr}}${suffix}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 
@@ -48,10 +52,14 @@ export class ForOfTemplate extends BaseForTemplate {
 
 export class ForEachTemplate extends BaseForTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
+    const prefix = isAwaited ? '(' : ''
+    const suffix = isAwaited ? ')' : ''
+
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
-      .description('expr.forEach()')
-      .replace(`{{expr}}.forEach(\${1:item} => \${2})`, true)
+      .description(`${prefix}expr${suffix}.forEach()`)
+      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1:item} => \${2})`, true)
       .build()
   }
 }
