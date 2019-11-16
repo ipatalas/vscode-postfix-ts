@@ -19,7 +19,8 @@ const ALL_TEMPLATES = [
   ...IF_TEMPLATES,
   ...CAST_TEMPLATES,
   'not',
-  'return'
+  'return',
+  'new'
 ]
 
 describe('Template usage', () => {
@@ -27,18 +28,18 @@ describe('Template usage', () => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
 
-  testTemplateUsage('identifier expression', 'expr', [...ALL_TEMPLATES, 'new'])
-  testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for']))
-  testTemplateUsage('property access expression', 'expr.a.b.c', [...ALL_TEMPLATES, 'new'])
-  testTemplateUsage('element access expression', 'expr.a.b[c]', ALL_TEMPLATES)
-  testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, FOR_TEMPLATES))
+  testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
+  testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for', 'new']))
+  testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
+  testTemplateUsage('element access expression', 'expr.a.b[c]', _.difference(ALL_TEMPLATES, ['new']))
+  testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, [...FOR_TEMPLATES, 'new']))
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
   testTemplateUsage('return expression', 'return x * 100', [...CAST_TEMPLATES, 'not'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
   testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
 
-  testTemplateUsage('inside return - arrow function', 'return items.map(x => { result{cursor} })', [...ALL_TEMPLATES, 'new'])
-  testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', [...ALL_TEMPLATES, 'new'])
+  testTemplateUsage('inside return - arrow function', 'return items.map(x => { result{cursor} })', ALL_TEMPLATES)
+  testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', ALL_TEMPLATES)
 
   testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
@@ -46,10 +47,10 @@ describe('Template usage', () => {
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 
-  testTemplateUsage('inside var declaration - function', 'const f1 = function () { expr{cursor}', [...ALL_TEMPLATES, 'new'])
-  testTemplateUsage('inside var declaration - arrow function', 'const f3 = () => { expr{cursor}', [...ALL_TEMPLATES, 'new'])
-  testTemplateUsage('inside function', 'function f2() { expr{cursor}', [...ALL_TEMPLATES, 'new'])
-  testTemplateUsage('inside arrow function', '() => { expr{cursor}', [...ALL_TEMPLATES, 'new'])
+  testTemplateUsage('inside var declaration - function', 'const f1 = function () { expr{cursor}', ALL_TEMPLATES)
+  testTemplateUsage('inside var declaration - arrow function', 'const f3 = () => { expr{cursor}', ALL_TEMPLATES)
+  testTemplateUsage('inside function', 'function f2() { expr{cursor}', ALL_TEMPLATES)
+  testTemplateUsage('inside arrow function', '() => { expr{cursor}', ALL_TEMPLATES)
 })
 
 function testTemplateUsage(testDescription: string, initialText: string, expectedTemplates: string[]) {
