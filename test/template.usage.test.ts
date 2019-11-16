@@ -37,6 +37,9 @@ describe('Template usage', () => {
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
   testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
 
+  testTemplateUsage('inside return - arrow function', 'return items.map(x => { result{cursor} })', [...ALL_TEMPLATES, 'new'])
+  testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', [...ALL_TEMPLATES, 'new'])
+
   testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
