@@ -63,7 +63,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     let currentNode = findNodeAtPosition(source, beforeTheDotPosition)
 
-    if (currentNode && ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
+    if (ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
       currentNode = currentNode.parent
     }
 
