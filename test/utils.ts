@@ -6,7 +6,7 @@ import { parseDSL, ITestDSL } from './dsl'
 const EOL = require('os').EOL
 const LANGUAGE = 'postfix'
 
-const config = vsc.workspace.getConfiguration('editor')
+const config = vsc.workspace.getConfiguration('editor', null)
 export const TabSize = config.get<number>('tabSize')
 
 export function delay(timeout) {
