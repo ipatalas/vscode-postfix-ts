@@ -61,6 +61,14 @@ describe('Single line template tests', () => {
   QuickPick('not template - complex conditions - second expression - alt | if (a > b && x * 100{not}) {} >> if(a<=b||!(x*100)){}', true, 1)
   QuickPick('not template - complex conditions - cancel quick pick - alt | if (a > b && x * 100{not}) {} >> if(a>b&&x*100.){}', true, 0, true)
 
+  describe('undefined templates in `typeof` mode', () => {
+    before(setUndefinedMode(config, 'Typeof'))
+    after(setUndefinedMode(config, undefined))
+
+    Test('undefined template    | expr{undefined}    >> if(typeofexpr==="undefined"){}', true)
+    Test('notundefined template | expr{notundefined} >> if(typeofexpr!=="undefined"){}', true)
+  })
+
   describe('custom template tests', () => {
     const setCustomNotTemplate = (when: string[]) => setCustomTemplate(config, 'custom', '!{{expr}}', when)
     const run = (when: string, ...tests: string[]) =>
@@ -104,6 +112,12 @@ describe('Single line template tests', () => {
       '  test.call(){double}                  | test.call(){double} >> test.call() + test.call()')
   })
 })
+
+function setUndefinedMode(config: vsc.WorkspaceConfiguration, value: 'Equal' | 'Typeof' | undefined) {
+  return (done: Mocha.Done) => {
+    config.update('undefinedMode', value, true).then(done, done)
+  }
+}
 
 function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: string, when: string[]) {
   return (done: Mocha.Done) => {

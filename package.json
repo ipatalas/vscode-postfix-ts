@@ -37,14 +37,20 @@
 						"javascriptreact",
 						"typescriptreact"
 					]
-        },
-        "postfix.undefinedMode": {
-          "type": "string",
-          "markdownDescription": "Determines how the `.undefined` and `.notundefined` templates work",
-          "default": "Equal",
-          "enum": ["Equal", "Typeof"],
-          "enumDescriptions": ["if (expr === undefined)", "if (typeof expr === \"undefined\")"]
-        },
+				},
+				"postfix.undefinedMode": {
+					"type": "string",
+					"markdownDescription": "Determines how the `.undefined` and `.notundefined` templates work",
+					"default": "Equal",
+					"enum": [
+						"Equal",
+						"Typeof"
+					],
+					"enumDescriptions": [
+						"if (expr === undefined)",
+						"if (typeof expr === \"undefined\")"
+					]
+				},
 				"postfix.customTemplates": {
 					"type": "array",
 					"items": {
