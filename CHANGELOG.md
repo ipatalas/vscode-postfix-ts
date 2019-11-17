@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.1] - 2019-11-17
+### Added:
+- Support for two different modes for `.undefined` and `.notundefined` templates. See [#27](https://github.com/ipatalas/vscode-postfix-ts/issues/27)
+### Fixed:
+- [Postfix does not work in function expression with variable declaration](https://github.com/ipatalas/vscode-postfix-ts/issues/26)
+- [await'ed expression - wrong replacement](https://github.com/ipatalas/vscode-postfix-ts/issues/28)
+- [return template does not work in some cases](https://github.com/ipatalas/vscode-postfix-ts/issues/29)
+
 ## [1.9.0] - 2019-09-25
 ### Added:
 - Support for multiline expressions!

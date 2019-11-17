@@ -2,7 +2,7 @@
 	"name": "vscode-postfix-ts",
 	"displayName": "TS/JS postfix completion",
 	"description": "Postfix templates for TypeScript/Javascript",
-	"version": "1.9.0",
+	"version": "1.9.1",
 	"license": "MIT",
 	"publisher": "ipatalas",
 	"engines": {
