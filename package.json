@@ -103,7 +103,7 @@
 		"build": "npm run prerun && npm run compile"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.138",
+		"@types/lodash": "^4.14.159",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^10.14.17",
 		"decache": "^4.5.1",
@@ -113,11 +113,11 @@
 		"tslint": "^5.20.0",
 		"tslint-config-standard": "^8.0.1",
 		"tslint-eslint-rules": "^5.4.0",
-		"vscode": "^1.1.36"
+		"vscode": "^1.1.37"
 	},
 	"dependencies": {
-		"glob": "^7.1.4",
-		"lodash": "^4.17.15",
+		"glob": "^7.1.6",
+		"lodash": "^4.17.19",
 		"typescript": "^3.6.3"
 	}
 }
