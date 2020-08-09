@@ -17,6 +17,10 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected inAssignmentStatement = (node: ts.Node) => node.parent && ts.isBinaryExpression(node.parent) && node.parent.operatorToken.kind === ts.SyntaxKind.EqualsToken
   protected inFunctionArgument = (node: ts.Node) => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
 
+  protected isObjectLiteral = (node: ts.Node) => {
+    return ts.isBlock(node) && (node.statements.length === 0 || node.statements.some(x => ts.isLabeledStatement(x)))
+  }
+
   protected inAwaitedExpression = (node: ts.Node) => {
     if (ts.isFunctionExpression(node) || ts.isArrowFunction(node)) {
       return false

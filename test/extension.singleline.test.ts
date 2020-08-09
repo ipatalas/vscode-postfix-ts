@@ -21,6 +21,9 @@ describe('Single line template tests', () => {
   Test('warn template  | expr{warn}  >> console.warn(expr)')
   Test('error template | expr{error} >> console.error(expr)')
 
+  Test('log template - obj literal (empty) | {}{log}          >> console.log({})')
+  Test('log template - obj literal         | {foo:"foo"}{log} >> console.log({foo:"foo"})')
+
   Test('return template | expr{return}       >> return expr')
   Test('return template | new Type(){return} >> return new Type()')
 
