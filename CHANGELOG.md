@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.9.2] - 2020-08-09
+### Fixed:
+- [Using .log for object](https://github.com/ipatalas/vscode-postfix-ts/issues/37)
+
 ## [1.9.1] - 2019-11-17
 ### Added:
 - Support for two different modes for `.undefined` and `.notundefined` templates. See [#27](https://github.com/ipatalas/vscode-postfix-ts/issues/27)
