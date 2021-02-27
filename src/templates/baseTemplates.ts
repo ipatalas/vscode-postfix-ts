@@ -21,6 +21,14 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return ts.isBlock(node) && (node.statements.length === 0 || node.statements.some(x => ts.isLabeledStatement(x)))
   }
 
+  protected isTypeNode = (node: ts.Node) => {
+    if (ts.isTypeNode(node)) {
+      return true
+    }
+
+    return ts.isTypeReferenceNode(node.parent) || ts.isTypeReferenceNode(node.parent.parent)
+  }
+
   protected inAwaitedExpression = (node: ts.Node) => {
     if (ts.isFunctionExpression(node) || ts.isArrowFunction(node)) {
       return false
@@ -60,13 +68,23 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected getCurrentNode = (node: ts.Node) => {
-    let currentNode = node
-
-    if (ts.isPrefixUnaryExpression(currentNode.parent) || ts.isPropertyAccessExpression(currentNode.parent)) {
-      currentNode = currentNode.parent
+    if (ts.isPrefixUnaryExpression(node.parent) || ts.isPropertyAccessExpression(node.parent)) {
+      return node.parent
     }
 
-    return currentNode
+    if (ts.isTypeReferenceNode(node.parent) || ts.isTypeReferenceNode(node.parent.parent)) {
+      return this.findClosestParent(node, ts.SyntaxKind.TypeReference)
+    }
+
+    return node
+  }
+
+  private findClosestParent(node: ts.Node, kind: ts.SyntaxKind): ts.Node {
+    while (node && node.kind !== kind) {
+      node = node.parent
+    }
+
+    return node
   }
 }
 

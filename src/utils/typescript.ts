@@ -11,7 +11,7 @@ export const findNodeAtPosition = (source: ts.SourceFile, character: number) => 
   function visitNode(node: ts.Node, depth: number = 0) {
     const start = node.getStart(source)
     const end = node.getEnd()
-    const isToken = ts.isToken(node) && !ts.isIdentifier(node)
+    const isToken = ts.isToken(node) && !ts.isIdentifier(node) && !ts.isTypeNode(node)
 
     if (!isToken && start <= character && character < end) {
       matchingNodes.push({

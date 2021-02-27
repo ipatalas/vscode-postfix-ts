@@ -83,7 +83,8 @@
 										"binary-expression",
 										"unary-expression",
 										"function-call",
-										"new-expression"
+										"new-expression",
+                    "type"
 									]
 								}
 							}

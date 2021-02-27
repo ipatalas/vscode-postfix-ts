@@ -4,6 +4,7 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 
 export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
+    ['type', (node: ts.Node) => this.isTypeNode(node)],
     ['identifier', (node: ts.Node) => this.isIdentifier(node)],
     ['expression', (node: ts.Node) => this.isExpression(node)],
     ['binary-expression', (node: ts.Node) => this.isBinaryExpression(node)],
