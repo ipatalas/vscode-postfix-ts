@@ -58,7 +58,7 @@ export class CompletionItemBuilder {
   }
 
   public description = (description: string): CompletionItemBuilder => {
-    this.item.documentation = description.replace('expr', this.code)
+    this.item.documentation = description.replace(/expr|{{expr}}/, this.code)
 
     return this
   }
