@@ -12,7 +12,7 @@ export class CustomTemplate extends BaseTemplate {
     ['function-call', (node: ts.Node) => this.isCallExpression(node)]
   ])
 
-  constructor (private name: string, private description: string, private body: string, private conditions: string[]) {
+  constructor (private name: string, private description: string, private body: string, private when: string[]) {
     super()
   }
 
@@ -27,11 +27,11 @@ export class CustomTemplate extends BaseTemplate {
   }
 
   canUse (node: ts.Node): boolean {
-    return node.parent && (this.conditions.length === 0 || this.conditions.some(c => this.condition(node, c)))
+    return node.parent && (this.when.length === 0 || this.when.some(w => this.condition(node, w)))
   }
 
-  condition = (node: ts.Node, condition: string) => {
-    const callback = this.conditionsMap.get(condition)
+  condition = (node: ts.Node, when: string) => {
+    const callback = this.conditionsMap.get(when)
     return callback && callback(node)
   }
 }
