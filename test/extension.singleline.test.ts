@@ -57,6 +57,11 @@ describe('Single line template tests', () => {
   Test('not template - inside an if - brackets                  | if ((x * 100){not})         >> if(!(x*100))', true)
   Test('not template - already negated expression - method call | !x.method(){not}            >> x.method()')
 
+  Test('promisify template - boolean       | const x:boolean{promisify} >> const x:Promise<boolean>')
+  Test('promisify template - string        | const x:string{promisify}  >> const x:Promise<string>')
+  Test('promisify template - custom type   | const x:A.B{promisify}     >> const x:Promise<A.B>')
+  Test('promisify template - custom type 2 | const x:A.B.C.D{promisify} >> const x:Promise<A.B.C.D>')
+
   QuickPick('not template - complex conditions - first expression        | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
   QuickPick('not template - complex conditions - second expression       | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
   QuickPick('not template - complex conditions - cancel quick pick       | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
