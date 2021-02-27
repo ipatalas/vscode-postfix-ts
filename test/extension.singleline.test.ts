@@ -92,6 +92,13 @@ describe('Single line template tests', () => {
       '  call(){custom}                       | call(){custom}      >> !call()',
       '  test.call(){custom}                  | test.call(){custom} >> !test.call()')
     run('new-expression', 'new Type(){custom} | new Type(){custom}  >> !new Type()')
+    run('type',
+      '  const x:boolean{custom}              | const x:boolean{custom}       >> const x:!boolean',
+      '  const x:A.B{custom}                  | const x:A.B{custom}           >> const x:!A.B',
+      '  const arrow=():string{custom}        | const arrow=():string{custom} >> const arrow=():!string',
+      '  function f():boolean{custom}         | function f():boolean{custom}  >> function f():!boolean',
+      '  function f():A.B{custom}             | function f():A.B{custom}      >> function f():!A.B',
+      '  function f():A.B.C.D{custom}         | function f():A.B.C.D{custom}  >> function f():!A.B.C.D')
   })
 
   describe('custom template with multiple expr tests', () => {
