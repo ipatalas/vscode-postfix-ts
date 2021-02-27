@@ -22,10 +22,11 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected isTypeNode = (node: ts.Node) => {
-    if (ts.isTypeNode(node)) {
+    if (ts.isTypeNode(node)) { // built-in types
       return true
     }
 
+    // Custom types (including namespaces) are encapsulated in TypeReferenceNode
     return ts.isTypeReferenceNode(node.parent) || ts.isTypeReferenceNode(node.parent.parent)
   }
 
