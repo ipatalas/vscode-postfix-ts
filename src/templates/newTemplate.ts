@@ -14,6 +14,7 @@ export class NewTemplate extends BaseTemplate {
   canUse(node: ts.Node) {
     return (this.isIdentifier(node) || this.isPropertyAccessExpression(node))
       && !this.inAwaitedExpression(node.parent)
+      && !this.isTypeNode(node)
   }
 }
 

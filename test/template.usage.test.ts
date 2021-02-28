@@ -12,6 +12,7 @@ const FOR_TEMPLATES = ['for', 'forof', 'foreach']
 const CONSOLE_TEMPLATES = ['log', 'warn', 'error']
 const IF_TEMPLATES = ['if', 'else', 'null', 'notnull', 'undefined', 'notundefined']
 const CAST_TEMPLATES = ['cast', 'castas']
+const TYPE_TEMPLATES = ['promisify']
 const ALL_TEMPLATES = [
   ...VAR_TEMPLATES,
   ...FOR_TEMPLATES,
@@ -40,6 +41,11 @@ describe('Template usage', () => {
   testTemplateUsage('object literal expression', '{foo:"foo"}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
   testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
+
+  testTemplateUsage('function type - built-in', 'function f(): boolean', TYPE_TEMPLATES)
+  testTemplateUsage('function type - custom', 'function f(): Type', TYPE_TEMPLATES)
+  testTemplateUsage('var type - built-in', 'const x: boolean', TYPE_TEMPLATES)
+  testTemplateUsage('var type - custom', 'const x: Type', TYPE_TEMPLATES)
 
   testTemplateUsage('inside return - arrow function', 'return items.map(x => { result{cursor} })', ALL_TEMPLATES)
   testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', ALL_TEMPLATES)

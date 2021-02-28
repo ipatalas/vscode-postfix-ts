@@ -34,12 +34,13 @@ export class NotTemplate extends BaseTemplate {
   }
 
   canUse (node: ts.Node) {
-    return this.isExpression(node)
+    return !this.isTypeNode(node) &&
+        (this.isExpression(node)
         || this.isUnaryExpression(node)
         || this.isUnaryExpression(node.parent)
         || this.isBinaryExpression(node)
         || this.isCallExpression(node)
-        || this.isIdentifier(node)
+        || this.isIdentifier(node))
   }
 
   private getBinaryExpressions = (node: ts.Node) => {

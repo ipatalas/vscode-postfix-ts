@@ -94,7 +94,7 @@ export abstract class BaseExpressionTemplate extends BaseTemplate {
   abstract buildCompletionItem(node: ts.Node, indentSize?: number)
 
   canUse(node: ts.Node) {
-    return !this.inIfStatement(node) &&
+    return !this.inIfStatement(node) && !this.isTypeNode(node) &&
       (this.isIdentifier(node) ||
         this.isExpression(node) ||
         this.isUnaryExpression(node) ||
