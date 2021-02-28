@@ -2,7 +2,6 @@
 
 [![MarketPlace Tag](https://vsmarketplacebadge.apphb.com/version-short/ipatalas.vscode-postfix-ts.svg)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
 [![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/ipatalas.vscode-postfix-ts)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
-[![.github/workflows/ci.yml](https://github.com/ipatalas/vscode-postfix-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/ipatalas/vscode-postfix-ts/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/ipatalas/vscode-postfix-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/ipatalas/vscode-postfix-ts)
 
 [![Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-$4-orange?logo=buy-me-a-coffee&style=flat)](https://www.buymeacoffee.com/0t1sqOM)
@@ -52,6 +51,7 @@ All available templates (`expr` means the expression on which the template is ap
 | **.cast**         | `(<SomeType>expr)` |
 | **.castas**       | `(expr as SomeType)` |
 | **.new**          | `new expr()` |
+| **.promisify**    | `Promise<expr>` |
 
 ## Custom templates (1.6.0 and above)
 
@@ -90,6 +90,7 @@ There is also one special placeholder that can be used:
 - `unary-expression`: an unary expression, ie. `!x`, `x++` or `++x`
 - `new-expression`: a new expression, ie. `new Type(arg1, arg2)`
 - `function-call`: a function call expression, ie. `func()`, `object.method()` and so on
+- `type`: type in function/variable definition, ie. `const x: string`
 
 If no conditions are specified then given template will be available under all possible situations
 

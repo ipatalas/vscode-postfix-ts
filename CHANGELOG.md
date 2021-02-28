@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.9.3] - 2021-02-28
+### Added:
+- New `.promisify` template (Type.promisify -> Promise<Type>)
+### Fixed:
+- ["when" on TypeScript types](https://github.com/ipatalas/vscode-postfix-ts/issues/41)
+
 ## [1.9.2] - 2020-08-09
 ### Fixed:
 - [Using .log for object](https://github.com/ipatalas/vscode-postfix-ts/issues/37)
