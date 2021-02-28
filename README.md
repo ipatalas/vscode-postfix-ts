@@ -2,7 +2,7 @@
 
 [![MarketPlace Tag](https://vsmarketplacebadge.apphb.com/version-short/ipatalas.vscode-postfix-ts.svg)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
 [![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/ipatalas.vscode-postfix-ts)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
-[![Build Status](https://travis-ci.org/ipatalas/vscode-postfix-ts.svg?branch=master)](https://travis-ci.org/ipatalas/vscode-postfix-ts)
+![Build Status](https://github.com/ipatalas/vscode-postfix-ts/actions/workflows/ci/badge.svg)
 [![codecov](https://codecov.io/gh/ipatalas/vscode-postfix-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/ipatalas/vscode-postfix-ts)
 
 [![Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-$4-orange?logo=buy-me-a-coffee&style=flat)](https://www.buymeacoffee.com/0t1sqOM)
