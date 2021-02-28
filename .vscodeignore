@@ -7,7 +7,7 @@ src/**
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md
-tslint.json
+/.eslint*
 *.vsix
 coverage/**
 .travis.yml
