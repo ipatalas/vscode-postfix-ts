@@ -47,6 +47,8 @@ export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: b
     if (cancelQuickPick) {
       await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
     } else {
+      await delay(10)
+
       for (let i = 0; i < skipSuggestions; i++) {
         await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
       }

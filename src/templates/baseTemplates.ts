@@ -27,7 +27,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     // Custom types (including namespaces) are encapsulated in TypeReferenceNode
-    return ts.isTypeReferenceNode(node.parent) || ts.isTypeReferenceNode(node.parent.parent)
+    return node.parent && ts.isTypeReferenceNode(node.parent) || node.parent.parent && ts.isTypeReferenceNode(node.parent.parent)
   }
 
   protected inAwaitedExpression = (node: ts.Node) => {
