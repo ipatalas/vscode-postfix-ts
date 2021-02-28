@@ -10,6 +10,5 @@ vsc-extension-quickstart.md
 /.eslint*
 *.vsix
 coverage/**
-.travis.yml
 /tasks.js
 /coverconfig.json
