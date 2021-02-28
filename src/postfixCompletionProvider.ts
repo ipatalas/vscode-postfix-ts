@@ -19,7 +19,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     ]
   }
 
-  provideCompletionItems(document: vsc.TextDocument, position: vsc.Position, token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {
+  provideCompletionItems(document: vsc.TextDocument, position: vsc.Position, _token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {
     const line = document.lineAt(position.line)
     const dotIdx = line.text.lastIndexOf('.', position.character)
 

@@ -14,12 +14,13 @@ export const loadCustomTemplates = () => {
 export const loadBuiltinTemplates = () => {
   const templates: IPostfixTemplate[] = []
 
-  let files = glob.sync('../templates/*.js', { cwd: __dirname })
+  const files = glob.sync('../templates/*.js', { cwd: __dirname })
 
   files.forEach(path => {
-    let builder: () => IPostfixTemplate | IPostfixTemplate[] = require(path).build
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const builder: () => IPostfixTemplate | IPostfixTemplate[] = require(path).build
     if (builder) {
-      let tpls = builder()
+      const tpls = builder()
       if (Array.isArray(tpls)) {
         templates.push(...tpls)
       } else {

@@ -20,7 +20,7 @@ function __runTestMultiline(func: (title: string, fn?: Func) => Test, test: stri
   func(title.trim(), testTemplate(dsl.join(EOL), trimWhitespaces))
 }
 
-export const runTestQuickPick = (test: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) =>
+export const runTestQuickPick = (test: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) =>
   __runTestQuickPick(it, test, trimWhitespaces, skipSuggestions, cancelQuickPick)
 
 runTestQuickPick.only = (test, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) =>

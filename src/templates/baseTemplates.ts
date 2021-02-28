@@ -1,9 +1,10 @@
 import * as ts from 'typescript'
+import * as vsc from 'vscode';
 import { IPostfixTemplate } from '../template'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
-  abstract buildCompletionItem(node: ts.Node, indentSize?: number)
-  abstract canUse(node: ts.Node): boolean
+  abstract buildCompletionItem(node: ts.Node, indentSize?: number): vsc.CompletionItem
+  abstract canUse  (node: ts.Node) : boolean
 
   protected isSimpleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ExpressionStatement
   protected isPropertyAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PropertyAccessExpression

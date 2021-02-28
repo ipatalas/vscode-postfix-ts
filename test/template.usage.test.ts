@@ -81,7 +81,7 @@ async function getAvailableSuggestions(doc: vsc.TextDocument, initialText: strin
   }
 
   if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), initialText))) {
-    let pos = new vsc.Position(0, cursorIdx + 1)
+    const pos = new vsc.Position(0, cursorIdx + 1)
     editor.selection = new vsc.Selection(pos, pos)
 
     resetCurrentSuggestion()
@@ -94,7 +94,7 @@ async function getAvailableSuggestions(doc: vsc.TextDocument, initialText: strin
     while (true) {
       await vsc.commands.executeCommand('selectNextSuggestion')
 
-      let current = getCurrentSuggestion()
+      const current = getCurrentSuggestion()
 
       if (current === undefined || suggestions.indexOf(current) > -1) {
         break

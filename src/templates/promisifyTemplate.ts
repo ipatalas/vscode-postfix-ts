@@ -4,7 +4,7 @@ import { BaseTemplate } from './baseTemplates'
 
 export class PromisifyTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    let currentNode = this.getCurrentNode(node)
+    const currentNode = this.getCurrentNode(node)
 
     return CompletionItemBuilder
       .create('promisify', currentNode, indentSize)

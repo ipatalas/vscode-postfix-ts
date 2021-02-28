@@ -18,7 +18,7 @@ export class CustomTemplate extends BaseTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    let currentNode = this.getCurrentNode(node)
+    const currentNode = this.getCurrentNode(node)
 
     return CompletionItemBuilder
       .create(this.name, currentNode, indentSize)

@@ -9,14 +9,14 @@ describe('Utils tests', () => {
     vsc.window.activeTextEditor.options.insertSpaces = true
     vsc.window.activeTextEditor.options.tabSize = 4
 
-    let result = getIndentCharacters()
+    const result = getIndentCharacters()
     assert.strictEqual(result, '    ')
   })
 
   it('getIndentCharacters when tabs', () => {
     vsc.window.activeTextEditor.options.insertSpaces = false
 
-    let result = getIndentCharacters()
+    const result = getIndentCharacters()
     assert.strictEqual(result, '\t')
   })
 
@@ -59,10 +59,10 @@ describe('Utils tests', () => {
 
 function testInvertBinaryExpression (input: string, expected: string) {
   it(`${input} should invert to ${expected}`, () => {
-    let source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
-    let expr = (source.statements[0] as ts.ExpressionStatement).expression as ts.BinaryExpression
+    const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
+    const expr = (source.statements[0] as ts.ExpressionStatement).expression as ts.BinaryExpression
 
-    let result = invertBinaryExpression(expr)
+    const result = invertBinaryExpression(expr)
 
     assert.strictEqual(result, expected)
   })
@@ -70,10 +70,10 @@ function testInvertBinaryExpression (input: string, expected: string) {
 
 function testInvertExpression (input: string, expected: string) {
   it(`${input} should invert to ${expected}`, () => {
-    let source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
-    let expr = (source.statements[0] as ts.ExpressionStatement).expression
+    const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
+    const expr = (source.statements[0] as ts.ExpressionStatement).expression
 
-    let result = invertExpression(expr)
+    const result = invertExpression(expr)
 
     assert.strictEqual(result, expected)
   })

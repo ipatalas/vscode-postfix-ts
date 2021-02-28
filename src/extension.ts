@@ -1,15 +1,16 @@
 'use strict'
 import * as vsc from 'vscode'
+import * as ts from 'typescript'
 import { PostfixCompletionProvider } from './postfixCompletionProvider'
 import { notCommand, NOT_COMMAND } from './notCommand'
 
 let completionProvider: vsc.Disposable
 
-export function activate (context: vsc.ExtensionContext) {
+export function activate (context: vsc.ExtensionContext): void {
   registerCompletionProvider(context)
 
-  context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: any[]) => {
-    let [...expressions] = args
+  context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: ts.BinaryExpression[]) => {
+    const [...expressions] = args
 
     await notCommand(editor, expressions)
   }))
@@ -20,7 +21,7 @@ export function activate (context: vsc.ExtensionContext) {
     }
 
     if (completionProvider) {
-      let idx = context.subscriptions.indexOf(completionProvider)
+      const idx = context.subscriptions.indexOf(completionProvider)
       context.subscriptions.splice(idx, 1)
       completionProvider.dispose()
     }
@@ -29,14 +30,14 @@ export function activate (context: vsc.ExtensionContext) {
   }))
 }
 
-// tslint:disable-next-line:no-empty
-export function deactivate () {
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function deactivate (): void {
 }
 
 function registerCompletionProvider (context: vsc.ExtensionContext) {
   const provider = new PostfixCompletionProvider()
 
-  let DOCUMENT_SELECTOR: vsc.DocumentSelector =
+  const DOCUMENT_SELECTOR: vsc.DocumentSelector =
     process.env.NODE_ENV === 'test' ? 'postfix' : vsc.workspace.getConfiguration('postfix').get('languages')
 
   completionProvider = vsc.languages.registerCompletionItemProvider(DOCUMENT_SELECTOR, provider, '.')

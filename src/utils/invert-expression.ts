@@ -16,7 +16,7 @@ const logicalOperatorMapping = new Map<ts.SyntaxKind, ts.SyntaxKind>([
   [ts.SyntaxKind.BarBarToken, ts.SyntaxKind.AmpersandAmpersandToken]
 ])
 
-export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets: boolean = false): string => {
+export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets = false): string => {
   let op = operatorMapping.get(expr.operatorToken.kind) || reverseMapping.get(expr.operatorToken.kind)
   if (op) {
     return `${expr.left.getText()} ${ts.tokenToString(op)} ${expr.right.getText()}`
@@ -24,19 +24,19 @@ export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets:
 
   op = logicalOperatorMapping.get(expr.operatorToken.kind)
   if (op) {
-    let left = invertExpression(expr.left, op !== ts.SyntaxKind.BarBarToken)
-    let right = invertExpression(expr.right, op !== ts.SyntaxKind.BarBarToken)
-    let result = `${left} ${ts.tokenToString(op)} ${right}`
+    const left = invertExpression(expr.left, op !== ts.SyntaxKind.BarBarToken)
+    const right = invertExpression(expr.right, op !== ts.SyntaxKind.BarBarToken)
+    const result = `${left} ${ts.tokenToString(op)} ${right}`
 
     return addOrBrackets && op === ts.SyntaxKind.BarBarToken ? `(${result})` : result
   }
 }
 
-export const invertExpression = (expr: ts.Node, addOrBrackets: boolean = false, indentSize?: number) => {
-  let text = adjustMultilineIndentation(expr.getText(), indentSize)
+export const invertExpression = (expr: ts.Node, addOrBrackets = false, indentSize?: number) => {
+  const text = adjustMultilineIndentation(expr.getText(), indentSize)
 
   if (expr.kind === ts.SyntaxKind.BinaryExpression) {
-    let result = invertBinaryExpression(expr as ts.BinaryExpression, addOrBrackets)
+    const result = invertBinaryExpression(expr as ts.BinaryExpression, addOrBrackets)
     if (result) {
       return result
     }

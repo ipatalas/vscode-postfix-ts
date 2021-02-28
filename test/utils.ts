@@ -3,6 +3,7 @@ import * as assert from 'assert'
 import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const EOL = require('os').EOL
 const LANGUAGE = 'postfix'
 
@@ -17,7 +18,7 @@ export function delay(timeout) {
 
 // for some reason editor.action.triggerSuggest needs more delay at the beginning when the process is not yet "warmed up"
 // let's start from high delays and then slowly go to lower delays
-let delaySteps = [2000, 1200, 700, 400, 300, 250]
+const delaySteps = [2000, 1200, 700, 400, 300, 250]
 
 export const getCurrentDelay = () => (delaySteps.length > 1) ? delaySteps.shift() : delaySteps[0]
 
@@ -42,7 +43,7 @@ export function testTemplate(dslString: string, trimWhitespaces?: boolean, preAs
   }
 }
 
-export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: boolean, skipSuggestions: number = 0, cancelQuickPick: boolean = false) {
+export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) {
   return testTemplate(dslString, trimWhitespaces, async () => {
     if (cancelQuickPick) {
       await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
@@ -65,7 +66,7 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
   const editor = await vsc.window.showTextDocument(doc, vsc.ViewColumn.One)
 
   if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), dsl.input))) {
-    let pos = new vsc.Position(dsl.cursorPosition.line, dsl.cursorPosition.character)
+    const pos = new vsc.Position(dsl.cursorPosition.line, dsl.cursorPosition.character)
 
     editor.selection = new vsc.Selection(pos, pos)
 
