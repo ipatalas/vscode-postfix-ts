@@ -7,8 +7,9 @@ src/**
 .gitignore
 tsconfig.json
 vsc-extension-quickstart.md
-/.eslint*
+.eslint*
 *.vsix
 coverage/**
-/tasks.js
-/coverconfig.json
+tasks.js
+coverconfig.json
+.github/**
