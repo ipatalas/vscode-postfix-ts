@@ -5,11 +5,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -19,9 +15,5 @@ jobs:
         node-version: 10.x
     - run: npm ci
     - run: xvfb-run -a npm test
-      if: runner.os == 'Linux'
-    - run: npm test
-      if: runner.os != 'Linux'
     - name: Code coverage
-      if: ${{ matrix.os == 'ubuntu-latest'}}
       uses: codecov/codecov-action@v1
