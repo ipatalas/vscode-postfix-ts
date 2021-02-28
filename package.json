@@ -101,7 +101,8 @@
 		"test": "cross-env NODE_ENV=test node ./node_modules/vscode/bin/test",
 		"pretest": "node ./tasks.js pretest && tsc -p ./",
 		"prerun": "node ./tasks.js prerun",
-		"build": "npm run prerun && npm run compile"
+		"build": "npm run prerun && npm run compile",
+    "deploy": "vsce publish"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.168",
@@ -115,6 +116,7 @@
 		"istanbul": "^0.4.5",
 		"mocha": "^5.2.0",
 		"remap-istanbul": "^0.13.0",
+		"vsce": "^1.85.1",
 		"vscode": "^1.1.37"
 	},
 	"dependencies": {
