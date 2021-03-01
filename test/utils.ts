@@ -54,11 +54,10 @@ export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: b
         await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
       }
 
-      await vsc.commands.executeCommand('workbench.action.focusQuickOpen')
       await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
     }
 
-    await delay(10)
+    await delay(100)
   })
 }
 
