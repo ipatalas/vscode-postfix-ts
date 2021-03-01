@@ -7,7 +7,7 @@
 [![Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-$4-orange?logo=buy-me-a-coffee&style=flat)](https://www.buymeacoffee.com/0t1sqOM)
 
 > Postfix templates for TypeScript/JavaScript
-
+test
 ## Features
 
 This extension features postfix templates that can be used to improve productivity.
