@@ -19,6 +19,8 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-20.04
     steps:
+    - name: Debug Action
+      uses: hmarr/debug-action@v1.0.0
     - name: Checkout
       uses: actions/checkout@v2
     - name: Install Node.js
