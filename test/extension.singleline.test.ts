@@ -4,7 +4,7 @@ import { describe, before, after } from 'mocha';
 
 const config = vsc.workspace.getConfiguration('postfix')
 
-describe('Single line template tests', () => {
+describe.only('Single line template tests', () => {
   Test('not template - already negated expression | !expr{not}             >> expr')
   Test('let template - binary expression          | a * 3{let}             >> let name = a * 3')
   Test('let template - method call                | obj.call(){let}        >> let name = obj.call()')
@@ -79,14 +79,7 @@ describe('Single line template tests', () => {
   })
 
   describe('custom template tests', () => {
-    const setCustomNotTemplate = (when: string[]) => setCustomTemplate(config, 'custom', '!{{expr}}', when)
-    const run = (when: string, ...tests: string[]) =>
-      describe(when, () => {
-        before(setCustomNotTemplate([when]))
-        after(resetCustomTemplates(config))
-
-        tests.forEach(t => Test(t))
-      })
+    const run = runWithCustomTemplate('!{{expr}}')
 
     run('identifier', 'expr{custom}           | expr{custom}        >> !expr')
     run('expression',
@@ -108,26 +101,53 @@ describe('Single line template tests', () => {
   })
 
   describe('custom template with multiple expr tests', () => {
-    const setCustomDoubleTemplate = (when: string[]) => setCustomTemplate(config, 'double', '{{expr}} + {{expr}}', when)
-    const run = (when: string, ...tests: string[]) =>
-      describe(when, () => {
-        before(setCustomDoubleTemplate([when]))
-        after(resetCustomTemplates(config))
+    const run = runWithCustomTemplate('{{expr}} + {{expr}}')
 
-        tests.forEach(t => Test(t))
-      })
-
-    run('identifier', 'expr{double}           | expr{double}        >> expr + expr')
+    run('identifier', 'expr{custom}           | expr{custom}        >> expr + expr')
     run('expression',
-      '  expr.test{double}                    | expr.test{double}   >> expr.test + expr.test',
-      '  expr[index]{double}                  | expr[index]{double} >> expr[index] + expr[index]')
-    run('binary-expression', 'x > 100{double} | x > 100{double}     >> x > 100 + x > 100')
-    run('unary-expression', '!x{double}       | !x{double}          >> !x + !x')
+      '  expr.test{custom}                    | expr.test{custom}   >> expr.test + expr.test',
+      '  expr[index]{custom}                  | expr[index]{custom} >> expr[index] + expr[index]')
+    run('binary-expression', 'x > 100{custom} | x > 100{custom}     >> x > 100 + x > 100')
+    run('unary-expression', '!x{custom}       | !x{custom}          >> !x + !x')
     run('function-call',
-      '  call(){double}                       | call(){double}      >> call() + call()',
-      '  test.call(){double}                  | test.call(){double} >> test.call() + test.call()')
+      '  call(){custom}                       | call(){custom}      >> call() + call()',
+      '  test.call(){custom}                  | test.call(){custom} >> test.call() + test.call()')
+  })
+
+  describe('custom template with :lower filter', () => {
+    const run = runWithCustomTemplate('{{expr:lower}}')
+
+    run('identifier', 'expr{custom}           | expr{custom}        >> expr')
+    run('identifier', 'EXPR{custom}           | EXPR{custom}        >> expr')
+    run('identifier', 'eXPr{custom}           | eXPr{custom}        >> expr')
+  })
+
+  describe('custom template with :upper filter', () => {
+    const run = runWithCustomTemplate('{{expr:upper}}')
+
+    run('identifier', 'expr{custom}           | expr{custom}        >> EXPR')
+    run('identifier', 'EXPR{custom}           | EXPR{custom}        >> EXPR')
+    run('identifier', 'eXPr{custom}           | eXPr{custom}        >> EXPR')
+  })
+
+  describe('custom template with :capitalize filter', () => {
+    const run = runWithCustomTemplate('{{expr:capitalize}}')
+
+    run('identifier', 'expr{custom}           | expr{custom}        >> Expr')
+    run('identifier', 'EXPR{custom}           | EXPR{custom}        >> EXPR')
+    run('identifier', 'eXPr{custom}           | eXPr{custom}        >> EXPr')
   })
 })
+
+function runWithCustomTemplate(template: string) {
+  return (when: string, ...tests: string[]) =>
+    describe(when, () => {
+      before(setCustomTemplate(config, 'custom', template, [when]))
+      after(resetCustomTemplates(config))
+
+      tests.forEach(t => Test(t))
+    })
+  }
 
 function setUndefinedMode(config: vsc.WorkspaceConfiguration, value: 'Equal' | 'Typeof' | undefined) {
   return (done: Mocha.Done) => {
