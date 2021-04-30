@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.9.4] - 2021-05-01
+### Added:
+- New option to determine how to merge custom templates if they have the same name (fixes [#40](https://github.com/ipatalas/vscode-postfix-ts/issues/40))
+### Fixed:
+- [TM_CURRENT_LINE can not get correct value](https://github.com/ipatalas/vscode-postfix-ts/issues/45)
+
 ## [1.9.3] - 2021-02-28
 ### Added:
 - New `.promisify` template (Type.promisify -> Promise<Type>)
