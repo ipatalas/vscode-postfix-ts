@@ -93,6 +93,15 @@
 							}
 						}
 					}
+				},
+				"postfix.customTemplate.mergeMode": {
+					"type": "string",
+					"markdownDescription": "Determines how custom templates are shown if they share a name with built-in template:\n`append` - both built-in and custom template will be shown\n`override` - only custom template will be shown (it overrides built-in one)",
+					"default": "append",
+					"enum": [
+						"append",
+						"override"
+					]
 				}
 			}
 		}

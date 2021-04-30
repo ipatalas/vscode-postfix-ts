@@ -3,9 +3,8 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class CastTemplate extends BaseExpressionTemplate {
-
   constructor (private keyword: 'cast' | 'castas') {
-    super()
+    super(keyword)
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {

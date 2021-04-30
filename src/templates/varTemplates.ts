@@ -4,7 +4,7 @@ import { BaseExpressionTemplate } from './baseTemplates'
 
 export class VarTemplate extends BaseExpressionTemplate {
   constructor(private keyword: 'var' | 'let' | 'const') {
-    super()
+    super(keyword)
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
