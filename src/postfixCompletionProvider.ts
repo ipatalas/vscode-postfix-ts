@@ -6,16 +6,24 @@ import { IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
 import { findNodeAtPosition } from './utils/typescript'
+import { CustomTemplate } from './templates/customTemplate'
 
 let currentSuggestion = undefined
 
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
+  private customTemplateNames: string[] = []
+  private mergeMode: 'append' | 'override';
 
   constructor() {
+    this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode')
+
+    const customTemplates = loadCustomTemplates()
+    this.customTemplateNames = customTemplates.map(t => t.templateName)
+
     this.templates = [
       ...loadBuiltinTemplates(),
-      ...loadCustomTemplates()
+      ...customTemplates
     ]
   }
 
@@ -37,7 +45,15 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     try {
       return this.templates
-        .filter(t => t.canUse(currentNode))
+        .filter(t => {
+          let canUseTemplate = t.canUse(currentNode)
+
+          if (this.mergeMode === 'override') {
+            canUseTemplate &&= (t instanceof CustomTemplate || !this.customTemplateNames.includes(t.templateName))
+          }
+
+          return canUseTemplate
+        })
         .map(t => t.buildCompletionItem(currentNode, indentSize))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')

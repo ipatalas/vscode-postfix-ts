@@ -18,4 +18,4 @@ export class NewTemplate extends BaseTemplate {
   }
 }
 
-export const build = () => new NewTemplate()
+export const build = () => new NewTemplate('new')

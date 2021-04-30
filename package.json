@@ -90,6 +90,15 @@
 							}
 						}
 					}
+				},
+				"postfix.customTemplate.mergeMode": {
+					"type": "string",
+					"markdownDescription": "Determines how custom templates are shown if they share a name with built-in template:\n`append` - both built-in and custom template will be shown\n`override` - only custom template will be shown (it overrides built-in one)",
+					"default": "append",
+					"enum": [
+						"append",
+						"override"
+					]
 				}
 			}
 		}
@@ -102,7 +111,7 @@
 		"pretest": "node ./tasks.js pretest && tsc -p ./",
 		"prerun": "node ./tasks.js prerun",
 		"build": "npm run prerun && npm run compile",
-    "deploy": "vsce publish"
+		"deploy": "vsce publish"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.168",

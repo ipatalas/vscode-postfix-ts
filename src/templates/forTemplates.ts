@@ -66,7 +66,7 @@ export class ForEachTemplate extends BaseForTemplate {
 }
 
 export const build = () => [
-  new ForTemplate(),
-  new ForOfTemplate(),
-  new ForEachTemplate()
+  new ForTemplate('for'),
+  new ForOfTemplate('forof'),
+  new ForEachTemplate('foreach')
 ]

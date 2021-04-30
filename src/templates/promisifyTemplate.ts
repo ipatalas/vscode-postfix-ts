@@ -18,4 +18,4 @@ export class PromisifyTemplate extends BaseTemplate {
   }
 }
 
-export const build = () => new PromisifyTemplate()
+export const build = () => new PromisifyTemplate('promisify')

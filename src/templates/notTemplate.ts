@@ -56,4 +56,4 @@ export class NotTemplate extends BaseTemplate {
   }
 }
 
-export const build = () => new NotTemplate()
+export const build = () => new NotTemplate('not')

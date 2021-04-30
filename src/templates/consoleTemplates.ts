@@ -5,7 +5,7 @@ import { BaseExpressionTemplate } from './baseTemplates'
 export class ConsoleTemplate extends BaseExpressionTemplate {
 
   constructor(private level: 'log' | 'warn' | 'error') {
-    super()
+    super(level)
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {

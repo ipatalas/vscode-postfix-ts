@@ -20,4 +20,4 @@ export class ReturnTemplate extends BaseExpressionTemplate {
   }
 }
 
-export const build = () => new ReturnTemplate()
+export const build = () => new ReturnTemplate('return')
