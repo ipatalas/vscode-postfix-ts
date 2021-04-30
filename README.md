@@ -78,7 +78,19 @@ Template body defines how will the expression before the cursor be replaced.
 It supports standard Visual Studio Code [Snippet syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax).
 There is also one special placeholder that can be used:
 
-- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression  
+- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression 
+- this placeholder can have modifiers (`uppercase`, `lowercase`, `capitalize`) which can be used in the following way:
+```JSON
+{
+    "name": "useState",
+    "body": "const [{{expr}}, set{{expr:capitalize}}] = React.useState();",
+    "description": "const [{{expr}}, set{{expr:capitalize}}] = React.useState();",
+    "when": []
+}
+```
+
+This snippet will have the following outcome (name of the original identifier has been capitalized): 
+![fdsf](images/capitalize.gif)
 
 ### Template conditions
 
