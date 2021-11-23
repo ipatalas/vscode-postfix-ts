@@ -13,3 +13,4 @@ coverage/**
 tasks.js
 coverconfig.json
 .github/**
+node_modules

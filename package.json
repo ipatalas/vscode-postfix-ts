@@ -1,127 +1,131 @@
 {
-	"name": "vscode-postfix-ts",
-	"displayName": "TS/JS postfix completion",
-	"description": "Postfix templates for TypeScript/Javascript",
-	"version": "1.9.3",
-	"license": "MIT",
-	"publisher": "ipatalas",
-	"engines": {
-		"vscode": "^1.20.0"
-	},
-	"icon": "images/logo.png",
-	"categories": [
-		"Snippets",
-		"Other"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ipatalas/vscode-postfix-ts"
-	},
-	"bugs": {
-		"url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
-	},
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/src/extension",
-	"contributes": {
-		"configuration": {
-			"title": "Postfix completion",
-			"properties": {
-				"postfix.languages": {
-					"type": "array",
-					"description": "A list of languages in which the completion will be available",
-					"default": [
-						"javascript",
-						"typescript",
-						"javascriptreact",
-						"typescriptreact"
-					]
-				},
-				"postfix.undefinedMode": {
-					"type": "string",
-					"markdownDescription": "Determines how the `.undefined` and `.notundefined` templates work",
-					"default": "Equal",
-					"enum": [
-						"Equal",
-						"Typeof"
-					],
-					"enumDescriptions": [
-						"if (expr === undefined)",
-						"if (typeof expr === \"undefined\")"
-					]
-				},
-				"postfix.customTemplates": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"required": [
-							"name",
-							"body"
-						],
-						"properties": {
-							"name": {
-								"type": "string",
-								"description": "Name of the template. It will be used in auto-complete suggestions"
-							},
-							"description": {
-								"type": "string",
-								"description": "Description of the template. It will be used in auto-complete suggestions"
-							},
-							"body": {
-								"type": "string",
-								"description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
-							},
-							"when": {
-								"type": "array",
-								"description": "Context in which the template should be suggested",
-								"items": {
-									"type": "string",
-									"enum": [
-										"identifier",
-										"expression",
-										"binary-expression",
-										"unary-expression",
-										"function-call",
-										"new-expression",
-										"type"
-									]
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
-		"compile": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "cross-env NODE_ENV=test node ./node_modules/vscode/bin/test",
-		"pretest": "node ./tasks.js pretest && tsc -p ./",
-		"prerun": "node ./tasks.js prerun",
-		"build": "npm run prerun && npm run compile",
+  "name": "vscode-postfix-ts",
+  "displayName": "TS/JS postfix completion",
+  "description": "Postfix templates for TypeScript/Javascript",
+  "version": "1.10.0",
+  "license": "MIT",
+  "publisher": "ipatalas",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "icon": "images/logo.png",
+  "categories": [
+    "Snippets",
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipatalas/vscode-postfix-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "configuration": {
+      "title": "Postfix completion",
+      "properties": {
+        "postfix.languages": {
+          "type": "array",
+          "description": "A list of languages in which the completion will be available",
+          "default": [
+            "javascript",
+            "typescript",
+            "javascriptreact",
+            "typescriptreact"
+          ]
+        },
+        "postfix.undefinedMode": {
+          "type": "string",
+          "markdownDescription": "Determines how the `.undefined` and `.notundefined` templates work",
+          "default": "Equal",
+          "enum": [
+            "Equal",
+            "Typeof"
+          ],
+          "enumDescriptions": [
+            "if (expr === undefined)",
+            "if (typeof expr === \"undefined\")"
+          ]
+        },
+        "postfix.customTemplates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "body"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the template. It will be used in auto-complete suggestions"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the template. It will be used in auto-complete suggestions"
+              },
+              "body": {
+                "type": "string",
+                "description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
+              },
+              "when": {
+                "type": "array",
+                "description": "Context in which the template should be suggested",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "identifier",
+                    "expression",
+                    "binary-expression",
+                    "unary-expression",
+                    "function-call",
+                    "new-expression",
+                    "type"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./build.js --production",
+    "compile": "node ./build.js",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "cross-env NODE_ENV=test node ./node_modules/vscode/bin/test",
+    "pretest": "node ./tasks.js pretest && node ./build.js",
+    "prerun": "node ./tasks.js prerun",
+    "build": "npm run prerun && npm run compile",
     "deploy": "vsce publish"
-	},
-	"devDependencies": {
-		"@types/lodash": "^4.14.168",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^10.14.17",
-		"@typescript-eslint/eslint-plugin": "^4.15.2",
-		"@typescript-eslint/parser": "^4.15.2",
-		"cross-env": "^7.0.3",
-		"decache": "^4.5.1",
-		"eslint": "^7.21.0",
-		"istanbul": "^0.4.5",
-		"mocha": "^5.2.0",
-		"remap-istanbul": "^0.13.0",
-		"vsce": "^1.85.1",
-		"vscode": "^1.1.37"
-	},
-	"dependencies": {
-		"glob": "^7.1.6",
-		"lodash": "^4.17.21",
-		"typescript": "^4.2.2"
-	}
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.168",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.14.17",
+    "@typescript-eslint/eslint-plugin": "^4.15.2",
+    "@typescript-eslint/parser": "^4.15.2",
+    "cross-env": "^7.0.3",
+    "decache": "^4.5.1",
+    "esbuild": "^0.13.15",
+    "eslint": "^7.21.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "remap-istanbul": "^0.13.0",
+    "vsce": "^1.85.1",
+    "vscode": "^1.1.37"
+  },
+  "dependencies": {
+    "glob": "^7.1.6",
+    "lodash": "^4.17.21",
+    "typescript": "^4.2.2"
+  }
 }
