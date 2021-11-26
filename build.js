@@ -11,7 +11,6 @@ require("esbuild")
     sourcemap: !production,
     minify: production,
     platform: "node",
-    target: ["node12"],
     watch: watch && {
       onRebuild(error) {
         if (error) console.error("watch build failed:", error);
