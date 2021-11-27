@@ -1,6 +1,8 @@
 import * as assert from 'assert'
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
+import { describe, it } from 'mocha';
+
 import { getIndentCharacters } from '../src/utils'
 import { invertBinaryExpression, invertExpression } from '../src/utils/invert-expression'
 

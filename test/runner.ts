@@ -1,6 +1,7 @@
 import { Func, Test } from 'mocha'
 import { testTemplate, testTemplateWithQuickPick } from './utils'
 import { EOL } from 'os'
+import { it } from 'mocha';
 
 export const runTest = (test: string, trimWhitespaces?: boolean) => __runTest(it, test, trimWhitespaces)
 runTest.only = (test: string, trimWhitespaces?: boolean) => __runTest(it.only.bind(it), test, trimWhitespaces)

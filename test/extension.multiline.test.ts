@@ -1,5 +1,6 @@
 import { runTestMultiline as Test } from './runner'
 import { TabSize } from './utils'
+import { describe } from 'mocha';
 
 const indent = (size: number) => ' '.repeat(size * TabSize)
 
