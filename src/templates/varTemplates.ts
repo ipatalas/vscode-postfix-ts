@@ -23,9 +23,3 @@ export class VarTemplate extends BaseExpressionTemplate {
       && !this.inAssignmentStatement(node)
   }
 }
-
-export const build = () => [
-  new VarTemplate('var'),
-  new VarTemplate('let'),
-  new VarTemplate('const')
-]
