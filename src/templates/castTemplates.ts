@@ -28,8 +28,3 @@ export class CastTemplate extends BaseExpressionTemplate {
     return super.canUse(node) || this.isNewExpression(node)
   }
 }
-
-export const build = () => [
-  new CastTemplate('cast'),
-  new CastTemplate('castas')
-]

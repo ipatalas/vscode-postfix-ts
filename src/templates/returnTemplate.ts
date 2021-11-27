@@ -19,5 +19,3 @@ export class ReturnTemplate extends BaseExpressionTemplate {
       && !this.inAssignmentStatement(node)
   }
 }
-
-export const build = () => new ReturnTemplate()
