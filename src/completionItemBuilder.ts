@@ -1,8 +1,8 @@
+/// <reference types="vscode" />
 import * as vsc from 'vscode'
 import ts = require('typescript')
 import { adjustMultilineIndentation } from './utils/multiline-expressions'
 
-const COMPLETION_ITEM_TITLE = 'Postfix templates'
 const RegexExpression = '{{expr(?::(upper|lower|capitalize))?}}'
 
 export class CompletionItemBuilder {
@@ -16,8 +16,7 @@ export class CompletionItemBuilder {
     }
 
     this.node = node
-    this.item = new vsc.CompletionItem(keyword, vsc.CompletionItemKind.Snippet)
-    this.item.detail = COMPLETION_ITEM_TITLE
+    this.item = new vsc.CompletionItem({label: keyword, description: 'POSTFIX'}, vsc.CompletionItemKind.Snippet)
     this.code = adjustMultilineIndentation(node.getText(), indentSize)
   }
 
@@ -59,7 +58,11 @@ export class CompletionItemBuilder {
   }
 
   public description = (description: string): CompletionItemBuilder => {
-    this.item.documentation = this.replaceExpression(description, this.code, `expr|${RegexExpression}`)
+    // don't show empty annoying window if we don't have text
+    if (!description) return this
+    const md = new vsc.MarkdownString()
+    md.appendCodeblock(this.replaceExpression(description, this.code, `expr|${RegexExpression}`), 'ts')
+    this.item.documentation = md
 
     return this
   }
