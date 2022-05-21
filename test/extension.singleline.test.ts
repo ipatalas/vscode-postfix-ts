@@ -4,7 +4,7 @@ import { describe, before, after } from 'mocha';
 
 const config = vsc.workspace.getConfiguration('postfix')
 
-describe.only('Single line template tests', () => {
+describe('Single line template tests', () => {
   Test('not template - already negated expression | !expr{not}             >> expr')
   Test('let template - binary expression          | a * 3{let}             >> let name = a * 3')
   Test('let template - method call                | obj.call(){let}        >> let name = obj.call()')
@@ -13,6 +13,7 @@ describe.only('Single line template tests', () => {
   Test('let template - postifx unary operator     | counter++{let}         >> let name = counter++')
   Test('let template - new expression             | new Type(1, 2, 3){let} >> let name = new Type(1, 2, 3)')
   Test('let template - awaited expression         | await expr{let}        >> let name = await expr')
+  Test('let template - escape dollar sign         | $expr.$a{let}          >> let name = $expr.$a')
 
   Test('var template          | a.b{var}   >> var name = a.b')
   Test('var template (indent) | \ta.b{var} >> \tvar name = a.b')
