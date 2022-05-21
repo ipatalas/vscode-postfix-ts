@@ -1,6 +1,7 @@
 import * as assert from 'assert'
 import * as _ from 'lodash'
 import * as vsc from 'vscode'
+import { describe, afterEach, it } from 'mocha';
 
 import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'

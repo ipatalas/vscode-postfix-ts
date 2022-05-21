@@ -1,5 +1,6 @@
 import * as vsc from 'vscode'
 import { runTest as Test, runTestQuickPick as QuickPick } from './runner'
+import { describe, before, after } from 'mocha';
 
 const config = vsc.workspace.getConfiguration('postfix')
 

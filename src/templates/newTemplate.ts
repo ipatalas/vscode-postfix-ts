@@ -17,5 +17,3 @@ export class NewTemplate extends BaseTemplate {
       && !this.isTypeNode(node)
   }
 }
-
-export const build = () => new NewTemplate()

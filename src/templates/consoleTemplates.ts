@@ -27,9 +27,3 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
       && !this.inAssignmentStatement(node)
   }
 }
-
-export const build = () => [
-  new ConsoleTemplate('log'),
-  new ConsoleTemplate('warn'),
-  new ConsoleTemplate('error')
-]

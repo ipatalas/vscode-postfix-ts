@@ -55,5 +55,3 @@ export class NotTemplate extends BaseTemplate {
     return possibleExpressions
   }
 }
-
-export const build = () => new NotTemplate()

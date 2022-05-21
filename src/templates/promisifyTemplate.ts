@@ -17,5 +17,3 @@ export class PromisifyTemplate extends BaseTemplate {
     return node.parent && this.isTypeNode(node)
   }
 }
-
-export const build = () => new PromisifyTemplate()

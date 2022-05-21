@@ -10,7 +10,7 @@ const LANGUAGE = 'postfix'
 const config = vsc.workspace.getConfiguration('editor', null)
 export const TabSize = config.get<number>('tabSize')
 
-export function delay(timeout) {
+export function delay(timeout: number) {
   return new Promise<void>(resolve => {
     setTimeout(resolve, timeout)
   })
@@ -35,7 +35,7 @@ export function testTemplate(dslString: string, trimWhitespaces?: boolean, preAs
         assertText(doc, dsl.expected, trimWhitespaces)
         await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
         done()
-      }).then(undefined, async (reason) => {
+      }).catch(async (reason) => {
         await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
         done(reason)
       })
@@ -71,19 +71,19 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
 
     await vsc.commands.executeCommand('editor.action.triggerSuggest')
     await delay(getCurrentDelay())
-
+    
     let current = getCurrentSuggestion()
     const first = current
-
+    
     while (current !== dsl.template) {
       await vsc.commands.executeCommand('selectNextSuggestion')
       current = getCurrentSuggestion()
-
+      
       if (current === first) {
         break
       }
     }
-
+    
     return vsc.commands.executeCommand('acceptSelectedSuggestion')
   }
 }
