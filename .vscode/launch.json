@@ -10,7 +10,6 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}"
       ],
-      "stopOnEntry": false,
       "sourceMaps": true,
       "outFiles": [
         "${workspaceRoot}/out/**/*.js"
@@ -30,7 +29,6 @@
       "env": {
         "NODE_ENV": "test"
       },
-      "stopOnEntry": false,
       "sourceMaps": true,
       "outFiles": [
         "${workspaceRoot}/out/test/**/*.js"
