@@ -107,26 +107,23 @@
 		"deploy": "vsce publish"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.168",
+		"@types/lodash": "^4.14.182",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^10.14.17",
 		"@types/vscode": "^1.60.0",
-		"@typescript-eslint/eslint-plugin": "^4.15.2",
-		"@typescript-eslint/parser": "^4.15.2",
+		"@typescript-eslint/eslint-plugin": "^5.25.0",
+		"@typescript-eslint/parser": "^5.25.0",
 		"@vscode/test-electron": "^1.6.0",
 		"cross-env": "^7.0.3",
-		"decache": "^4.5.1",
 		"esbuild": "^0.13.15",
-		"eslint": "^7.21.0",
-		"istanbul": "^0.4.5",
+		"eslint": "^8.16.0",
 		"mocha": "^5.2.0",
-		"remap-istanbul": "^0.13.0",
-		"vsce": "^1.85.1",
-		"source-map-support": "0.5.21"
+		"source-map-support": "0.5.21",
+		"glob": "^8.0.3",
+		"vsce": "^2.8.0"
 	},
 	"dependencies": {
-		"glob": "^7.1.6",
 		"lodash": "^4.17.21",
-		"typescript": "^4.2.2"
+		"typescript": "^4.6.4"
 	}
 }
