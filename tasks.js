@@ -1,7 +1,6 @@
 const fs = require('fs')
 
 const LANGUAGE = 'postfix'
-const ACTIVATION_EVENT = `onLanguage:${LANGUAGE}`
 const task = process.argv.length > 2 && process.argv[2]
 
 const tasksMap = new Map([
@@ -25,7 +24,8 @@ function prerun() {
 function pretest() {
 	let pkg = readPackageJson()
 	pkg.contributes.languages = [{id: LANGUAGE}]
-	pkg.activationEvents = [ACTIVATION_EVENT]
+	// Activate the extension right after start to avoid delay and failure in first test
+	pkg.activationEvents = ['onStartupFinished']
 	// Don't use bundler for tests as it breaks template usage tests
 	pkg.main = './out/src/extension'
 	writePackageJson(pkg)
