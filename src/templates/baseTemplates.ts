@@ -3,6 +3,8 @@ import * as vsc from 'vscode';
 import { IPostfixTemplate } from '../template'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
+  constructor(public readonly templateName: string) {}
+
   abstract buildCompletionItem(node: ts.Node, indentSize?: number): vsc.CompletionItem
   abstract canUse  (node: ts.Node) : boolean
 

@@ -78,7 +78,19 @@ Template body defines how will the expression before the cursor be replaced.
 It supports standard Visual Studio Code [Snippet syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax).
 There is also one special placeholder that can be used:
 
-- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression  
+- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression 
+- this placeholder can have modifiers (`uppercase`, `lowercase`, `capitalize`) which can be used in the following way:
+```JSON
+{
+    "name": "useState",
+    "body": "const [{{expr}}, set{{expr:capitalize}}] = React.useState();",
+    "description": "const [{{expr}}, set{{expr:capitalize}}] = React.useState();",
+    "when": []
+}
+```
+
+This snippet will have the following outcome (name of the original identifier has been capitalized): 
+![fdsf](images/capitalize.gif)
 
 ### Template conditions
 
@@ -100,6 +112,9 @@ This plugin contributes the following [settings](https://code.visualstudio.com/d
 
 - `postfix.languages`: array of [language identifiers](https://code.visualstudio.com/docs/languages/identifiers) in which the extension will be available. Default value is  **['javascript', 'typescript', 'javascriptreact', 'typescriptreact']**
 - `postfix.customTemplates`: array of custom template definitions - see [Custom templates (1.6.0 and above)](#custom-templates-160-and-above)
+- `postfix.customTemplates.mergeMode`: determines how custom templates are shown if they share the same name with built-in template:
+  - `append` - both built-in and custom template will be shown
+  - `override` - only custom template will be shown (it overrides built-in one)
 - `postfix.undefinedMode`: determines the behavior of `.undefined` and `.notundefined` templates, either equality comparison or typeof
 
 The `postfix.languages` setting can be used to make the extension available for inline JS/TS which is in other files like **.html**, **.vue** or others. You must still include `javascript` and `typescript` if you want the extension to be available there among the others.

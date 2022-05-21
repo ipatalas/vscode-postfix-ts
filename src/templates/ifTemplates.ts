@@ -41,7 +41,7 @@ export class ElseTemplate extends BaseIfElseTemplate {
 
 export class IfEqualityTemplate extends BaseIfElseTemplate {
   constructor(private keyword: string, private operator: string, private operand: string, private isUndefinedTemplate?: boolean) {
-    super()
+    super(keyword)
   }
 
   canUse(node: ts.Node) {
@@ -67,7 +67,7 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
 
 export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
   constructor(private keyword: string, private operator: string, private operand: string) {
-    super()
+    super(keyword)
   }
 
   canUse(node: ts.Node) {

@@ -13,15 +13,15 @@ export class CustomTemplate extends BaseTemplate {
     ['function-call', (node: ts.Node) => this.isCallExpression(node)]
   ])
 
-  constructor (private name: string, private description: string, private body: string, private when: string[]) {
-    super()
+  constructor (name: string, private description: string, private body: string, private when: string[]) {
+    super(name)
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     const currentNode = this.getCurrentNode(node)
 
     return CompletionItemBuilder
-      .create(this.name, currentNode, indentSize)
+      .create(this.templateName, currentNode, indentSize)
       .description(this.description)
       .replace(this.body, true)
       .build()

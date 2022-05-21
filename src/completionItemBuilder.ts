@@ -3,6 +3,7 @@ import ts = require('typescript')
 import { adjustMultilineIndentation } from './utils/multiline-expressions'
 
 const COMPLETION_ITEM_TITLE = 'Postfix templates'
+const RegexExpression = '{{expr(?::(upper|lower|capitalize))?}}'
 
 export class CompletionItemBuilder {
   private item: vsc.CompletionItem
@@ -36,9 +37,9 @@ export class CompletionItemBuilder {
     if (useSnippets) {
       const escapedCode = this.code.replace('$', '\\$')
 
-      this.item.insertText = new vsc.SnippetString(replacement.replace(new RegExp('{{expr}}', 'g'), escapedCode))
+      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode))
     } else {
-      this.item.insertText = replacement.replace(new RegExp('{{expr}}', 'g'), this.code)
+      this.item.insertText = this.replaceExpression(replacement, this.code)
     }
 
     const src = this.node.getSourceFile()
@@ -58,10 +59,27 @@ export class CompletionItemBuilder {
   }
 
   public description = (description: string): CompletionItemBuilder => {
-    this.item.documentation = description.replace(/expr|{{expr}}/, this.code)
+    this.item.documentation = this.replaceExpression(description, this.code, `expr|${RegexExpression}`)
 
     return this
   }
 
   public build = () => this.item
+
+  private replaceExpression = (replacement: string, code: string, customRegex?: string) => {
+    const re = new RegExp(customRegex || RegexExpression, 'g')
+
+    return replacement.replace(re, (_match, p1) => {
+      if (p1 && this.filters[p1]) {
+        return this.filters[p1](code)
+      }
+      return code;
+    })
+  }
+
+  private filters: {[key: string]: (x: string) => string} = {
+    'upper': (x: string) => x.toUpperCase(),
+    'lower': (x: string) => x.toLowerCase(),
+    'capitalize': (x: string) => x.substr(0, 1).toUpperCase() + x.substr(1),
+  }
 }
