@@ -35,7 +35,7 @@ export class CompletionItemBuilder {
 
   public replace = (replacement: string, useSnippets?: boolean): CompletionItemBuilder => {
     if (useSnippets) {
-      const escapedCode = this.code.replace('$', '\\$')
+      const escapedCode = this.code.replace(/\$/g, '\\$')
 
       this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode))
     } else {
