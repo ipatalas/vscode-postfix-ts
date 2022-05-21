@@ -12,7 +12,13 @@ const tasksMap = new Map([
 function prerun() {
 	let pkg = readPackageJson()
 	delete pkg.contributes.languages
-	pkg.activationEvents = ['*']
+	pkg.activationEvents = [
+		'onLanguage:javascript',
+		'onLanguage:typescript',
+		'onLanguage:javascriptreact',
+		'onLanguage:typescriptreact'
+	]
+	pkg.main = './out/extension'
 	writePackageJson(pkg)
 }
 
@@ -20,6 +26,8 @@ function pretest() {
 	let pkg = readPackageJson()
 	pkg.contributes.languages = [{id: LANGUAGE}]
 	pkg.activationEvents = [ACTIVATION_EVENT]
+	// Don't use bundler for tests as it breaks template usage tests
+	pkg.main = './out/src/extension'
 	writePackageJson(pkg)
 }
 
