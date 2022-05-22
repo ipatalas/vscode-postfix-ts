@@ -24,6 +24,11 @@ const ALL_TEMPLATES = [
   'return',
   'new'
 ]
+const STRING_LITERAL_TEMPLATES = [
+  ...VAR_TEMPLATES,
+  ...CONSOLE_TEMPLATES,
+  'return'
+]
 
 describe('Template usage', () => {
   afterEach(done => {
@@ -42,6 +47,12 @@ describe('Template usage', () => {
   testTemplateUsage('object literal expression', '{foo:"foo"}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
   testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
+
+  testTemplateUsage('string literal - single quote', '\'a string\'', STRING_LITERAL_TEMPLATES)
+  testTemplateUsage('string literal - double quote', '"a string"', STRING_LITERAL_TEMPLATES)
+  testTemplateUsage('string literal - backtick', '`a string`', STRING_LITERAL_TEMPLATES)
+  testTemplateUsage('string literal - backtick with var #1', '`a ${value} string`', STRING_LITERAL_TEMPLATES)
+  testTemplateUsage('string literal - backtick with var #2', '`a string ${value}`', STRING_LITERAL_TEMPLATES)
 
   testTemplateUsage('function type - built-in', 'function f(): boolean', TYPE_TEMPLATES)
   testTemplateUsage('function type - custom', 'function f(): Type', TYPE_TEMPLATES)

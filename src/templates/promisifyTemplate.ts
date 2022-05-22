@@ -4,10 +4,8 @@ import { BaseTemplate } from './baseTemplates'
 
 export class PromisifyTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    const currentNode = this.getCurrentNode(node)
-
     return CompletionItemBuilder
-      .create('promisify', currentNode, indentSize)
+      .create('promisify', node, indentSize)
       .description(`Promise<expr>`)
       .replace('Promise<{{expr}}>')
       .build()

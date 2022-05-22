@@ -6,6 +6,7 @@ export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
     ['type', (node: ts.Node) => this.isTypeNode(node)],
     ['identifier', (node: ts.Node) => this.isIdentifier(node)],
+    ['string-literal', (node: ts.Node) => this.isStringLiteral(node)],
     ['expression', (node: ts.Node) => this.isExpression(node)],
     ['binary-expression', (node: ts.Node) => this.isBinaryExpression(node)],
     ['unary-expression', (node: ts.Node) => this.isUnaryExpression(node.parent)],
@@ -18,10 +19,8 @@ export class CustomTemplate extends BaseTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    const currentNode = this.getCurrentNode(node)
-
     return CompletionItemBuilder
-      .create(this.templateName, currentNode, indentSize)
+      .create(this.templateName, node, indentSize)
       .description(this.description)
       .replace(this.body, true)
       .build()

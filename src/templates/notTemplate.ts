@@ -6,13 +6,11 @@ import { invertExpression } from '../utils/invert-expression'
 
 export class NotTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    const currentNode = this.getCurrentNode(node)
-
     const completionBuilder = CompletionItemBuilder
-      .create('not', currentNode, indentSize)
+      .create('not', node, indentSize)
 
-    if (this.isBinaryExpression(currentNode)) {
-      const expressions = this.getBinaryExpressions(currentNode)
+    if (this.isBinaryExpression(node)) {
+      const expressions = this.getBinaryExpressions(node)
       if (expressions.length > 1) {
         return completionBuilder
           .insertText('')
@@ -26,7 +24,7 @@ export class NotTemplate extends BaseTemplate {
       }
     }
 
-    const replacement = invertExpression(currentNode, undefined, indentSize)
+    const replacement = invertExpression(node, undefined, indentSize)
     return completionBuilder
       .description(replacement)
       .replace(replacement)

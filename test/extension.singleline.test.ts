@@ -5,15 +5,20 @@ import { describe, before, after } from 'mocha';
 const config = vsc.workspace.getConfiguration('postfix')
 
 describe('Single line template tests', () => {
-  Test('not template - already negated expression | !expr{not}             >> expr')
-  Test('let template - binary expression          | a * 3{let}             >> let name = a * 3')
-  Test('let template - method call                | obj.call(){let}        >> let name = obj.call()')
-  Test('let template - property access expression | obj.a.b{let}           >> let name = obj.a.b')
-  Test('let template - element access expression  | obj.a[b]{let}          >> let name = obj.a[b]')
-  Test('let template - postifx unary operator     | counter++{let}         >> let name = counter++')
-  Test('let template - new expression             | new Type(1, 2, 3){let} >> let name = new Type(1, 2, 3)')
-  Test('let template - awaited expression         | await expr{let}        >> let name = await expr')
-  Test('let template - escape dollar sign         | $expr.$a{let}          >> let name = $expr.$a')
+  Test('not template - already negated expression | !expr{not}               >> expr')
+  Test('let template - binary expression          | a * 3{let}               >> let name = a * 3')
+  Test('let template - method call                | obj.call(){let}          >> let name = obj.call()')
+  Test('let template - property access expression | obj.a.b{let}             >> let name = obj.a.b')
+  Test('let template - element access expression  | obj.a[b]{let}            >> let name = obj.a[b]')
+  Test('let template - postifx unary operator     | counter++{let}           >> let name = counter++')
+  Test('let template - new expression             | new Type(1, 2, 3){let}   >> let name = new Type(1, 2, 3)')
+  Test('let template - awaited expression         | await expr{let}          >> let name = await expr')
+  Test('let template - escape dollar sign         | $expr.$a{let}            >> let name = $expr.$a')
+  Test('let template - string literal #1          | "a string"{let}          >> let name = "a string"')
+  Test('let template - string literal #2          | \'a string\'{let}        >> let name = \'a string\'')
+  Test('let template - string literal #3          | `a string`{let}          >> let name = `a string`')
+  Test('let template - string literal #4          | `a ${value} string`{let} >> let name = `a ${value} string`')
+  Test('let template - string literal #5          | `a string ${value}`{let} >> let name = `a string ${value}`')
 
   Test('var template          | a.b{var}   >> var name = a.b')
   Test('var template (indent) | \ta.b{var} >> \tvar name = a.b')
@@ -83,6 +88,7 @@ describe('Single line template tests', () => {
     const run = runWithCustomTemplate('!{{expr}}')
 
     run('identifier', 'expr{custom}           | expr{custom}        >> !expr')
+    run('string-literal', 'expr{custom}       | "expr"{custom}      >> !"expr"')
     run('expression',
       '  expr.test{custom}                    | expr.test{custom}   >> !expr.test',
       '  expr[index]{custom}                  | expr[index]{custom} >> !expr[index]')

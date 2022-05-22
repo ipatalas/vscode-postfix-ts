@@ -54,7 +54,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
           return canUseTemplate
         })
-        .map(t => t.buildCompletionItem(currentNode, indentSize))
+        .map(t => t.buildCompletionItem(this.getNodeForReplacement(currentNode), indentSize))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -66,6 +66,30 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
     currentSuggestion = item.label
     return item
+  }
+
+  private getNodeForReplacement = (node: ts.Node) => {
+    if (ts.isTemplateSpan(node)) {
+      return node.parent
+    }
+
+    if (ts.isPrefixUnaryExpression(node.parent) || ts.isPropertyAccessExpression(node.parent)) {
+      return node.parent
+    }
+
+    if (ts.isTypeReferenceNode(node.parent) || (node.parent.parent && ts.isTypeReferenceNode(node.parent.parent))) {
+      return this.findClosestParent(node, ts.SyntaxKind.TypeReference)
+    }
+
+    return node
+  }
+
+  private findClosestParent(node: ts.Node, kind: ts.SyntaxKind): ts.Node {
+    while (node && node.kind !== kind) {
+      node = node.parent
+    }
+
+    return node
   }
 
   private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {

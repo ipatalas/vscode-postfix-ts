@@ -18,7 +18,7 @@ export function parseDSL(input: string) {
       input = input.replace(leadingMark[0], '')
     }
 
-    const match = /\{(\w+)\}/.exec(input)
+    const match = /(?<!\$)\{(\w+)\}/.exec(input)
     if (match !== null) {
       template = match[1]
       input = input.replace(match[0], `.${template}`)
