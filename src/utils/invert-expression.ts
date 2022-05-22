@@ -41,8 +41,8 @@ export const invertExpression = (expr: ts.Node, addOrBrackets = false, indentSiz
       return result
     }
 
-    return text.startsWith('!') ? text.substr(1) : `!(${text})`
+    return text.startsWith('!') ? text.substring(1) : `!(${text})`
   }
 
-  return text.startsWith('!') ? text.substr(1) : `!${text}`
+  return text.startsWith('!') ? text.substring(1) : `!${text}`
 }
