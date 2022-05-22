@@ -1,4 +1,3 @@
-/// <reference types="vscode" />
 import * as vsc from 'vscode'
 import ts = require('typescript')
 import { adjustMultilineIndentation } from './utils/multiline-expressions'
@@ -58,10 +57,14 @@ export class CompletionItemBuilder {
   }
 
   public description = (description: string): CompletionItemBuilder => {
-    // don't show empty annoying window if we don't have text
-    if (!description) return this
+    if (!description) {
+        return this
+    }
+
+    description = this.replaceExpression(description, this.code, `expr|${RegexExpression}`)
+
     const md = new vsc.MarkdownString()
-    md.appendCodeblock(this.replaceExpression(description, this.code, `expr|${RegexExpression}`), 'ts')
+    md.appendCodeblock(description, 'ts')
     this.item.documentation = md
 
     return this
