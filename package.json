@@ -113,6 +113,7 @@
 		"pretest": "node ./tasks.js pretest && tsc -p ./",
 		"prerun": "node ./tasks.js prerun",
 		"build": "npm run prerun && npm run compile",
+		"lint": "eslint .",
 		"deploy": "vsce publish"
 	},
 	"devDependencies": {

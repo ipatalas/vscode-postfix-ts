@@ -26,6 +26,8 @@ jobs:
       with:
         node-version: '16.15'
     - run: npm ci
+    - name: Run Linter
+      run: npm run lint
     - name: Run tests
       run: xvfb-run -a npm test
     - name: Code coverage
