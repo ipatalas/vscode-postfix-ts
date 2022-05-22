@@ -58,7 +58,7 @@ export class CompletionItemBuilder {
 
   public description = (description: string): CompletionItemBuilder => {
     if (!description) {
-        return this
+      return this
     }
 
     description = this.replaceExpression(description, this.code, `expr|${RegexExpression}`)

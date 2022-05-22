@@ -154,7 +154,7 @@ function runWithCustomTemplate(template: string) {
 
       tests.forEach(t => Test(t))
     })
-  }
+}
 
 function setUndefinedMode(config: vsc.WorkspaceConfiguration, value: 'Equal' | 'Typeof' | undefined) {
   return (done: Mocha.Done) => {

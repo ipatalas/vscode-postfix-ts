@@ -13,6 +13,9 @@ module.exports = {
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "prefer-const": ["error", { "destructuring": "all" }],
-    "no-constant-condition": ["error", { "checkLoops": false }]
+    "no-constant-condition": ["error", { "checkLoops": false }],
+    "curly": ["error"],
+    "brace-style": "error",
+    "indent": ["error", 2]
   }
 };
