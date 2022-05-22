@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.10.0] - 2022-05-22
+### Added:
+- Merged PR [#52](https://github.com/ipatalas/vscode-postfix-ts/pull/52) - Bundle extension to reduce size and improve startup time (thanks @jasonwilliams!)
+- Merged PR [#54](https://github.com/ipatalas/vscode-postfix-ts/pull/54) - Fancy suggestions with syntax highlighting (thanks @zardoy!)
+- Sensible default for custom template description if left empty
+### Fixed:
+- [Does not work with strings](https://github.com/ipatalas/vscode-postfix-ts/issues/48)
+- [Incorrect expanding of $a.$a with double {{expr}} in snippet](https://github.com/ipatalas/vscode-postfix-ts/issues/55)
+
 ## [1.9.4] - 2021-05-01
 ### Added:
 - New option to determine how to merge custom templates if they have the same name (fixes [#40](https://github.com/ipatalas/vscode-postfix-ts/issues/40))
