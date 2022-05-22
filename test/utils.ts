@@ -71,19 +71,19 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
 
     await vsc.commands.executeCommand('editor.action.triggerSuggest')
     await delay(getCurrentDelay())
-    
+
     let current = getCurrentSuggestion()
     const first = current
-    
+
     while (current !== dsl.template) {
       await vsc.commands.executeCommand('selectNextSuggestion')
       current = getCurrentSuggestion()
-      
+
       if (current === first) {
         break
       }
     }
-    
+
     return vsc.commands.executeCommand('acceptSelectedSuggestion')
   }
 }

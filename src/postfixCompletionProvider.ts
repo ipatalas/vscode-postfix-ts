@@ -64,7 +64,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
-    currentSuggestion = item.label
+    currentSuggestion =  (item.label as vsc.CompletionItemLabel)?.label || item.label
     return item
   }
 
