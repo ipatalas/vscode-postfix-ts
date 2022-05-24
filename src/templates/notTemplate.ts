@@ -19,14 +19,13 @@ export class NotTemplate extends BaseTemplate {
             command: NOT_COMMAND,
             arguments: expressions
           })
-          .description('!expr - [multiple options]')
+          .description('`!expr` - *[multiple options]*')
           .build()
       }
     }
 
     const replacement = invertExpression(node, undefined, indentSize)
     return completionBuilder
-      .description(replacement)
       .replace(replacement)
       .build()
   }

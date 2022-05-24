@@ -29,7 +29,6 @@ export class ForTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('for', node, indentSize)
-      .description(`for (let i = 0; i < ${prefix}expr${suffix}.Length; i++)`)
       .replace(`for (let \${1:i} = 0; \${1} < \${2:${prefix}{{expr}}${suffix}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
@@ -45,7 +44,6 @@ export class ForOfTemplate extends BaseForTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('forof', node, indentSize)
-      .description('for (let item of expr)')
       .replace(`for (let \${1:item} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
@@ -59,7 +57,6 @@ export class ForEachTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
-      .description(`${prefix}expr${suffix}.forEach()`)
       .replace(`${prefix}{{expr}}${suffix}.forEach(\${1:item} => \${2})`, true)
       .build()
   }

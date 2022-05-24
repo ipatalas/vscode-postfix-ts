@@ -6,7 +6,6 @@ export class ReturnTemplate extends BaseExpressionTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('return', node, indentSize)
-      .description(`return expr`)
       .replace('return {{expr}}')
       .build()
   }

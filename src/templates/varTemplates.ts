@@ -10,7 +10,6 @@ export class VarTemplate extends BaseExpressionTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
-      .description(`${this.keyword} name = expr`)
       .replace(this.keyword + ' ${1:name} = {{expr}}$0', true)
       .build()
   }

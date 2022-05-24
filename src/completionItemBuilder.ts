@@ -32,10 +32,12 @@ export class CompletionItemBuilder {
   }
 
   public replace = (replacement: string, useSnippets?: boolean): CompletionItemBuilder => {
+    this.addCodeBlockDescription(this.replaceExpression(replacement, this.code))
+
     if (useSnippets) {
       const escapedCode = this.code.replace(/\$/g, '\\$')
 
-      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode))
+      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode));
     } else {
       this.item.insertText = this.replaceExpression(replacement, this.code)
     }
@@ -61,13 +63,21 @@ export class CompletionItemBuilder {
       return this
     }
 
-    description = this.replaceExpression(description, this.code, `expr|${RegexExpression}`)
-
-    const md = new vsc.MarkdownString()
-    md.appendCodeblock(description, 'ts')
-    this.item.documentation = md
+    this.item.documentation = new vsc.MarkdownString(description)
 
     return this
+  }
+
+  private addCodeBlockDescription = (replacement: string) => {
+    const addCodeBlock = (md: vsc.MarkdownString) => md.appendCodeblock(this.replaceExpression(replacement, this.code), 'ts')
+
+    if (!this.item.documentation) {
+      const md = new vsc.MarkdownString();
+      addCodeBlock(md);
+      this.item.documentation = md
+    } else {
+      addCodeBlock(this.item.documentation as vsc.MarkdownString)
+    }
   }
 
   public build = () => this.item

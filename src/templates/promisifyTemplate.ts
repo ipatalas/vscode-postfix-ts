@@ -6,7 +6,6 @@ export class PromisifyTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('promisify', node, indentSize)
-      .description(`Promise<expr>`)
       .replace('Promise<{{expr}}>')
       .build()
   }

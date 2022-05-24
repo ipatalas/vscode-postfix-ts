@@ -21,7 +21,7 @@ export class CustomTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.templateName, node, indentSize)
-      .description(this.description || this.body)
+      .description(this.description)
       .replace(this.body, true)
       .build()
   }

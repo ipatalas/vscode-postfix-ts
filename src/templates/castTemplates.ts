@@ -12,13 +12,11 @@ export class CastTemplate extends BaseExpressionTemplate {
 
     if (this.keyword === 'castas') {
       return completionitembuilder
-        .description(`(expr as SomeType)`)
         .replace('({{expr}} as $1)$0', true)
         .build()
     }
 
     return completionitembuilder
-      .description(`(<SomeType>expr)`)
       .replace('(<$1>{{expr}})$0', true)
       .build()
   }

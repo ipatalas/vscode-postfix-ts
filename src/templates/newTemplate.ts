@@ -6,7 +6,6 @@ export class NewTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('new', node, indentSize)
-      .description(`new expr()`)
       .replace('new {{expr}}($0)', true)
       .build()
   }

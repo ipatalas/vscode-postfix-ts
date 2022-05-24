@@ -11,7 +11,6 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.level, node, indentSize)
-      .description(`console.${this.level}(expr)`)
       .replace(`console.${this.level}({{expr}})`)
       .build()
   }
