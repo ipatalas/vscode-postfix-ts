@@ -72,6 +72,9 @@ describe('Template usage', () => {
   testTemplateUsage('inside var declaration - arrow function', 'const f3 = () => { expr{cursor}', ALL_TEMPLATES)
   testTemplateUsage('inside function', 'function f2() { expr{cursor}', ALL_TEMPLATES)
   testTemplateUsage('inside arrow function', '() => { expr{cursor}', ALL_TEMPLATES)
+
+  testTemplateUsage('cursor in wrong place #1', 'test.something = {cursor-no-dot}', [])
+  testTemplateUsage('cursor in wrong place #2', 'test.something = new{cursor-no-dot}', [])
 })
 
 function testTemplateUsage(testDescription: string, initialText: string, expectedTemplates: string[]) {
@@ -94,8 +97,13 @@ async function getAvailableSuggestions(doc: vsc.TextDocument, initialText: strin
   if (cursorIdx > -1) {
     initialText = initialText.replace('{cursor}', '.')
   } else {
-    initialText += '.'
-    cursorIdx = initialText.length
+    cursorIdx = initialText.indexOf('{cursor-no-dot}')
+    if (cursorIdx > -1) {
+      initialText = initialText.replace('{cursor-no-dot}', '')
+    } else {
+      initialText += '.'
+      cursorIdx = initialText.length
+    }
   }
 
   if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), initialText))) {
