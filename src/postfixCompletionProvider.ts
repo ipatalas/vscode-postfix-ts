@@ -29,7 +29,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
   provideCompletionItems(document: vsc.TextDocument, position: vsc.Position, _token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {
     const line = document.lineAt(position.line)
-    const dotIdx = line.text.lastIndexOf('.', position.character)
+    const dotIdx = line.text.lastIndexOf('.', position.character - 1)
     const wordRange = document.getWordRangeAtPosition(position)
     const isCursorOnWordAfterDot = (wordRange?.start ?? position).character === dotIdx + 1
 
