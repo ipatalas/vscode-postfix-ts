@@ -102,6 +102,11 @@
 						"append",
 						"override"
 					]
+				},
+				"postfix.deriveVariableName": {
+					"type": "boolean",
+					"markdownDescription": "Try to guess variable names for `var`, `let`, `const`, `forEach` and `forof` templates.",
+					"default": true
 				}
 			}
 		}
@@ -133,6 +138,7 @@
 		"vsce": "^2.8.0"
 	},
 	"dependencies": {
+		"const-name": "0.0.1",
 		"lodash": "^4.17.21",
 		"typescript": "^4.6.4"
 	}

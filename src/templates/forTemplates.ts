@@ -1,7 +1,9 @@
 import * as ts from 'typescript'
+import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
+import { getSingularFormFromExpression } from 'const-name'
 
 abstract class BaseForTemplate extends BaseTemplate {
   canUse(node: ts.Node): boolean {
@@ -40,24 +42,31 @@ export class ForTemplate extends BaseForTemplate {
   }
 }
 
+const getArrayItemName = (node: ts.Node) => {
+  const deriveVariableName = vsc.workspace.getConfiguration('postfix', null).get<boolean>('deriveVariableName')
+  return (deriveVariableName ? getSingularFormFromExpression(node.getText())?.replace(/\$/g, '\\$') : undefined) ?? 'item';
+}
+
 export class ForOfTemplate extends BaseForTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    const itemName = getArrayItemName(node)
     return CompletionItemBuilder
       .create('forof', node, indentSize)
-      .replace(`for (let \${1:item} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`for (let \${1:${itemName}} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 }
 
 export class ForEachTemplate extends BaseForTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    const itemName = getArrayItemName(node)
     const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
     const prefix = isAwaited ? '(' : ''
     const suffix = isAwaited ? ')' : ''
 
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
-      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1:item} => \${2})`, true)
+      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1:${itemName}} => \${2})`, true)
       .build()
   }
 }

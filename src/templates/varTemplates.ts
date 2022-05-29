@@ -1,6 +1,10 @@
 import * as ts from 'typescript'
+import * as vsc from 'vscode'
+import * as _ from 'lodash'
+import { getVariableNameFromCallExpresion } from 'const-name'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
+import { clipByLastIndex } from 'const-name/build/util'
 
 export class VarTemplate extends BaseExpressionTemplate {
   constructor(private keyword: 'var' | 'let' | 'const') {
@@ -8,9 +12,27 @@ export class VarTemplate extends BaseExpressionTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    let varName: string
+
+    const deriveVariableName = vsc.workspace.getConfiguration('postfix', null).get<boolean>('deriveVariableName')
+    const expr = node.getText();
+    varName = deriveVariableName ?
+      expr.startsWith('new') ?
+        _.lowerFirst(
+          clipByLastIndex(/(.+?)\(/.exec(expr)[1], [' ', '.'])
+        )
+        : getVariableNameFromCallExpresion(expr, {
+          allowApi: true,
+          location: { fileName: '', position: node.pos }
+        })?.replace(/\$/g, '\\$')
+      : undefined;
+
+    if (!varName) {
+      varName = 'name'
+    }
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
-      .replace(this.keyword + ' ${1:name} = {{expr}}$0', true)
+      .replace(`${this.keyword} \${1:${varName}} = {{expr}}$0`, true)
       .build()
   }
 
