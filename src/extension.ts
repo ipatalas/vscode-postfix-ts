@@ -3,11 +3,13 @@ import * as vsc from 'vscode'
 import * as ts from 'typescript'
 import { PostfixCompletionProvider } from './postfixCompletionProvider'
 import { notCommand, NOT_COMMAND } from './notCommand'
+import { registerConstNameApi } from './utils/registerConstNameApi'
 
 let completionProvider: vsc.Disposable
 
 export function activate (context: vsc.ExtensionContext): void {
   registerCompletionProvider(context)
+  registerConstNameApi()
 
   context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: ts.BinaryExpression[]) => {
     const [...expressions] = args
