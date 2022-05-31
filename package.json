@@ -60,7 +60,7 @@
 						"raw",
 						"inserted"
 					],
-					"default": "raw",
+					"default": "inserted",
 					"markdownEnumDescriptions": [
 						"Raw snippet as you defined in settings.json",
 						"The inserted text variant"
