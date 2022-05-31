@@ -6,7 +6,7 @@ const config = vsc.workspace.getConfiguration('postfix')
 
 describe('Single line template tests', () => {
   before((done) => {
-    config.update('deriveVariableName', false, true).then(done, done)
+    config.update('inferVariableName', false, true).then(done, done)
   })
   Test('not template - already negated expression | !expr{not}               >> expr')
   Test('let template - binary expression          | a * 3{let}               >> let name = a * 3')
@@ -81,13 +81,13 @@ describe('Single line template tests', () => {
 
   describe('Derive variable name', () => {
     before((done) => {
-      config.update('deriveVariableName', true, true).then(done, done)
+      config.update('inferVariableName', true, true).then(done, done)
     })
     Test('let template with name - new expression  | new Type(1, 2, 3){let}           >> let type = new Type(1, 2, 3)')
     Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}   >> let somethingCool = getSomethingCool(1, 2, 3)')
     Test('forof template with array item name      | usersList{forof}                 >> for(letuserofusersList){}', true)
     after((done) => {
-      config.update('deriveVariableName', false, true).then(done, done)
+      config.update('inferVariableName', false, true).then(done, done)
     })
   })
 

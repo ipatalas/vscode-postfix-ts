@@ -14,9 +14,9 @@ export class VarTemplate extends BaseExpressionTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     let varName: string
 
-    const deriveVariableName = vsc.workspace.getConfiguration('postfix', null).get<boolean>('deriveVariableName')
+    const inferVariableName = vsc.workspace.getConfiguration('postfix', null).get<boolean>('inferVariableName')
     const expr = node.getText();
-    varName = deriveVariableName ?
+    varName = inferVariableName ?
       expr.startsWith('new') ?
         _.lowerFirst(
           clipByLastIndex(/(.+?)\(/.exec(expr)[1], [' ', '.'])

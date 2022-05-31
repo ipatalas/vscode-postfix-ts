@@ -43,8 +43,8 @@ export class ForTemplate extends BaseForTemplate {
 }
 
 const getArrayItemName = (node: ts.Node) => {
-  const deriveVariableName = vsc.workspace.getConfiguration('postfix', null).get<boolean>('deriveVariableName')
-  return (deriveVariableName ? getSingularFormFromExpression(node.getText())?.replace(/\$/g, '\\$') : undefined) ?? 'item';
+  const inferVariableName = vsc.workspace.getConfiguration('postfix', null).get<boolean>('inferVariableName')
+  return (inferVariableName ? getSingularFormFromExpression(node.getText())?.replace(/\$/g, '\\$') : undefined) ?? 'item';
 }
 
 export class ForOfTemplate extends BaseForTemplate {
