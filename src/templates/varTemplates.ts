@@ -1,6 +1,5 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode'
-import * as _ from 'lodash'
 import { getVariableNameFromCallExpresion } from 'const-name'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
