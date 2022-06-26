@@ -5,15 +5,13 @@ on:
     branches:
       - master
       - develop
+    tags:
+      - v*
 
   pull_request:
     branches:
       - master
       - develop
-
-  release:
-    types:
-    - created
 
 jobs:
   build-and-publish:
