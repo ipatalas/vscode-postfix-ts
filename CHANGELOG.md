@@ -1,6 +1,8 @@
 # Change Log
 
 ## [1.10.1] - 2022-06-26
+### Changed:
+- Merged PR [#61](https://github.com/ipatalas/vscode-postfix-ts/pull/61) - Print render text instead of raw body
 ### Fixed:
 - [Incorrect insertion when in mid of expression](https://github.com/ipatalas/vscode-postfix-ts/issues/60)
 - [Postfixes should be suggested only after .](https://github.com/ipatalas/vscode-postfix-ts/issues/64)
