@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.10.1] - 2022-06-26
+### Fixed:
+- [Incorrect insertion when in mid of expression](https://github.com/ipatalas/vscode-postfix-ts/issues/60)
+- [Postfixes should be suggested only after .](https://github.com/ipatalas/vscode-postfix-ts/issues/64)
+
 ## [1.10.0] - 2022-05-22
 ### Added:
 - Merged PR [#52](https://github.com/ipatalas/vscode-postfix-ts/pull/52) - Bundle extension to reduce size and improve startup time (thanks @jasonwilliams!)
