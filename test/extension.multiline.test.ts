@@ -53,4 +53,13 @@ describe('Multiline template tests', () => {
       | \t1,         >> \t1,
       | \t2,         >> \t2,
       | \t3){return} >> \t3)`)
+
+  Test(`let template - method call in return object method
+      | function hoge() {   >> function hoge() {
+      |   return {          >>   return {
+      |     method(){       >>     method(){
+      |       caller(){let} >>       let name = caller()
+      |     },              >>     },
+      |   }                 >>   }
+      | }                   >> }`)
 })
