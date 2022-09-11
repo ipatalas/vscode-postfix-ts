@@ -10,7 +10,7 @@ export class ReturnTemplate extends BaseExpressionTemplate {
       .build()
   }
 
-  canUse (node: ts.Node) {
+  override canUse (node: ts.Node) {
     return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || this.isStringLiteral(node))
       && !this.inReturnStatement(node)
       && !this.inFunctionArgument(node)

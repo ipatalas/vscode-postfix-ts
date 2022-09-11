@@ -21,7 +21,7 @@ export class CastTemplate extends BaseExpressionTemplate {
       .build()
   }
 
-  canUse (node: ts.Node) {
+  override canUse (node: ts.Node) {
     return super.canUse(node) || this.isNewExpression(node)
   }
 }

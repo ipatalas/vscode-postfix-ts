@@ -82,7 +82,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 }
 
 export abstract class BaseExpressionTemplate extends BaseTemplate {
-  abstract buildCompletionItem(node: ts.Node, indentSize?: number)
+  abstract override buildCompletionItem(node: ts.Node, indentSize?: number)
 
   canUse(node: ts.Node) {
     return !this.inIfStatement(node) && !this.isTypeNode(node) &&

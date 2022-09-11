@@ -5,7 +5,7 @@ import { BaseExpressionTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
 
 abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
-  canUse(node: ts.Node) {
+  override canUse(node: ts.Node) {
     return super.canUse(node)
       && !this.inReturnStatement(node)
       && !this.inFunctionArgument(node)
@@ -42,7 +42,7 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
     super(keyword)
   }
 
-  canUse(node: ts.Node) {
+  override canUse(node: ts.Node) {
     if (this.isUndefinedTemplate) {
       const config = vsc.workspace.getConfiguration('postfix', null)
       const value = config.get<string>('undefinedMode')
@@ -67,7 +67,7 @@ export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
     super(keyword)
   }
 
-  canUse(node: ts.Node) {
+  override canUse(node: ts.Node) {
     const config = vsc.workspace.getConfiguration('postfix', null)
     const value = config.get<string>('undefinedMode')
     if (value !== 'Typeof') {
