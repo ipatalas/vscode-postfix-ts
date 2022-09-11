@@ -92,7 +92,9 @@ describe('Single line template tests', () => {
     run('expression',
       '  expr.test{custom}                    | expr.test{custom}   >> !expr.test',
       '  expr[index]{custom}                  | expr[index]{custom} >> !expr[index]')
-    run('binary-expression', 'x > 100{custom} | x > 100{custom}     >> !x > 100')
+    run('binary-expression',
+      'x > 100{custom}                        | x > 100{custom}     >> !x > 100',
+      'x > y{custom}                          | x > y{custom}       >> !x > y')
     run('unary-expression', ' !x{custom}      | !x{custom}          >> !!x')
     run('function-call',
       '  call(){custom}                       | call(){custom}      >> !call()',
