@@ -44,6 +44,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     const indentSize = this.getIndentSize(document, currentNode)
+    const replacementNode = this.getNodeForReplacement(currentNode)
 
     try {
       return this.templates
@@ -56,7 +57,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
           return canUseTemplate
         })
-        .map(t => t.buildCompletionItem(this.getNodeForReplacement(currentNode), indentSize))
+        .map(t => t.buildCompletionItem(replacementNode, indentSize))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -83,7 +84,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return this.findClosestParent(node, ts.SyntaxKind.TypeReference)
     }
 
-    return node
+    const binaryExpression = this.findClosestParent(node, ts.SyntaxKind.BinaryExpression);
+
+    return binaryExpression ?? node
   }
 
   private findClosestParent(node: ts.Node, kind: ts.SyntaxKind): ts.Node {
