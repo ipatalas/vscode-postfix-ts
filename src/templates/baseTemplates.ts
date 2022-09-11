@@ -13,19 +13,19 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isElementAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ElementAccessExpression
   protected isExpression = (node: ts.Node) => this.isSimpleExpression(node) || this.isPropertyAccessExpression(node) || this.isElementAccessExpression(node)
   protected isIdentifier = (node: ts.Node) => node.kind === ts.SyntaxKind.Identifier
-  
+
   protected isUnaryExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PostfixUnaryExpression || node.kind === ts.SyntaxKind.PrefixUnaryExpression
   protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
   protected isNewExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.NewExpression
   protected inAssignmentStatement = (node: ts.Node) => node.parent && ts.isBinaryExpression(node.parent) && node.parent.operatorToken.kind === ts.SyntaxKind.EqualsToken
   protected inFunctionArgument = (node: ts.Node) => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
-  
+
   protected isObjectLiteral = (node: ts.Node) => {
     return ts.isBlock(node) && (node.statements.length === 0 || node.statements.some(x => ts.isLabeledStatement(x)))
   }
-  
+
   protected isStringLiteral = (node: ts.Node) => {
-    return ts.isTemplateSpan(node) 
+    return ts.isTemplateSpan(node)
       || (ts.isExpressionStatement(node) && (ts.isStringLiteral(node.expression) || ts.isNoSubstitutionTemplateLiteral(node.expression)))
   }
 
@@ -39,21 +39,21 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected inAwaitedExpression = (node: ts.Node) => {
-    if (ts.isFunctionExpression(node) || ts.isArrowFunction(node)) {
+    if (this.isAnyFunction(node)) {
       return false
     }
     return node.kind === ts.SyntaxKind.AwaitExpression || (node.parent && this.inAwaitedExpression(node.parent))
   }
 
   protected inReturnStatement = (node: ts.Node) => {
-    if (ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isMethodDeclaration(node)) {
+    if (this.isAnyFunction(node)) {
       return false
     }
     return node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
   }
 
   protected inVariableDeclaration = (node: ts.Node) => {
-    if (ts.isFunctionExpression(node) || ts.isArrowFunction(node)) {
+    if (this.isAnyFunction(node)) {
       return false
     }
 
@@ -66,6 +66,10 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
+  }
+
+  protected isAnyFunction = (node: ts.Node) => {
+    return ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isMethodDeclaration(node)
   }
 
   protected inIfStatement = (node: ts.Node, expressionNode?: ts.Node) => {

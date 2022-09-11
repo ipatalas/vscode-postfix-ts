@@ -10,7 +10,7 @@ export class CompletionItemBuilder {
   private code: string
   private node: ts.Node
 
-  constructor(keyword: string, node: ts.Node, indentSize?: number) {
+  private constructor(keyword: string, node: ts.Node, indentSize?: number) {
     if (ts.isAwaitExpression(node.parent)) {
       node = node.parent
     }
