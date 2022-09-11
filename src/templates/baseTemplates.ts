@@ -46,7 +46,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected inReturnStatement = (node: ts.Node) => {
-    if (ts.isFunctionExpression(node) || ts.isArrowFunction(node)) {
+    if (ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isMethodDeclaration(node)) {
       return false
     }
     return node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
