@@ -49,7 +49,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     try {
       return this.templates
         .filter(t => {
-          let canUseTemplate = t.canUse(currentNode)
+          let canUseTemplate = t.canUse(ts.isNonNullExpression(currentNode) ? currentNode.expression : currentNode)
 
           if (this.mergeMode === 'override') {
             canUseTemplate &&= (t instanceof CustomTemplate || !this.customTemplateNames.includes(t.templateName))
