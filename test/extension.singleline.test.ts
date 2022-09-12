@@ -5,6 +5,10 @@ import { describe, before, after } from 'mocha';
 const config = vsc.workspace.getConfiguration('postfix')
 
 describe('Single line template tests', () => {
+  before((done) => {
+    config.update('inferVariableName', false, true).then(done, done)
+  })
+
   Test('not template - already negated expression | !expr{not}               >> expr')
   Test('let template - binary expression          | a * 3{let}               >> let name = a * 3')
   Test('let template - non-null as assertion      | test!{let}               >> let name = test!')
@@ -87,6 +91,16 @@ describe('Single line template tests', () => {
 
     Test('undefined template    | expr{undefined}    >> if(typeofexpr==="undefined"){}', true)
     Test('notundefined template | expr{notundefined} >> if(typeofexpr!=="undefined"){}', true)
+  })
+
+  describe('Infer variable name', () => {
+    before(setInferVarName(config, true))
+    after(setInferVarName(config, false))
+
+    Test('let template with name - new expression  | new Type(1, 2, 3){let}           >> let type = new Type(1, 2, 3)')
+    Test('let template with name - new expression  | new namespace.Type(1, 2, 3){let} >> let type = new namespace.Type(1, 2, 3)')
+    Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}   >> let somethingCool = getSomethingCool(1, 2, 3)')
+    Test('forof template with array item name      | usersList{forof}                 >> for(letuserofusersList){}', true)
   })
 
   describe('custom template tests', () => {
@@ -183,5 +197,11 @@ function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, bod
 function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
   return (done: Mocha.Done) => {
     config.update('customTemplates', undefined, true).then(done, done)
+  }
+}
+
+function setInferVarName(config: vsc.WorkspaceConfiguration, value: boolean) {
+  return (done: Mocha.Done) => {
+    config.update('inferVariableName', value, true).then(done, done)
   }
 }
