@@ -1,4 +1,6 @@
 import * as ts from 'typescript'
+import * as vsc from 'vscode'
+import * as pluralize from "pluralize";
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { getIndentCharacters } from '../utils'
@@ -40,11 +42,33 @@ export class ForTemplate extends BaseForTemplate {
   }
 }
 
+const getArrayItemName = (node: ts.Node) => {
+  const inferVarNameEnabled = vsc.workspace.getConfiguration('postfix', null).get<boolean>('inferVariableName')
+  let subjectName = 'item'
+
+  if (inferVarNameEnabled) {
+    if (ts.isIdentifier(node)) {
+      subjectName = node.text
+    }
+
+    const clean = subjectName.replace(/^(?:all)?(.+?)(?:List)?$/, "$1")
+    const singular = pluralize.singular(clean)
+
+    if (singular !== clean) {
+      return singular
+    }
+  }
+
+  return subjectName
+}
+
 export class ForOfTemplate extends BaseForTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    const itemName = getArrayItemName(node)
+
     return CompletionItemBuilder
       .create('forof', node, indentSize)
-      .replace(`for (let \${1:item} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`for (let \${1:${itemName}} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
       .build()
   }
 }
@@ -54,10 +78,11 @@ export class ForEachTemplate extends BaseForTemplate {
     const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
     const prefix = isAwaited ? '(' : ''
     const suffix = isAwaited ? ')' : ''
+    const itemName = getArrayItemName(node)
 
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
-      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1:item} => \${2})`, true)
+      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1:${itemName}} => \${2})`, true)
       .build()
   }
 }

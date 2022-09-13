@@ -1,10 +1,12 @@
 import * as ts from 'typescript'
-import { CompletionItemBuilder } from '../completionItemBuilder'
-import { BaseExpressionTemplate } from './baseTemplates'
 import * as vsc from 'vscode'
 import _ = require('lodash')
+import { CompletionItemBuilder } from '../completionItemBuilder'
+import { BaseExpressionTemplate } from './baseTemplates'
 
 export class VarTemplate extends BaseExpressionTemplate {
+  private static MethodCallRegex = /^(get|read|create|retrieve|select|modify|update|use|find)(?<name>[A-Z].+?)(By.*)?$/
+
   constructor(private keyword: 'var' | 'let' | 'const') {
     super(keyword)
   }
@@ -28,14 +30,31 @@ export class VarTemplate extends BaseExpressionTemplate {
   }
 
   private inferVarName(node: ts.Node) {
-    if (ts.isNewExpression(node)) {
-      const buildVarName = (name: string) => name && _.lowerFirst(name)
-      if (ts.isIdentifier(node.expression)) {
-        return buildVarName(node.expression.text)
-      } else if (ts.isPropertyAccessExpression(node.expression)) {
-        return buildVarName(node.expression.name.text)
-      }
-    }
+    const buildVarName = (name: string) => name && _.lowerFirst(name)
 
+    if (ts.isNewExpression(node)) {
+      return buildVarName(this.inferNewExpressionVar(node))
+    } else if (ts.isCallExpression(node)) {
+      const methodName = this.getMethodName(node)
+      const matches = VarTemplate.MethodCallRegex.exec(methodName)
+
+      return buildVarName(matches?.groups?.name)
+    }
+  }
+
+  private getMethodName(node: ts.CallExpression) {
+    if (ts.isIdentifier(node.expression)) {
+      return node.expression.text
+    } else if (ts.isPropertyAccessExpression(node.expression)) {
+      return node.expression.name.text
+    }
+  }
+
+  private inferNewExpressionVar(node: ts.NewExpression) {
+    if (ts.isIdentifier(node.expression)) {
+      return node.expression.text
+    } else if (ts.isPropertyAccessExpression(node.expression)) {
+      return node.expression.name.text
+    }
   }
 }

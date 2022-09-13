@@ -97,10 +97,11 @@ describe('Single line template tests', () => {
     before(setInferVarName(config, true))
     after(setInferVarName(config, false))
 
-    Test('let template with name - new expression  | new Type(1, 2, 3){let}           >> let type = new Type(1, 2, 3)')
-    Test('let template with name - new expression  | new namespace.Type(1, 2, 3){let} >> let type = new namespace.Type(1, 2, 3)')
-    Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}   >> let somethingCool = getSomethingCool(1, 2, 3)')
-    Test('forof template with array item name      | usersList{forof}                 >> for(letuserofusersList){}', true)
+    Test('let template with name - new expression  | new Type(1, 2, 3){let}              >> let type = new Type(1, 2, 3)')
+    Test('let template with name - new expression  | new namespace.Type(1, 2, 3){let}    >> let type = new namespace.Type(1, 2, 3)')
+    Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}      >> let somethingCool = getSomethingCool(1, 2, 3)')
+    Test('let template with name - call expression | this.getSomethingCool(1, 2, 3){let} >> let somethingCool = this.getSomethingCool(1, 2, 3)')
+    Test('forof template with array item name      | usersList{forof}                    >> for(letuserofusersList){}', true)
   })
 
   describe('custom template tests', () => {

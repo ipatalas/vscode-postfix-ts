@@ -114,6 +114,11 @@
 						"append",
 						"override"
 					]
+				},
+				"postfix.inferVariableName": {
+					"type": "boolean",
+					"markdownDescription": "Try to guess variable names for `var`, `let`, `const`, `forEach` and `forof` templates.",
+					"default": true
 				}
 			}
 		}
@@ -132,6 +137,7 @@
 		"@types/lodash": "^4.14.182",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "^16.11.7",
+		"@types/pluralize": "^0.0.29",
 		"@types/vscode": "^1.60.0",
 		"@typescript-eslint/eslint-plugin": "^5.25.0",
 		"@typescript-eslint/parser": "^5.25.0",
@@ -146,6 +152,7 @@
 	},
 	"dependencies": {
 		"lodash": "^4.17.21",
+		"pluralize": "^8.0.0",
 		"typescript": "^4.6.4",
 		"vscode-snippet-parser": "^0.0.5"
 	}
