@@ -2,6 +2,7 @@ import * as vsc from 'vscode'
 import ts = require('typescript')
 import { adjustMultilineIndentation } from './utils/multiline-expressions'
 import { SnippetParser } from 'vscode-snippet-parser'
+import { getConfigValue } from './utils'
 
 const RegexExpression = '{{expr(?::(upper|lower|capitalize))?}}'
 
@@ -72,8 +73,7 @@ export class CompletionItemBuilder {
   private addCodeBlockDescription = (replacement: string) => {
     const addCodeBlock = (md: vsc.MarkdownString) => {
       const code = this.replaceExpression(replacement, this.code);
-      const snippetPreviewMode = vsc.workspace.getConfiguration('postfix', null)
-        .get<'raw' | 'inserted'>('snippetPreviewMode')
+      const snippetPreviewMode = getConfigValue<'raw' | 'inserted'>('snippetPreviewMode')
       return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts');
     }
 

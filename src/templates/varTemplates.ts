@@ -1,8 +1,8 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import _ = require('lodash')
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
+import { getConfigValue } from '../utils'
 
 export class VarTemplate extends BaseExpressionTemplate {
   private static MethodCallRegex = /^(get|read|create|retrieve|select|modify|update|use|find)(?<name>[A-Z].+?)(By.*)?$/
@@ -12,7 +12,7 @@ export class VarTemplate extends BaseExpressionTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    const inferVarNameEnabled = vsc.workspace.getConfiguration('postfix', null).get<boolean>('inferVariableName')
+    const inferVarNameEnabled = getConfigValue<boolean>('inferVariableName')
     const suggestedVarName = inferVarNameEnabled ? this.inferVarName(node) : undefined;
 
     return CompletionItemBuilder

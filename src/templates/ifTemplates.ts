@@ -1,8 +1,7 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
-import { getIndentCharacters } from '../utils'
+import { getConfigValue, getIndentCharacters } from '../utils'
 
 abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
   override canUse(node: ts.Node) {
@@ -44,8 +43,7 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
 
   override canUse(node: ts.Node) {
     if (this.isUndefinedTemplate) {
-      const config = vsc.workspace.getConfiguration('postfix', null)
-      const value = config.get<string>('undefinedMode')
+      const value = getConfigValue<string>('undefinedMode')
       if (value !== 'Equal') {
         return false
       }
@@ -68,8 +66,7 @@ export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
   }
 
   override canUse(node: ts.Node) {
-    const config = vsc.workspace.getConfiguration('postfix', null)
-    const value = config.get<string>('undefinedMode')
+    const value = getConfigValue<string>('undefinedMode')
     if (value !== 'Typeof') {
       return false
     }

@@ -1,9 +1,8 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode'
 import * as pluralize from "pluralize";
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
-import { getIndentCharacters } from '../utils'
+import { getConfigValue, getIndentCharacters } from '../utils'
 
 abstract class BaseForTemplate extends BaseTemplate {
   canUse(node: ts.Node): boolean {
@@ -43,7 +42,7 @@ export class ForTemplate extends BaseForTemplate {
 }
 
 const getArrayItemName = (node: ts.Node) => {
-  const inferVarNameEnabled = vsc.workspace.getConfiguration('postfix', null).get<boolean>('inferVariableName')
+  const inferVarNameEnabled = getConfigValue<boolean>('inferVariableName')
   let subjectName = 'item'
 
   if (inferVarNameEnabled) {

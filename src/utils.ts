@@ -7,3 +7,7 @@ export const getIndentCharacters = () => {
     return '\t'
   }
 }
+
+export const getConfigValue = <Type>(name: string): Type | undefined => {
+  return vsc.workspace.getConfiguration('postfix', null).get<Type>(name)
+}
