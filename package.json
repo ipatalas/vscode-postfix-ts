@@ -152,7 +152,7 @@
 	},
 	"dependencies": {
 		"lodash": "^4.17.21",
-		"pluralize": "^8.0.0",
+		"pluralize": "github:plurals/pluralize",
 		"typescript": "^4.6.4",
 		"vscode-snippet-parser": "^0.0.5"
 	}
