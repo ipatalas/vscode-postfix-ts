@@ -35,13 +35,9 @@ export class CompletionItemBuilder {
 
   public replace = (replacement: string, useSnippets?: boolean): CompletionItemBuilder => {
     this.addCodeBlockDescription(this.replaceExpression(replacement, this.code))
-
-    if (useSnippets) {
-      const escapedCode = this.code.replace(/\$/g, '\\$')
-
-      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode));
-    } else {
-      this.item.insertText = this.replaceExpression(replacement, this.code)
+    // don't have unscaped $ in replacement? not a snippet.
+    if (useSnippets && !/(?<!\\)\$/.test(replacement)) {
+      useSnippets = false
     }
 
     const src = this.node.getSourceFile()
@@ -53,9 +49,19 @@ export class CompletionItemBuilder {
       new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
     )
 
-    this.item.additionalTextEdits = [
-      vsc.TextEdit.delete(rangeToDelete)
-    ]
+    if (useSnippets) {
+      const escapedCode = this.code.replace(/\$/g, '\\$')
+
+      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode));
+      this.item.additionalTextEdits = [
+        vsc.TextEdit.delete(rangeToDelete)
+      ]
+    } else {
+      this.item.insertText = ''
+      this.item.additionalTextEdits = [
+        vsc.TextEdit.replace(rangeToDelete, this.replaceExpression(replacement, this.code))
+      ]
+    }
 
     return this
   }
