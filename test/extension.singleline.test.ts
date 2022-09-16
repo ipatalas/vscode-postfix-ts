@@ -102,6 +102,7 @@ describe('Single line template tests', () => {
     Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}      >> let somethingCool = getSomethingCool(1, 2, 3)')
     Test('let template with name - call expression | this.getSomethingCool(1, 2, 3){let} >> let somethingCool = this.getSomethingCool(1, 2, 3)')
     Test('forof template with array item name      | usersList{forof}                    >> for(letuserofusersList){}', true)
+    Test('forof template with array item name 2    | cookies{forof}                      >> for(letcookieofcookies){}', true)
   })
 
   describe('custom template tests', () => {
