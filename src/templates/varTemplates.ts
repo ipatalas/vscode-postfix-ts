@@ -44,7 +44,8 @@ export class VarTemplate extends BaseExpressionTemplate {
         return
       }
 
-      return [...cleanerVariant && cleanerVariant !== name ? [cleanerVariant] : [], name].map(buildVarName)
+      const uniqueValues = [...new Set([cleanerVariant, name])]
+      return uniqueValues.filter(x => x).map(buildVarName)
     }
   }
 
