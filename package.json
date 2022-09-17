@@ -91,6 +91,7 @@
 							"when": {
 								"type": "array",
 								"description": "Context in which the template should be suggested",
+								"uniqueItems": true,
 								"items": {
 									"type": "string",
 									"enum": [
