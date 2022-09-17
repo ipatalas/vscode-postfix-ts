@@ -77,6 +77,7 @@
 						"properties": {
 							"name": {
 								"type": "string",
+								"suggestSortText": "0",
 								"description": "Name of the template. It will be used in auto-complete suggestions"
 							},
 							"description": {
