@@ -74,6 +74,18 @@
 							"name",
 							"body"
 						],
+						"defaultSnippets": [
+							{
+								"label": "New postfix",
+								"body": {
+									"name": "$1",
+									"body": "$2",
+									"when": [
+										"$3"
+									]
+								}
+							}
+						],
 						"properties": {
 							"name": {
 								"type": "string",
