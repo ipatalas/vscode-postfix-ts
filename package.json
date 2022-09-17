@@ -86,7 +86,7 @@
 							},
 							"body": {
 								"type": "string",
-								"description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
+								"markdownDescription": "Body of the template. `{{expr}}` will be replaced with the expression before the cursor"
 							},
 							"when": {
 								"type": "array",
