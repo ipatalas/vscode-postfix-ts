@@ -90,7 +90,7 @@ There is also one special placeholder that can be used:
 ```
 
 This snippet will have the following outcome (name of the original identifier has been capitalized): 
-![fdsf](images/capitalize.gif)
+![capitalize example](images/capitalize.gif)
 
 ### Template conditions
 
@@ -106,6 +106,16 @@ This snippet will have the following outcome (name of the original identifier ha
 
 If no conditions are specified then given template will be available under all possible situations
 
+## Infer variable names (1.11.0 and above)
+
+For `var`/`let`/`const` and `forof`/`foreach` templates the extension will try to infer a better name for the variable based on the subject expression.
+For instance `fs.readFile()` expression will result in variable named `file` instead of default `name`. Same applies to `forof`/`foreach` templates, but in this case the extension is trying to figure out a singular form of the subject. Of course this can still be easily changed, it's only a suggestion.
+Few examples on the image below:
+
+![infer-names](images/infer-names.png)
+
+If you have ideas for more "patterns" that could be easily handled please create an issue.
+
 ## Configuration
 
 This plugin contributes the following [settings](https://code.visualstudio.com/docs/customization/userandworkspace):
@@ -116,6 +126,7 @@ This plugin contributes the following [settings](https://code.visualstudio.com/d
   - `append` - both built-in and custom template will be shown
   - `override` - only custom template will be shown (it overrides built-in one)
 - `postfix.undefinedMode`: determines the behavior of `.undefined` and `.notundefined` templates, either equality comparison or typeof
+- `postfix.inferVariableName`: enables variable name inferring
 
 The `postfix.languages` setting can be used to make the extension available for inline JS/TS which is in other files like **.html**, **.vue** or others. You must still include `javascript` and `typescript` if you want the extension to be available there among the others.
 

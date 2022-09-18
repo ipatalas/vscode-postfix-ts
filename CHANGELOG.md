@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.11.0] - 2022-09-18
+### Added:
+- Infer variable names for some templates [#63](https://github.com/ipatalas/vscode-postfix-ts/issues/63) - many thanks to @zardoy for great ideas and part of the implementation
+- Merged PR [#73](https://github.com/ipatalas/vscode-postfix-ts/pull/73) - minor improvement for custom templates management
+### Fixed: 
+- [Doesn't always work in binary expression](https://github.com/ipatalas/vscode-postfix-ts/issues/67)
+- [Templates did not work inside nested method declaration](https://github.com/ipatalas/vscode-postfix-ts/issues/66)
+- Merged PR [#70](https://github.com/ipatalas/vscode-postfix-ts/pull/70) - Fix for [#69](https://github.com/ipatalas/vscode-postfix-ts/issues/69)
+- [Editor jumping when inserting a snippet](https://github.com/ipatalas/vscode-postfix-ts/pull/73) - credits to @zaradoy again
+
 ## [1.10.1] - 2022-06-26
 ### Changed:
 - Merged PR [#61](https://github.com/ipatalas/vscode-postfix-ts/pull/61) - Print render text instead of raw body
