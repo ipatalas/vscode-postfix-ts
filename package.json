@@ -74,9 +74,22 @@
 							"name",
 							"body"
 						],
+						"defaultSnippets": [
+							{
+								"label": "New postfix",
+								"body": {
+									"name": "$1",
+									"body": "$2",
+									"when": [
+										"$3"
+									]
+								}
+							}
+						],
 						"properties": {
 							"name": {
 								"type": "string",
+								"suggestSortText": "0",
 								"description": "Name of the template. It will be used in auto-complete suggestions"
 							},
 							"description": {
@@ -85,11 +98,12 @@
 							},
 							"body": {
 								"type": "string",
-								"description": "Body of the template. {{expr}} will be replaced with the expression before the cursor"
+								"markdownDescription": "Body of the template. `{{expr}}` will be replaced with the expression before the cursor"
 							},
 							"when": {
 								"type": "array",
 								"description": "Context in which the template should be suggested",
+								"uniqueItems": true,
 								"items": {
 									"type": "string",
 									"enum": [
