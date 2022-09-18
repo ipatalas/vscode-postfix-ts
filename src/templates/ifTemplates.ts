@@ -17,7 +17,7 @@ export class IfTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create('if', node, indentSize)
-      .replace(`if ({{expr}}) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`if ({{expr}}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
@@ -31,7 +31,7 @@ export class ElseTemplate extends BaseIfElseTemplate {
 
     return CompletionItemBuilder
       .create('else', node, indentSize)
-      .replace(`if (!${replacement}) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`if (!${replacement}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
@@ -55,7 +55,7 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
-      .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
@@ -77,7 +77,7 @@ export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
-      .replace(`if (typeof {{expr}} ${this.operator} "${this.operand}") {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`if (typeof {{expr}} ${this.operator} "${this.operand}") {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }

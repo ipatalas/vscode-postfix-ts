@@ -22,7 +22,7 @@ export class CustomTemplate extends BaseTemplate {
     return CompletionItemBuilder
       .create(this.templateName, node, indentSize)
       .description(this.description)
-      .replace(this.body, true)
+      .replace(this.body)
       .build()
   }
 

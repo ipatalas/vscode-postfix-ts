@@ -33,16 +33,8 @@ export class CompletionItemBuilder {
     return this
   }
 
-  public replace = (replacement: string, useSnippets?: boolean): CompletionItemBuilder => {
+  public replace = (replacement: string): CompletionItemBuilder => {
     this.addCodeBlockDescription(this.replaceExpression(replacement, this.code))
-
-    if (useSnippets) {
-      const escapedCode = this.code.replace(/\$/g, '\\$')
-
-      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode));
-    } else {
-      this.item.insertText = this.replaceExpression(replacement, this.code)
-    }
 
     const src = this.node.getSourceFile()
     const nodeStart = ts.getLineAndCharacterOfPosition(src, this.node.getStart(src))
@@ -53,9 +45,21 @@ export class CompletionItemBuilder {
       new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
     )
 
-    this.item.additionalTextEdits = [
-      vsc.TextEdit.delete(rangeToDelete)
-    ]
+    const useSnippets = /(?<!\\)\$\{?\d/.test(replacement)
+
+    if (useSnippets) {
+      const escapedCode = this.code.replace(/\$/g, '\\$')
+
+      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode));
+      this.item.additionalTextEdits = [
+        vsc.TextEdit.delete(rangeToDelete)
+      ]
+    } else {
+      this.item.insertText = ''
+      this.item.additionalTextEdits = [
+        vsc.TextEdit.replace(rangeToDelete, this.replaceExpression(replacement, this.code))
+      ]
+    }
 
     return this
   }

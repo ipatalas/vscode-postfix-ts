@@ -30,7 +30,7 @@ export class ForTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('for', node, indentSize)
-      .replace(`for (let \${1:i} = 0; \${1} < \${2:${prefix}{{expr}}${suffix}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`for (let \${1:i} = 0; \${1} < \${2:${prefix}{{expr}}${suffix}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 
@@ -53,7 +53,7 @@ export class ForOfTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('forof', node, indentSize)
-      .replace(`for (let \${1|${itemNames.join(',')}|} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`, true)
+      .replace(`for (let \${1|${itemNames.join(',')}|} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
@@ -67,7 +67,7 @@ export class ForEachTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
-      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1|${itemNames.join(',')}|} => \${2})`, true)
+      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1|${itemNames.join(',')}|} => \${2})`)
       .build()
   }
 }

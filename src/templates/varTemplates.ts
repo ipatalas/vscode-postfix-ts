@@ -16,7 +16,7 @@ export class VarTemplate extends BaseExpressionTemplate {
 
     return CompletionItemBuilder
       .create(this.keyword, node, indentSize)
-      .replace(`${this.keyword} ${nameSnippet} = {{expr}}$0`, true)
+      .replace(`${this.keyword} ${nameSnippet} = {{expr}}$0`)
       .build()
   }
 
