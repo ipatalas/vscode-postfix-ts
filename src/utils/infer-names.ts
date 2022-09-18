@@ -12,11 +12,12 @@ export const inferVarTemplateName = (node: ts.Node): string[] => {
     return [lowerFirst(inferNewExpressionVar(node))]
   } else if (ts.isCallExpression(node)) {
     const methodName = getMethodName(node)
-    if (!methodName) {
+    const name = beautifyMethodName(methodName)
+    if (!name) {
       return
     }
 
-    return getUniqueVariants(methodName).map(lowerFirst)
+    return getUniqueVariants(name).map(lowerFirst)
   }
 }
 
@@ -26,7 +27,9 @@ export const inferForVarTemplate = (node: ts.Node): string[] => {
     return
   }
 
-  const clean = subjectName.replace(/^(?:all)?(.+?)(?:List)?$/, "$1")
+  const clean = ts.isCallExpression(node)
+    ? beautifyMethodName(subjectName)
+    : subjectName.replace(/^(?:all)?(.+?)(?:List)?$/, "$1")
 
   return getUniqueVariants(clean)
     .map(pluralize.singular)
@@ -40,6 +43,10 @@ function getUniqueVariants(name?: string) {
   return uniqueValues.filter(x => x)
 }
 
+function beautifyMethodName(name: string) {
+  return MethodCallRegex.exec(name)?.groups?.name
+}
+
 function getForExpressionName(node: ts.Node) {
   if (ts.isIdentifier(node)) {
     return node.text
@@ -51,14 +58,10 @@ function getForExpressionName(node: ts.Node) {
 }
 
 function getMethodName(node: ts.CallExpression) {
-  return MethodCallRegex.exec(getText())?.groups?.name
-
-  function getText() {
-    if (ts.isIdentifier(node.expression)) {
-      return node.expression.text
-    } else if (ts.isPropertyAccessExpression(node.expression)) {
-      return node.expression.name.text
-    }
+  if (ts.isIdentifier(node.expression)) {
+    return node.expression.text
+  } else if (ts.isPropertyAccessExpression(node.expression)) {
+    return node.expression.name.text
   }
 }
 

@@ -5,9 +5,8 @@ import { describe, before, after } from 'mocha';
 const config = vsc.workspace.getConfiguration('postfix')
 
 describe('Single line template tests', () => {
-  before((done) => {
-    config.update('inferVariableName', false, true).then(done, done)
-  })
+  before(setInferVarName(config, false))
+  after(setInferVarName(config, true))
 
   Test('not template - already negated expression | !expr{not}               >> expr')
   Test('let template - binary expression          | a * 3{let}               >> let name = a * 3')
@@ -104,6 +103,7 @@ describe('Single line template tests', () => {
     Test('forof template with array item name #1   | usersList{forof}                    >> for(letuserofusersList){}', true)
     Test('forof template with array item name #2   | cookies{forof}                      >> for(letcookieofcookies){}', true)
     Test('forof template with array item name #3   | order.items{forof}                  >> for(letitemoforder.items){}', true)
+    Test('forof template with array item name #4   | object.getCommands(){forof}         >> for(letcommandofobject.getCommands()){}', true)
   })
 
   describe('custom template tests', () => {

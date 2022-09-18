@@ -43,7 +43,8 @@ export class ForTemplate extends BaseForTemplate {
 
 const getArrayItemNames = (node: ts.Node): string[] => {
   const inferVarNameEnabled = getConfigValue<boolean>('inferVariableName')
-  return (inferVarNameEnabled ? inferForVarTemplate(node) : undefined) ?? ['item']
+  const suggestedNames = inferVarNameEnabled ? inferForVarTemplate(node) : undefined;
+  return suggestedNames?.length > 0 ? suggestedNames : ['item']
 }
 
 export class ForOfTemplate extends BaseForTemplate {
