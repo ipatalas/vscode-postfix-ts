@@ -12,7 +12,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isPropertyAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PropertyAccessExpression
   protected isElementAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ElementAccessExpression
   protected isExpression = (node: ts.Node) => this.isSimpleExpression(node) || this.isPropertyAccessExpression(node) || this.isElementAccessExpression(node)
-  protected isIdentifier = (node: ts.Node) => node.kind === ts.SyntaxKind.Identifier
+  protected isIdentifier = (node: ts.Node) => ts.isIdentifier(node) && !this.inTypeReference(node.parent)
 
   protected isUnaryExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PostfixUnaryExpression || node.kind === ts.SyntaxKind.PrefixUnaryExpression
   protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
@@ -35,7 +35,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     // Custom types (including namespaces) are encapsulated in TypeReferenceNode
-    return node.parent && ts.isTypeReferenceNode(node.parent) || node.parent.parent && ts.isTypeReferenceNode(node.parent.parent)
+    return node.parent && this.inTypeReference(node.parent)
   }
 
   protected inAwaitedExpression = (node: ts.Node) => {
@@ -79,6 +79,14 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     return node.parent && this.inIfStatement(node.parent, node)
+  }
+
+  protected inTypeReference = (node: ts.Node) => {
+    if (ts.isTypeReferenceNode(node)) {
+      return true
+    }
+
+    return node.parent && this.inTypeReference(node.parent)
   }
 }
 
