@@ -145,7 +145,7 @@
 		"prerun": "node ./tasks.js prerun",
 		"build": "npm run prerun && npm run compile",
 		"lint": "eslint .",
-		"deploy": "vsce publish"
+		"deploy": "vsce publish --help"
 	},
 	"devDependencies": {
 		"@types/lodash": "^4.14.182",
