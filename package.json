@@ -162,7 +162,7 @@
 		"glob": "^8.0.3",
 		"mocha": "^10.0.0",
 		"source-map-support": "0.5.21",
-		"vsce": "^2.9.2"
+		"vsce": "^2.11.0"
 	},
 	"dependencies": {
 		"lodash": "^4.17.21",
