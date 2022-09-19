@@ -168,6 +168,18 @@ describe('Single line template tests', () => {
     run('identifier', 'EXPR{custom}           | EXPR{custom}        >> EXPR')
     run('identifier', 'eXPr{custom}           | eXPr{custom}        >> EXPr')
   })
+
+  describe('custom template with snippet variables', () => {
+    const run = runWithCustomTemplate('console.log($TM_LINE_NUMBER, {{expr}})')
+
+    run('identifier', 'expr{custom}           | expr{custom}        >> console.log(1, expr)')
+  })
+
+  describe('custom template with escaped variable syntax', () => {
+    const run = runWithCustomTemplate('console.log("\\$TM_LINE_NUMBER", \\$1.{{expr}})')
+
+    run('identifier', 'expr{custom}           | expr{custom}        >> console.log("$TM_LINE_NUMBER", $1.expr)')
+  })
 })
 
 function runWithCustomTemplate(template: string) {
