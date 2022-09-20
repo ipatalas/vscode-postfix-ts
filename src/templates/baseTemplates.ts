@@ -74,6 +74,10 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected inAssignmentStatement = (node: ts.Node) => {
+    if (this.isAnyFunction(node)) {
+      return false
+    }
+
     if (ts.isBinaryExpression(node)) {
       return isAssignmentBinaryExpression(node)
     }
