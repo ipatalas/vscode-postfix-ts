@@ -84,9 +84,13 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return this.findClosestParent(node, ts.SyntaxKind.TypeReference)
     }
 
-    const binaryExpression = this.findClosestParent(node, ts.SyntaxKind.BinaryExpression);
+    const binaryExpression = this.findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
 
-    return binaryExpression ?? node
+    if (binaryExpression && binaryExpression.operatorToken.kind !== ts.SyntaxKind.EqualsToken) {
+      return binaryExpression
+    }
+
+    return node
   }
 
   private findClosestParent(node: ts.Node, kind: ts.SyntaxKind): ts.Node {
