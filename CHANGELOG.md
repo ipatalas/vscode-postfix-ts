@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.11.1] - 2022-09-20
+### Fixed:
+- [Don't display choice when only one variant is available](https://github.com/ipatalas/vscode-postfix-ts/issues/76)
+- [Binary expression with equals regression](https://github.com/ipatalas/vscode-postfix-ts/issues/77)
+- Merged PR [#78](https://github.com/ipatalas/vscode-postfix-ts/pull/70) - improvement for fix for #77
+
 ## [1.11.0] - 2022-09-18
 ### Added:
 - Infer variable names for some templates [#63](https://github.com/ipatalas/vscode-postfix-ts/issues/63) - many thanks to @zardoy for great ideas and part of the implementation
