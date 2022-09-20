@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
-import { getConfigValue, getIndentCharacters } from '../utils'
+import { getConfigValue, getIndentCharacters, getPlaceholderWithOptions } from '../utils'
 import { inferForVarTemplate } from '../utils/infer-names';
 
 abstract class BaseForTemplate extends BaseTemplate {
@@ -53,7 +53,7 @@ export class ForOfTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('forof', node, indentSize)
-      .replace(`for (let \${1|${itemNames.join(',')}|} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
+      .replace(`for (let ${getPlaceholderWithOptions(itemNames)} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
@@ -67,7 +67,7 @@ export class ForEachTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('foreach', node, indentSize)
-      .replace(`${prefix}{{expr}}${suffix}.forEach(\${1|${itemNames.join(',')}|} => \${2})`)
+      .replace(`${prefix}{{expr}}${suffix}.forEach(${getPlaceholderWithOptions(itemNames)} => \${2})`)
       .build()
   }
 }
