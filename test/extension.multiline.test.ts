@@ -62,4 +62,9 @@ describe('Multiline template tests', () => {
       |     },              >>     },
       |   }                 >>   }
       | }                   >> }`)
+
+  Test(`log template - in arrow function
+      | test = () => {      >> test = () => {
+      |   wrapMe{log}       >>   console.log(wrapMe)
+      | }                   >> }`)
 })
