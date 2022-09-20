@@ -25,6 +25,31 @@ export const findNodeAtPosition = (source: ts.SourceFile, character: number) => 
   }
 }
 
+export const isAssignmentBinaryExpression = (node: ts.BinaryExpression) => {
+  return [
+    ts.SyntaxKind.EqualsToken,
+    ts.SyntaxKind.PlusEqualsToken,
+    ts.SyntaxKind.MinusEqualsToken,
+    ts.SyntaxKind.SlashEqualsToken,
+    ts.SyntaxKind.AsteriskEqualsToken,
+    ts.SyntaxKind.AsteriskAsteriskEqualsToken,
+    ts.SyntaxKind.AmpersandEqualsToken,
+    // Bitwise assignments
+    ts.SyntaxKind.BarEqualsToken,
+    ts.SyntaxKind.BarBarEqualsToken,
+    ts.SyntaxKind.CaretEqualsToken,
+    ts.SyntaxKind.LessThanLessThanToken,
+    ts.SyntaxKind.LessThanLessThanEqualsToken,
+    ts.SyntaxKind.GreaterThanEqualsToken,
+    ts.SyntaxKind.GreaterThanGreaterThanEqualsToken,
+    ts.SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken,
+    // relatively new
+    ts.SyntaxKind.AmpersandAmpersandEqualsToken,
+    ts.SyntaxKind.QuestionQuestionToken,
+    ts.SyntaxKind.BarBarEqualsToken,
+  ].includes(node.operatorToken.kind)
+}
+
 interface INode {
   width: number
   depth: number

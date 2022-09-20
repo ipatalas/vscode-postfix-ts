@@ -5,7 +5,7 @@ import * as _ from 'lodash'
 import { IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
-import { findNodeAtPosition } from './utils/typescript'
+import { findNodeAtPosition, isAssignmentBinaryExpression } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 
 let currentSuggestion = undefined
@@ -86,28 +86,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const binaryExpression = this.findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
 
-    if (binaryExpression && ![
-      ts.SyntaxKind.EqualsToken,
-      ts.SyntaxKind.PlusEqualsToken,
-      ts.SyntaxKind.MinusEqualsToken,
-      ts.SyntaxKind.SlashEqualsToken,
-      ts.SyntaxKind.AsteriskEqualsToken,
-      ts.SyntaxKind.AsteriskAsteriskEqualsToken,
-      ts.SyntaxKind.AmpersandEqualsToken,
-      // Bitwise assignments
-      ts.SyntaxKind.BarEqualsToken,
-      ts.SyntaxKind.BarBarEqualsToken,
-      ts.SyntaxKind.CaretEqualsToken,
-      ts.SyntaxKind.LessThanLessThanToken,
-      ts.SyntaxKind.LessThanLessThanEqualsToken,
-      ts.SyntaxKind.GreaterThanEqualsToken,
-      ts.SyntaxKind.GreaterThanGreaterThanEqualsToken,
-      ts.SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken,
-      // relativly new
-      ts.SyntaxKind.AmpersandAmpersandEqualsToken,
-      ts.SyntaxKind.QuestionQuestionToken,
-      ts.SyntaxKind.BarBarEqualsToken,
-    ].includes(binaryExpression.operatorToken.kind)) {
+    if (binaryExpression && !isAssignmentBinaryExpression(binaryExpression)) {
       return binaryExpression
     }
 
