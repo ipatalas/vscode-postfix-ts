@@ -15,7 +15,7 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
       .build()
   }
 
-  isConsoleExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.Identifier && (node as ts.Identifier).text === 'console'
+  isConsoleExpression = (node: ts.Node) => ts.isIdentifier(node) && node.text === 'console'
 
   override canUse(node: ts.Node) {
     return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || this.isStringLiteral(node))

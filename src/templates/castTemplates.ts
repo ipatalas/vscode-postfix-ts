@@ -22,6 +22,12 @@ export class CastTemplate extends BaseExpressionTemplate {
   }
 
   override canUse (node: ts.Node) {
-    return super.canUse(node) || this.isNewExpression(node)
+    return !this.inIfStatement(node) && !this.isTypeNode(node) &&
+      (this.isIdentifier(node) ||
+        this.isExpression(node) ||
+        this.isNewExpression(node) ||
+        this.isUnaryExpression(node) ||
+        this.isBinaryExpression(node) ||
+        this.isCallExpression(node))
   }
 }

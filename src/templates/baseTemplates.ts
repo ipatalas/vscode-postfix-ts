@@ -1,6 +1,7 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode';
 import { IPostfixTemplate } from '../template'
+import { isAssignmentBinaryExpression } from '../utils/typescript';
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   constructor(public readonly templateName: string) {}
@@ -17,7 +18,6 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isUnaryExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PostfixUnaryExpression || node.kind === ts.SyntaxKind.PrefixUnaryExpression
   protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
   protected isNewExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.NewExpression
-  protected inAssignmentStatement = (node: ts.Node) => node.parent && ts.isBinaryExpression(node.parent) && node.parent.operatorToken.kind === ts.SyntaxKind.EqualsToken
   protected inFunctionArgument = (node: ts.Node) => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
 
   protected isObjectLiteral = (node: ts.Node) => {
@@ -73,6 +73,14 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isMethodDeclaration(node)
   }
 
+  protected inAssignmentStatement = (node: ts.Node) => {
+    if (ts.isBinaryExpression(node)) {
+      return isAssignmentBinaryExpression(node)
+    }
+
+    return node.parent && this.inAssignmentStatement(node.parent)
+  }
+
   protected inIfStatement = (node: ts.Node, expressionNode?: ts.Node) => {
     if (ts.isIfStatement(node)) {
       return !expressionNode || node.expression === expressionNode
@@ -94,7 +102,7 @@ export abstract class BaseExpressionTemplate extends BaseTemplate {
   abstract override buildCompletionItem(node: ts.Node, indentSize?: number)
 
   canUse(node: ts.Node) {
-    return !this.inIfStatement(node) && !this.isTypeNode(node) &&
+    return !this.inIfStatement(node) && !this.isTypeNode(node) && !this.inAssignmentStatement(node) &&
       (this.isIdentifier(node) ||
         this.isExpression(node) ||
         this.isUnaryExpression(node) ||

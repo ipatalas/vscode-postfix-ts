@@ -64,6 +64,7 @@ describe('Template usage', () => {
 
   testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
+  testTemplateUsage('inside assignment statement - short-circuit', 'test *= expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
