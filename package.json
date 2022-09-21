@@ -138,7 +138,7 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "node ./build.js --production",
+		"vscode:prepublish": "npm run prerun && node ./build.js --production",
 		"compile": "node ./build.js",
 		"test": "cross-env NODE_ENV=test node ./out/test/runTests.js",
 		"pretest": "node ./tasks.js pretest && tsc -p ./",
