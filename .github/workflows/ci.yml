@@ -27,7 +27,7 @@ jobs:
     - name: Run Linter
       run: npm run lint
     - name: Run tests
-      run: xvfb-run -a npm test
+      run: xvfb-run -a npm test-with-coverage
     - name: Code coverage
       uses: codecov/codecov-action@v1
     - name: Publish
