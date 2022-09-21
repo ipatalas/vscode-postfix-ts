@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.11.2] - 2022-09-21
+### Fixed:
+- Oooops, last release was incorrectly published, fixing manually for now - no changes here, only republish.
+
 ## [1.11.1] - 2022-09-20
 ### Fixed:
 - [Don't display choice when only one variant is available](https://github.com/ipatalas/vscode-postfix-ts/issues/76)
