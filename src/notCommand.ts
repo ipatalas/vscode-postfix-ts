@@ -6,10 +6,10 @@ export const NOT_COMMAND = 'complete.notTemplate'
 
 export function notCommand(editor: vsc.TextEditor, expressions: ts.BinaryExpression[]) {
   return vsc.window.showQuickPick(expressions.map(node => ({
-    label: node.getText(),
+    label: node.getText().replace(/\s+/g, ' '),
     description: '',
     detail: 'Invert this expression',
-    node: node
+    node
   })))
     .then(value => {
       if (!value) {
@@ -28,7 +28,8 @@ export function notCommand(editor: vsc.TextEditor, expressions: ts.BinaryExpress
           new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
         )
 
-        e.replace(range, invertExpression(value.node))
+        e.delete(range)
+        e.insert(range.start, invertExpression(value.node))
       })
     })
 }
