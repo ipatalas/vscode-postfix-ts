@@ -6,6 +6,8 @@ import { invertExpression } from '../utils/invert-expression'
 
 export class NotTemplate extends BaseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    node = this.normalizeBinaryExpression(node)
+
     const completionBuilder = CompletionItemBuilder
       .create('not', node, indentSize)
 
@@ -50,5 +52,13 @@ export class NotTemplate extends BaseTemplate {
     } while (node.parent)
 
     return possibleExpressions
+  }
+
+  private normalizeBinaryExpression = (node: ts.Node) => {
+    if (ts.isParenthesizedExpression(node.parent) && ts.isBinaryExpression(node.parent.expression)) {
+      return node.parent
+    }
+
+    return node
   }
 }

@@ -77,12 +77,14 @@ describe('Single line template tests', () => {
   Test('promisify template - custom type   | const x:A.B{promisify}     >> const x:Promise<A.B>')
   Test('promisify template - custom type 2 | const x:A.B.C.D{promisify} >> const x:Promise<A.B.C.D>')
 
-  QuickPick('not template - complex conditions - first expression        | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
-  QuickPick('not template - complex conditions - second expression       | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
-  QuickPick('not template - complex conditions - cancel quick pick       | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
-  QuickPick('not template - complex conditions - first expression - alt  | if (a > b && x * 100{not}) {} >> if(a>b&&!(x*100)){}', true, 0)
-  QuickPick('not template - complex conditions - second expression - alt | if (a > b && x * 100{not}) {} >> if(a<=b||!(x*100)){}', true, 1)
-  QuickPick('not template - complex conditions - cancel quick pick - alt | if (a > b && x * 100{not}) {} >> if(a>b&&x*100.){}', true, 0, true)
+  QuickPick('not template - complex conditions - first expression               | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
+  QuickPick('not template - complex conditions - second expression              | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
+  QuickPick('not template - complex conditions with parens - first expression   | if (a > b && (x * 100){not})  >> if(a>b&&!(x*100))', true, 0)
+  QuickPick('not template - complex conditions with parens - second expression  | if (a > b && (x * 100){not})  >> if(a<=b||!(x*100))', true, 1)
+  QuickPick('not template - complex conditions - cancel quick pick              | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
+  QuickPick('not template - complex conditions - first expression - alt         | if (a > b && x * 100{not}) {} >> if(a>b&&!(x*100)){}', true, 0)
+  QuickPick('not template - complex conditions - second expression - alt        | if (a > b && x * 100{not}) {} >> if(a<=b||!(x*100)){}', true, 1)
+  QuickPick('not template - complex conditions - cancel quick pick - alt        | if (a > b && x * 100{not}) {} >> if(a>b&&x*100.){}', true, 0, true)
 
   describe('undefined templates in `typeof` mode', () => {
     before(setUndefinedMode(config, 'Typeof'))
