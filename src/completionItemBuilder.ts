@@ -45,8 +45,7 @@ export class CompletionItemBuilder {
       new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
     )
 
-    // const useSnippets = /(?<!\\)\$/.test(replacement)
-    const useSnippets = true
+    const useSnippets = /(?<!\\)\$/.test(replacement)
 
     if (useSnippets) {
       const escapedCode = this.code.replace(/\$/g, '\\$')
@@ -55,6 +54,8 @@ export class CompletionItemBuilder {
       this.item.additionalTextEdits = [
         vsc.TextEdit.delete(rangeToDelete)
       ]
+      // align with insert text behavior below
+      this.item.keepWhitespace = true
     } else {
       this.item.insertText = ''
       this.item.additionalTextEdits = [
@@ -77,7 +78,7 @@ export class CompletionItemBuilder {
 
   private addCodeBlockDescription = (replacement: string) => {
     const addCodeBlock = (md: vsc.MarkdownString) => {
-      const code = this.replaceExpression(replacement, this.code);
+      const code = this.replaceExpression(replacement, this.code)
       const snippetPreviewMode = getConfigValue<'raw' | 'inserted'>('snippetPreviewMode')
       return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts');
     }
@@ -96,12 +97,16 @@ export class CompletionItemBuilder {
   private replaceExpression = (replacement: string, code: string, customRegex?: string) => {
     const re = new RegExp(customRegex || RegexExpression, 'g')
 
-    return replacement.replace(re, (_match, p1) => {
+    let replacedText = replacement.replace(re, (_match, p1) => {
       if (p1 && this.filters[p1]) {
         return this.filters[p1](code)
       }
       return code;
     })
+    const { line } = this.node.getSourceFile().getLineAndCharacterOfPosition(this.node.getStart())
+    const indentStart = vsc.window.activeTextEditor.document.lineAt(line).text.match(/^\s*/)?.[0]
+    replacedText = replacedText.split(/\r?\n/).map((line, i) => !i ? line : indentStart+line).join('\n')
+    return replacedText
   }
 
   private filters: {[key: string]: (x: string) => string} = {
