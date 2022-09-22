@@ -68,6 +68,9 @@ describe('Template usage', () => {
   testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
+  testTemplateUsage('inside JSX fragment', '<>a{cursor}</>', [])
+  testTemplateUsage('inside JSX element', '<p>a{cursor}</p>', [])
+  testTemplateUsage('inside JSX expression', '<p hidden={showMe{cursor}}>test</p>', ALL_TEMPLATES)
 
   testTemplateUsage('inside var declaration - function', 'const f1 = function () { expr{cursor}', ALL_TEMPLATES)
   testTemplateUsage('inside var declaration - arrow function', 'const f3 = () => { expr{cursor}', ALL_TEMPLATES)

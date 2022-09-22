@@ -1,11 +1,10 @@
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
-import * as _ from 'lodash'
 
 import { IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
-import { findNodeAtPosition, isAssignmentBinaryExpression } from './utils/typescript'
+import { findClosestParent, findNodeAtPosition, isAssignmentBinaryExpression } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 
 let currentSuggestion = undefined
@@ -39,7 +38,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const currentNode = this.getNodeBeforeTheDot(document, position, dotIdx)
 
-    if (!currentNode || this.isInsideComment(document, position)) {
+    if (!currentNode || this.shouldBeIgnored(document, position)) {
       return []
     }
 
@@ -81,23 +80,15 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     if (ts.isTypeReferenceNode(node.parent) || (node.parent.parent && ts.isTypeReferenceNode(node.parent.parent))) {
-      return this.findClosestParent(node, ts.SyntaxKind.TypeReference)
+      return findClosestParent(node, ts.SyntaxKind.TypeReference)
     }
 
     const binaryExpression = ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       ? node.expression
-      : this.findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
+      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
 
     if (binaryExpression && !isAssignmentBinaryExpression(binaryExpression)) {
       return binaryExpression
-    }
-
-    return node
-  }
-
-  private findClosestParent(node: ts.Node, kind: ts.SyntaxKind): ts.Node {
-    while (node && node.kind !== kind) {
-      node = node.parent
     }
 
     return node
@@ -137,17 +128,28 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 
-  private isInsideComment(document: vsc.TextDocument, position: vsc.Position) {
-    const source = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES5, true)
+  private shouldBeIgnored(document: vsc.TextDocument, position: vsc.Position) {
+    const source = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES2020, true, ts.ScriptKind.TSX)
     const pos = source.getPositionOfLineAndCharacter(position.line, position.character)
-    const nodeKind = findNodeAtPosition(source, pos).kind
-    const commentKind = [
-      ts.SyntaxKind.JSDocComment,
-      ts.SyntaxKind.MultiLineCommentTrivia,
-      ts.SyntaxKind.SingleLineCommentTrivia
-    ]
+    const node = findNodeAtPosition(source, pos)
 
-    return _.includes(commentKind, nodeKind)
+    return isComment() || isJsx()
+
+    function isComment() {
+      return [
+        ts.SyntaxKind.JSDocComment,
+        ts.SyntaxKind.MultiLineCommentTrivia,
+        ts.SyntaxKind.SingleLineCommentTrivia
+      ].includes(node.kind)
+    }
+
+    function isJsx() {
+      const jsx = findClosestParent(node, ts.SyntaxKind.JsxElement)
+      const jsxFragment = findClosestParent(node, ts.SyntaxKind.JsxFragment)
+      const jsxExpression = findClosestParent(node, ts.SyntaxKind.JsxExpression)
+
+      return (!!jsx || !!jsxFragment) && !jsxExpression
+    }
   }
 }
 
