@@ -23,43 +23,47 @@ describe('Utils tests', () => {
   })
 
   describe('invertExpression', () => {
-    testInvertExpression('x', '!x')
-    testInvertExpression('!x', 'x')
-    testInvertExpression('x * 100', '!(x * 100)')
-    testInvertExpression('x && y * 100', '!x || !(y * 100)')
+    testInvertExpression('x             >>  !x')
+    testInvertExpression('!x            >>  x')
+    testInvertExpression('x * 100       >>  !(x * 100)')
+    testInvertExpression('!(x * 100)    >>  x * 100')
+    testInvertExpression('x && y * 100  >>  !x || !(y * 100)')
   })
 
   describe('invertBinaryExpression', () => {
 
     describe('operators', () => {
-      testInvertBinaryExpression('x > y', 'x <= y')
-      testInvertBinaryExpression('x < y', 'x >= y')
-      testInvertBinaryExpression('x >= y', 'x < y')
-      testInvertBinaryExpression('x <= y', 'x > y')
-      testInvertBinaryExpression('x == y', 'x != y')
-      testInvertBinaryExpression('x === y', 'x !== y')
-      testInvertBinaryExpression('x != y', 'x == y')
-      testInvertBinaryExpression('x !== y', 'x === y')
+      testInvertBinaryExpression('x > y    >>  x <= y')
+      testInvertBinaryExpression('x < y    >>  x >= y')
+      testInvertBinaryExpression('x >= y   >>  x < y')
+      testInvertBinaryExpression('x <= y   >>  x > y')
+      testInvertBinaryExpression('x == y   >>  x != y')
+      testInvertBinaryExpression('x === y  >>  x !== y')
+      testInvertBinaryExpression('x != y   >>  x == y')
+      testInvertBinaryExpression('x !== y  >>  x === y')
     })
 
     describe('complex expressions', () => {
-      testInvertBinaryExpression('x > y && a', 'x <= y || !a')
-      testInvertBinaryExpression('x && a == b', '!x || a != b')
-      testInvertBinaryExpression('x && y', '!x || !y')
-      testInvertBinaryExpression('!x && !y', 'x || y')
-      testInvertBinaryExpression('x > y && a >= b', 'x <= y || a < b')
-      testInvertBinaryExpression('x > y || a >= b', 'x <= y && a < b')
-      testInvertBinaryExpression('x > y && a >= b || c == d', '(x <= y || a < b) && c != d')
-      testInvertBinaryExpression('x || y && z', '!x && (!y || !z)')
-      testInvertBinaryExpression('a && b && c', '!a || !b || !c')
-      testInvertBinaryExpression('a && b && c && d', '!a || !b || !c || !d')
-      testInvertBinaryExpression('a || b && c && d', '!a && (!b || !c || !d)')
-      testInvertBinaryExpression('a && b || c && d', '(!a || !b) && (!c || !d)')
+      testInvertBinaryExpression('x > y && a                 >>  x <= y || !a')
+      testInvertBinaryExpression('x && a == b                >>  !x || a != b')
+      testInvertBinaryExpression('x && y                     >>  !x || !y')
+      testInvertBinaryExpression('!x && !y                   >>  x || y')
+      testInvertBinaryExpression('x > y && a >= b            >>  x <= y || a < b')
+      testInvertBinaryExpression('x > y || a >= b            >>  x <= y && a < b')
+      testInvertBinaryExpression('x > y && a >= b || c == d  >>  (x <= y || a < b) && c != d')
+      testInvertBinaryExpression('x || y && z                >>  !x && (!y || !z)')
+      testInvertBinaryExpression('a && b && c                >>  !a || !b || !c')
+      testInvertBinaryExpression('a && b && c && d           >>  !a || !b || !c || !d')
+      testInvertBinaryExpression('a || b && c && d           >>  !a && (!b || !c || !d)')
+      testInvertBinaryExpression('a && b || c && d           >>  (!a || !b) && (!c || !d)')
+      testInvertBinaryExpression('!(a && b) || !(c && d)     >>  a && b && c && d')
     })
   })
 })
 
-function testInvertBinaryExpression (input: string, expected: string) {
+function testInvertBinaryExpression (dsl: string) {
+  const [input, expected] = dsl.split('>>').map(x => x.trim())
+
   it(`${input} should invert to ${expected}`, () => {
     const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
     const expr = (source.statements[0] as ts.ExpressionStatement).expression as ts.BinaryExpression
@@ -70,7 +74,9 @@ function testInvertBinaryExpression (input: string, expected: string) {
   })
 }
 
-function testInvertExpression (input: string, expected: string) {
+function testInvertExpression (dsl: string) {
+  const [input, expected] = dsl.split('>>').map(x => x.trim())
+
   it(`${input} should invert to ${expected}`, () => {
     const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
     const expr = (source.statements[0] as ts.ExpressionStatement).expression
