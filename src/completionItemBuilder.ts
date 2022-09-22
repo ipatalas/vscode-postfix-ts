@@ -45,7 +45,8 @@ export class CompletionItemBuilder {
       new vsc.Position(nodeEnd.line, nodeEnd.character + 1) // accomodate 1 character for the dot
     )
 
-    const useSnippets = /(?<!\\)\$/.test(replacement)
+    // const useSnippets = /(?<!\\)\$/.test(replacement)
+    const useSnippets = true
 
     if (useSnippets) {
       const escapedCode = this.code.replace(/\$/g, '\\$')

@@ -48,6 +48,32 @@ describe('Multiline template tests', () => {
       | \t.b        >> \t.b
       | \t.c++{let} >> \t.c++`)
 
+  Test(`return template - method call (equal indentation)
+      | \tobject.call() >> \treturn object.call()
+      | .anotherCall()  >> \t.anotherCall()
+      | .lastOne(){return} >> \t.lastOne()`)
+
+  Test(`return template - method call (indentation - tabs)
+      | \t\tobject.call()     >> \t\treturn object.call()
+      | \t\t\t.anotherCall()  >> \t\t\t.anotherCall()
+      | \t\t\t.lastOne(){return} >> \t\t\t.lastOne()`)
+
+  // first line gets to keep original indentation in VSCode
+  Test(`return template - method call (indentation - spaces)
+      | ${indent(2)}object.call()   >> ${indent(2)}return object.call()
+      | ${indent(3)}.anotherCall()  >> \t\t\t.anotherCall()
+      | ${indent(3)}.lastOne(){return} >> \t\t\t.lastOne()`)
+
+  Test(`return template - method call (indentation - mixed)
+      | \t\tobject.call()          >> \t\treturn object.call()
+      | ${indent(3)}.anotherCall() >> \t\t\t.anotherCall()
+      | \t\t\t.lastOne(){return}      >> \t\t\t.lastOne()`)
+
+  Test(`return template - method call (indentation - compreturnely mixed)
+      | \tobject.call()     >> \treturn object.call()
+      | \t  .anotherCall()  >> \t\t  .anotherCall()
+      | \t  .lastOne(){return} >> \t\t  .lastOne()`)
+
   Test(`return template - new expression
       | new Type(    >> return new Type(
       | \t1,         >> \t1,
