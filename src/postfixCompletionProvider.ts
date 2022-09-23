@@ -4,7 +4,7 @@ import * as ts from 'typescript'
 import { IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
-import { findClosestParent, findNodeAtPosition, isAssignmentBinaryExpression } from './utils/typescript'
+import { findClosestParent, findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 
 let currentSuggestion = undefined
@@ -56,7 +56,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
           return canUseTemplate
         })
-        .map(t => t.buildCompletionItem(replacementNode, indentSize))
+        .flatMap(t => t.buildCompletionItem(replacementNode, indentSize))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -81,14 +81,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     if (ts.isTypeReferenceNode(node.parent) || (node.parent.parent && ts.isTypeReferenceNode(node.parent.parent))) {
       return findClosestParent(node, ts.SyntaxKind.TypeReference)
-    }
-
-    const binaryExpression = ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
-      ? node.expression
-      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
-
-    if (binaryExpression && !isAssignmentBinaryExpression(binaryExpression)) {
-      return binaryExpression
     }
 
     return node

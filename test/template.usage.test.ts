@@ -30,6 +30,16 @@ const STRING_LITERAL_TEMPLATES = [
   'return'
 ]
 
+const BINARY_EXPRESSION_TEMPLATES = [
+  ...VAR_TEMPLATES,
+  ...CONSOLE_TEMPLATES,
+  ...CAST_TEMPLATES,
+  'if',
+  'else',
+  'not',
+  'return'
+]
+
 describe('Template usage', () => {
   afterEach(done => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
@@ -40,6 +50,8 @@ describe('Template usage', () => {
   testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for', 'new']))
   testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
   testTemplateUsage('element access expression', 'expr.a.b[c]', _.difference(ALL_TEMPLATES, ['new']))
+  testTemplateUsage('binary expression', 'x > y', BINARY_EXPRESSION_TEMPLATES)
+  testTemplateUsage('binary expression', '(x > y)', BINARY_EXPRESSION_TEMPLATES)
   testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, [...FOR_TEMPLATES, 'new']))
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
   testTemplateUsage('return expression', 'return x * 100', [...CAST_TEMPLATES, 'not'])
@@ -63,8 +75,8 @@ describe('Template usage', () => {
   testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', ALL_TEMPLATES)
 
   testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
-  testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
-  testTemplateUsage('inside assignment statement - short-circuit', 'test *= expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
+  testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, 'not'])
+  testTemplateUsage('inside assignment statement - short-circuit', 'test *= expr{cursor}', [...CAST_TEMPLATES, 'not'])
   testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, 'not', 'new'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])

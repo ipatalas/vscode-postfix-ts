@@ -42,7 +42,16 @@ export const invertExpression = (expr: ts.Node, addOrBrackets = false, indentSiz
     }
   }
 
+  // (x > y) => (x <= y)
+  if (ts.isParenthesizedExpression(expr) && ts.isBinaryExpression(expr.expression)) {
+    const result = invertBinaryExpression(expr.expression, addOrBrackets)
+    if (result) {
+      return `(${result})`
+    }
+  }
+
   if (ts.isBinaryExpression(expr)) {
+    // x > y => x <= y
     const result = invertBinaryExpression(expr, addOrBrackets)
     if (result) {
       return result

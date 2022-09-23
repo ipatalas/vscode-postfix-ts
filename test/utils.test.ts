@@ -28,6 +28,7 @@ describe('Utils tests', () => {
     testInvertExpression('x * 100       >>  !(x * 100)')
     testInvertExpression('!(x * 100)    >>  x * 100')
     testInvertExpression('x && y * 100  >>  !x || !(y * 100)')
+    testInvertExpression('(x > y)       >>  (x <= y)')
   })
 
   describe('invertBinaryExpression', () => {

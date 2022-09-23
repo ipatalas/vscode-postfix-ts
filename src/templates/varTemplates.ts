@@ -10,6 +10,8 @@ export class VarTemplate extends BaseExpressionTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    node = this.unwindBinaryExpression(node)
+
     const inferVarNameEnabled = getConfigValue<boolean>('inferVariableName')
     const suggestedVarNames = (inferVarNameEnabled ? inferVarTemplateName(node) : undefined) ?? ['name']
 

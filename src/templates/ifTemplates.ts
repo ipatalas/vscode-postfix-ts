@@ -2,6 +2,7 @@ import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 import { getConfigValue, getIndentCharacters } from '../utils'
+import { invertExpression } from '../utils/invert-expression'
 
 abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
   override canUse(node: ts.Node) {
@@ -15,23 +16,24 @@ abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
 
 export class IfTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    node = this.unwindBinaryExpression(node, false)
+    const replacement = this.unwindBinaryExpression(node, true).getText()
+
     return CompletionItemBuilder
       .create('if', node, indentSize)
-      .replace(`if ({{expr}}) {\n${getIndentCharacters()}\${0}\n}`)
+      .replace(`if (${replacement}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
 
 export class ElseTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
-    let replacement = '{{expr}}'
-    if (ts.isBinaryExpression(node)) {
-      replacement = `(${replacement})`
-    }
+    node = this.unwindBinaryExpression(node, false)
+    const replacement = invertExpression(this.unwindBinaryExpression(node, true));
 
     return CompletionItemBuilder
       .create('else', node, indentSize)
-      .replace(`if (!${replacement}) {\n${getIndentCharacters()}\${0}\n}`)
+      .replace(`if (${replacement}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
@@ -49,7 +51,7 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
       }
     }
 
-    return super.canUse(node)
+    return super.canUse(node) && !this.isBinaryExpression(node)
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
@@ -71,7 +73,7 @@ export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
       return false
     }
 
-    return super.canUse(node)
+    return super.canUse(node) && !this.isBinaryExpression(node)
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {

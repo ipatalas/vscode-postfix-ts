@@ -14,5 +14,6 @@ export class NewTemplate extends BaseTemplate {
     return (this.isIdentifier(node) || this.isPropertyAccessExpression(node))
       && !this.inAwaitedExpression(node.parent)
       && !this.isTypeNode(node)
+      && !this.isBinaryExpression(node)
   }
 }
