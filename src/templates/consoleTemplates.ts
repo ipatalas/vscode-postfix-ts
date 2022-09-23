@@ -9,6 +9,8 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    node = this.unwindBinaryExpression(node)
+
     return CompletionItemBuilder
       .create(this.level, node, indentSize)
       .replace(`console.${this.level}({{expr}})`)

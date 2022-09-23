@@ -35,8 +35,24 @@ export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets 
 export const invertExpression = (expr: ts.Node, addOrBrackets = false, indentSize?: number) => {
   const text = adjustMultilineIndentation(expr.getText(), indentSize)
 
-  if (expr.kind === ts.SyntaxKind.BinaryExpression) {
-    const result = invertBinaryExpression(expr as ts.BinaryExpression, addOrBrackets)
+  // !(expr) => expr
+  if (ts.isPrefixUnaryExpression(expr) && expr.operator === ts.SyntaxKind.ExclamationToken) {
+    if (ts.isParenthesizedExpression(expr.operand) && ts.isBinaryExpression(expr.operand.expression)) {
+      return expr.operand.expression.getText()
+    }
+  }
+
+  // (x > y) => (x <= y)
+  if (ts.isParenthesizedExpression(expr) && ts.isBinaryExpression(expr.expression)) {
+    const result = invertBinaryExpression(expr.expression, addOrBrackets)
+    if (result) {
+      return `(${result})`
+    }
+  }
+
+  if (ts.isBinaryExpression(expr)) {
+    // x > y => x <= y
+    const result = invertBinaryExpression(expr, addOrBrackets)
     if (result) {
       return result
     }

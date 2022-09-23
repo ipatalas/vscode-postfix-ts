@@ -25,6 +25,14 @@ export const findNodeAtPosition = (source: ts.SourceFile, character: number) => 
   }
 }
 
+export const findClosestParent = (node: ts.Node, kind: ts.SyntaxKind): ts.Node => {
+  while (node && node.kind !== kind) {
+    node = node.parent
+  }
+
+  return node
+}
+
 export const isAssignmentBinaryExpression = (node: ts.BinaryExpression) => {
   return [
     ts.SyntaxKind.EqualsToken,

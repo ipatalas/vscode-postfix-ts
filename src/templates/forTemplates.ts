@@ -12,6 +12,7 @@ abstract class BaseForTemplate extends BaseTemplate {
       !this.inVariableDeclaration(node) &&
       !this.inAssignmentStatement(node) &&
       !this.isTypeNode(node) &&
+      !this.isBinaryExpression(node) &&
       (this.isIdentifier(node) ||
         this.isPropertyAccessExpression(node) ||
         this.isElementAccessExpression(node) ||

@@ -4,6 +4,8 @@ import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ReturnTemplate extends BaseExpressionTemplate {
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    node = this.unwindBinaryExpression(node)
+
     return CompletionItemBuilder
       .create('return', node, indentSize)
       .replace('return {{expr}}')

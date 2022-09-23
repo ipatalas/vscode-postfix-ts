@@ -9,7 +9,8 @@ describe('Single line template tests', () => {
   after(setInferVarName(config, true))
 
   Test('not template - already negated expression | !expr{not}               >> expr')
-  Test('let template - binary expression          | a * 3{let}               >> let name = a * 3')
+  Test('let template - binary expression #1       | a * 3{let}               >> let name = a * 3')
+  Test('let template - binary expression #2       | a * b{let}               >> let name = a * b')
   Test('let template - non-null as assertion      | test!{let}               >> let name = test!')
   Test('let template - method call                | obj.call(){let}          >> let name = obj.call()')
   Test('let template - method call with non-null  | obj.call()!{let}         >> let name = obj.call()!')
@@ -31,19 +32,26 @@ describe('Single line template tests', () => {
   Test('var template (indent) | \ta.b{var} >> \tvar name = a.b')
   Test('const template        | a.b{const} >> const name = a.b')
 
-  Test('log template   | expr{log}   >> console.log(expr)')
-  Test('warn template  | expr{warn}  >> console.warn(expr)')
-  Test('error template | expr{error} >> console.error(expr)')
+  Test('log template          | expr{log}   >> console.log(expr)')
+  Test('warn template         | expr{warn}  >> console.warn(expr)')
+  Test('error template        | expr{error} >> console.error(expr)')
+  Test('log template - binary | x > y{log}  >> console.log(x > y)')
 
   Test('log template - obj literal (empty) | {}{log}          >> console.log({})')
   Test('log template - obj literal         | {foo:"foo"}{log} >> console.log({foo:"foo"})')
 
   Test('return template | expr{return}       >> return expr')
+  Test('return template | x > 1{return}      >> return x > 1')
+  Test('return template | x > y{return}      >> return x > y')
   Test('return template | new Type(){return} >> return new Type()')
 
   Test('if template                       | expr{if}      >> if(expr){}', true)
+  Test('if template - binary expression   | a > b{if}     >> if(a>b){}', true)
+  Test('if template - binary in parens    | (a > b){if}   >> if(a>b){}', true)
   Test('else template                     | expr{else}    >> if(!expr){}', true)
   Test('else template - binary expression | x * 100{else} >> if(!(x*100)){}', true)
+  Test('else template - binary expression | a > b{else}   >> if(a<=b){}', true)
+  Test('else template - binary in parens  | (a > b){else} >> if(a<=b){}', true)
 
   Test('null template         | expr{null}         >> if(expr===null){}', true)
   Test('notnull template      | expr{notnull}      >> if(expr!==null){}', true)
@@ -77,12 +85,14 @@ describe('Single line template tests', () => {
   Test('promisify template - custom type   | const x:A.B{promisify}     >> const x:Promise<A.B>')
   Test('promisify template - custom type 2 | const x:A.B.C.D{promisify} >> const x:Promise<A.B.C.D>')
 
-  QuickPick('not template - complex conditions - first expression        | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
-  QuickPick('not template - complex conditions - second expression       | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
-  QuickPick('not template - complex conditions - cancel quick pick       | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
-  QuickPick('not template - complex conditions - first expression - alt  | if (a > b && x * 100{not}) {} >> if(a>b&&!(x*100)){}', true, 0)
-  QuickPick('not template - complex conditions - second expression - alt | if (a > b && x * 100{not}) {} >> if(a<=b||!(x*100)){}', true, 1)
-  QuickPick('not template - complex conditions - cancel quick pick - alt | if (a > b && x * 100{not}) {} >> if(a>b&&x*100.){}', true, 0, true)
+  QuickPick('not template - complex conditions - first expression               | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
+  QuickPick('not template - complex conditions - second expression              | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
+  QuickPick('not template - complex conditions with parens - first expression   | if (a > b && (x * 100){not})  >> if(a>b&&!(x*100))', true, 0)
+  QuickPick('not template - complex conditions with parens - second expression  | if (a > b && (x * 100){not})  >> if(a<=b||!(x*100))', true, 1)
+  QuickPick('not template - complex conditions - cancel quick pick              | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
+  QuickPick('not template - complex conditions - first expression - alt         | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
+  QuickPick('not template - complex conditions - second expression - alt        | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
+  QuickPick('not template - complex conditions - cancel quick pick - alt        | if (a > b && x * 100{not})    >> if(a>b&&x*100.)', true, 0, true)
 
   describe('undefined templates in `typeof` mode', () => {
     before(setUndefinedMode(config, 'Typeof'))

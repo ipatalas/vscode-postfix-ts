@@ -19,6 +19,10 @@ export class CustomTemplate extends BaseTemplate {
   }
 
   buildCompletionItem(node: ts.Node, indentSize?: number) {
+    if (this.when.includes('binary-expression')) {
+      node = this.unwindBinaryExpression(node)
+    }
+
     return CompletionItemBuilder
       .create(this.templateName, node, indentSize)
       .description(this.description)

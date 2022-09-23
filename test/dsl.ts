@@ -11,7 +11,7 @@ export function parseDSL(input: string) {
 
   for (let i = 0; i < lines.length; i++) {
     let [input, expected] = lines[i].split('>> ')
-    input = input.trimRight()
+    input = input.trimEnd()
 
     const leadingMark = /^\s*\| /.exec(input)
     if (leadingMark !== null) {

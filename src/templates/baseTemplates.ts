@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode';
 import { IPostfixTemplate } from '../template'
-import { isAssignmentBinaryExpression } from '../utils/typescript';
+import { findClosestParent, isAssignmentBinaryExpression } from '../utils/typescript';
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   constructor(public readonly templateName: string) {}
@@ -67,6 +67,18 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 
     return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
         || node.parent && this.isBinaryExpression(node.parent)
+  }
+
+  protected unwindBinaryExpression = (node: ts.Node, removeParens = true) => {
+    const binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
+      ? node.expression
+      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
+
+    if (binaryExpression && !isAssignmentBinaryExpression(binaryExpression)) {
+      return binaryExpression
+    }
+
+    return node
   }
 
   protected isAnyFunction = (node: ts.Node) => {
