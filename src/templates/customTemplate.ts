@@ -1,6 +1,7 @@
 import * as ts from 'typescript'
 import { BaseTemplate } from './baseTemplates'
 import { CompletionItemBuilder } from '../completionItemBuilder'
+import { IndentInfo } from '../template'
 
 export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
@@ -18,13 +19,13 @@ export class CustomTemplate extends BaseTemplate {
     super(name)
   }
 
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     if (this.when.includes('binary-expression')) {
       node = this.unwindBinaryExpression(node)
     }
 
     return CompletionItemBuilder
-      .create(this.templateName, node, indentSize)
+      .create(this.templateName, node, indentInfo)
       .description(this.description)
       .replace(this.body)
       .build()

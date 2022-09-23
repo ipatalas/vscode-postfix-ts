@@ -1,13 +1,14 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
+import { IndentInfo } from '../template'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ReturnTemplate extends BaseExpressionTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     node = this.unwindBinaryExpression(node)
 
     return CompletionItemBuilder
-      .create('return', node, indentSize)
+      .create('return', node, indentInfo)
       .replace('return {{expr}}')
       .build()
   }

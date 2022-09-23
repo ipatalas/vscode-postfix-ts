@@ -1,8 +1,9 @@
 import * as vsc from 'vscode'
 import ts = require('typescript')
-import { adjustMultilineIndentation } from './utils/multiline-expressions'
+import { adjustLeadingWhitespace, adjustMultilineIndentation } from './utils/multiline-expressions'
 import { SnippetParser } from 'vscode-snippet-parser'
 import { getConfigValue } from './utils'
+import { IndentInfo } from './template'
 
 const RegexExpression = '{{expr(?::(upper|lower|capitalize))?}}'
 
@@ -11,17 +12,17 @@ export class CompletionItemBuilder {
   private code: string
   private node: ts.Node
 
-  private constructor(keyword: string, node: ts.Node, indentSize?: number) {
+  private constructor(keyword: string, node: ts.Node, private indentInfo?: IndentInfo) {
     if (ts.isAwaitExpression(node.parent)) {
       node = node.parent
     }
 
     this.node = node
     this.item = new vsc.CompletionItem({label: keyword, description: 'POSTFIX'}, vsc.CompletionItemKind.Snippet)
-    this.code = adjustMultilineIndentation(node.getText(), indentSize)
+    this.code = adjustMultilineIndentation(node.getText(), indentInfo?.indentSize)
   }
 
-  public static create = (keyword: string, node: ts.Node, indentSize?: number) => new CompletionItemBuilder(keyword, node, indentSize)
+  public static create = (keyword: string, node: ts.Node, indentInfo?: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
 
   public command = (command: vsc.Command) => {
     this.item.command = command
@@ -50,7 +51,10 @@ export class CompletionItemBuilder {
     if (useSnippets) {
       const escapedCode = this.code.replace(/\$/g, '\\$')
 
-      this.item.insertText = new vsc.SnippetString(this.replaceExpression(replacement, escapedCode));
+      this.item.insertText = new vsc.SnippetString(adjustLeadingWhitespace(
+        this.replaceExpression(replacement, escapedCode),
+        this.indentInfo.leadingWhitespace
+      ));
       this.item.additionalTextEdits = [
         vsc.TextEdit.delete(rangeToDelete)
       ]
@@ -59,7 +63,10 @@ export class CompletionItemBuilder {
     } else {
       this.item.insertText = ''
       this.item.additionalTextEdits = [
-        vsc.TextEdit.replace(rangeToDelete, this.replaceExpression(replacement.replace(/\\\$/g, '$$'), this.code))
+        vsc.TextEdit.replace(rangeToDelete, adjustLeadingWhitespace(
+          this.replaceExpression(replacement.replace(/\\\$/g, '$$'), this.code),
+          this.indentInfo.leadingWhitespace
+        ))
       ]
     }
 
@@ -97,16 +104,12 @@ export class CompletionItemBuilder {
   private replaceExpression = (replacement: string, code: string, customRegex?: string) => {
     const re = new RegExp(customRegex || RegexExpression, 'g')
 
-    let replacedText = replacement.replace(re, (_match, p1) => {
+    return replacement.replace(re, (_match, p1) => {
       if (p1 && this.filters[p1]) {
         return this.filters[p1](code)
       }
       return code;
     })
-    const { line } = this.node.getSourceFile().getLineAndCharacterOfPosition(this.node.getStart())
-    const indentStart = vsc.window.activeTextEditor.document.lineAt(line).text.match(/^\s*/)?.[0]
-    replacedText = replacedText.split(/\r?\n/).map((line, i) => !i ? line : indentStart+line).join('\n')
-    return replacedText
   }
 
   private filters: {[key: string]: (x: string) => string} = {

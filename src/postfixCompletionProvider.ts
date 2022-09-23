@@ -43,6 +43,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     const indentSize = this.getIndentSize(document, currentNode)
+    const leadingWhitespace = this.getLeadingWhitespace(document, currentNode)
     const replacementNode = this.getNodeForReplacement(currentNode)
 
     try {
@@ -56,7 +57,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
           return canUseTemplate
         })
-        .flatMap(t => t.buildCompletionItem(replacementNode, indentSize))
+        .flatMap(t => t.buildCompletionItem(replacementNode, { indentSize, leadingWhitespace }))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -118,6 +119,12 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     if (AllSpaces.test(whitespaces)) {
       return whitespaces.length / (vsc.window.activeTextEditor.options.tabSize as number)
     }
+  }
+
+  private getLeadingWhitespace(document: vsc.TextDocument, node: ts.Node) {
+    const source = node.getSourceFile();
+    const { line } = source.getLineAndCharacterOfPosition(node.getStart(source))
+    return document.lineAt(line).text.match(/^\s*/)?.[0]
   }
 
   private shouldBeIgnored(document: vsc.TextDocument, position: vsc.Position) {

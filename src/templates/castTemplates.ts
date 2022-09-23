@@ -1,5 +1,6 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
+import { IndentInfo } from '../template'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class CastTemplate extends BaseExpressionTemplate {
@@ -7,8 +8,8 @@ export class CastTemplate extends BaseExpressionTemplate {
     super(keyword)
   }
 
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
-    const completionitembuilder = CompletionItemBuilder.create(this.keyword, node, indentSize)
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
+    const completionitembuilder = CompletionItemBuilder.create(this.keyword, node, indentInfo)
 
     if (this.keyword === 'castas') {
       return completionitembuilder

@@ -3,6 +3,7 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseExpressionTemplate } from './baseTemplates'
 import { getConfigValue, getIndentCharacters } from '../utils'
 import { invertExpression } from '../utils/invert-expression'
+import { IndentInfo } from '../template'
 
 abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
   override canUse(node: ts.Node) {
@@ -15,24 +16,24 @@ abstract class BaseIfElseTemplate extends BaseExpressionTemplate {
 }
 
 export class IfTemplate extends BaseIfElseTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     node = this.unwindBinaryExpression(node, false)
     const replacement = this.unwindBinaryExpression(node, true).getText()
 
     return CompletionItemBuilder
-      .create('if', node, indentSize)
+      .create('if', node, indentInfo)
       .replace(`if (${replacement}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
 
 export class ElseTemplate extends BaseIfElseTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     node = this.unwindBinaryExpression(node, false)
     const replacement = invertExpression(this.unwindBinaryExpression(node, true));
 
     return CompletionItemBuilder
-      .create('else', node, indentSize)
+      .create('else', node, indentInfo)
       .replace(`if (${replacement}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
@@ -54,9 +55,9 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
     return super.canUse(node) && !this.isBinaryExpression(node)
   }
 
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     return CompletionItemBuilder
-      .create(this.keyword, node, indentSize)
+      .create(this.keyword, node, indentInfo)
       .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
@@ -76,9 +77,9 @@ export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
     return super.canUse(node) && !this.isBinaryExpression(node)
   }
 
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     return CompletionItemBuilder
-      .create(this.keyword, node, indentSize)
+      .create(this.keyword, node, indentInfo)
       .replace(`if (typeof {{expr}} ${this.operator} "${this.operand}") {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }

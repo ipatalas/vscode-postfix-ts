@@ -3,13 +3,14 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { NOT_COMMAND } from '../notCommand'
 import { invertExpression } from '../utils/invert-expression'
+import { IndentInfo } from '../template'
 
 export class NotTemplate extends BaseTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     node = this.normalizeBinaryExpression(node)
 
     const completionBuilder = CompletionItemBuilder
-      .create('not', node, indentSize)
+      .create('not', node, indentInfo)
 
     if (this.isBinaryExpression(node)) {
       const expressions = this.getBinaryExpressions(node)
@@ -26,7 +27,7 @@ export class NotTemplate extends BaseTemplate {
       }
     }
 
-    const replacement = invertExpression(node, undefined, indentSize)
+    const replacement = invertExpression(node, undefined, indentInfo?.indentSize)
     return completionBuilder
       .replace(replacement)
       .build()

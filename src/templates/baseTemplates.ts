@@ -1,12 +1,12 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode';
-import { IPostfixTemplate } from '../template'
+import { IndentInfo, IPostfixTemplate } from '../template'
 import { findClosestParent, isAssignmentBinaryExpression } from '../utils/typescript';
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   constructor(public readonly templateName: string) {}
 
-  abstract buildCompletionItem(node: ts.Node, indentSize?: number): vsc.CompletionItem
+  abstract buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo): vsc.CompletionItem
   abstract canUse  (node: ts.Node) : boolean
 
   protected isSimpleExpression = (node: ts.Node) => ts.isExpressionStatement(node) && !this.isStringLiteral(node)
@@ -115,7 +115,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 }
 
 export abstract class BaseExpressionTemplate extends BaseTemplate {
-  abstract override buildCompletionItem(node: ts.Node, indentSize?: number)
+  abstract override buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo)
 
   canUse(node: ts.Node) {
     return !this.inIfStatement(node) && !this.isTypeNode(node) && !this.inAssignmentStatement(node) &&
