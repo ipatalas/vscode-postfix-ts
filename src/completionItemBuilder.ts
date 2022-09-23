@@ -57,7 +57,7 @@ export class CompletionItemBuilder {
     } else {
       this.item.insertText = ''
       this.item.additionalTextEdits = [
-        vsc.TextEdit.replace(rangeToDelete, this.replaceExpression(replacement.replace(/\\\$/g, '$$'), this.code))
+        vsc.TextEdit.replace(rangeToDelete, this.replaceExpression(replacement.replace(/\\\$/g, '$$'), this.node.getText()))
       ]
     }
 
