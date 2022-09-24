@@ -26,7 +26,7 @@ export class NotTemplate extends BaseTemplate {
       }
     }
 
-    const replacement = invertExpression(node, undefined, indentSize)
+    const replacement = invertExpression(node, undefined)
     return completionBuilder
       .replace(replacement)
       .build()

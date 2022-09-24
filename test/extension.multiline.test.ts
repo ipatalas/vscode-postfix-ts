@@ -1,4 +1,4 @@
-import { runTestMultiline as Test } from './runner'
+import { runTestMultiline as Test, runTestMultilineQuickPick as QuickPick } from './runner'
 import { TabSize } from './utils'
 import { describe } from 'mocha';
 
@@ -88,4 +88,20 @@ describe('Multiline template tests', () => {
       | test = () => {      >> test = () => {
       |   wrapMe{log}       >>   console.log(wrapMe)
       | }                   >> }`)
+
+  QuickPick(`not template - whitespaces - first expression
+      | if (          >> if (
+      |   a && (b &&  >>   a && (!b ||
+      |   a           >>   !a
+      |   .a          >>   .a
+      |   .b){not}    >>   .b)
+      | )  {}         >> )  {}`, false, 0)
+
+  QuickPick(`not template - whitespaces - second expression
+      | if (          >> if (
+      |   a && (b &&  >>   !a || (!b ||
+      |   a           >>   !a
+      |   .a          >>   .a
+      |   .b){not}    >>   .b)
+      | )  {}         >> )  {}`, false, 1)
 })

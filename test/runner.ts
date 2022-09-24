@@ -1,36 +1,46 @@
-import { Func, Test } from 'mocha'
 import { testTemplate, testTemplateWithQuickPick } from './utils'
 import { EOL } from 'os'
-import { it } from 'mocha';
+import { it, TestFunction } from 'mocha';
 
-export const runTest = (test: string, trimWhitespaces?: boolean) => __runTest(it, test, trimWhitespaces)
-runTest.only = (test: string, trimWhitespaces?: boolean) => __runTest(it.only.bind(it), test, trimWhitespaces)
-runTest.skip = (test: string, trimWhitespaces?: boolean) => __runTest(it.skip.bind(it), test, trimWhitespaces)
+type RunTestFn = {
+  (test: string, trimWhitespaces?: boolean): void
+  only(test: string, trimWhitespaces?: boolean): void
+  skip(test: string, trimWhitespaces?: boolean): void
+}
+type RunTestQuickPickFn = (test: string, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) => void
 
-function __runTest(func: (title: string, fn?: Func) => Test, test: string, trimWhitespaces?: boolean) {
+export const runTest = __runTest.bind(null, it) as RunTestFn
+export const runTestMultiline = __runTestMultiline.bind(null, it) as RunTestFn
+export const runTestQuickPick = (test: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) =>
+  __runTestQuickPick(it, test, trimWhitespaces, skipSuggestions, cancelQuickPick)
+export const runTestMultilineQuickPick = (test: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) =>
+  __runTestMultilineQuickPick(it, test, trimWhitespaces, skipSuggestions, cancelQuickPick)
+
+runTest.only = __runTest.bind(null, it.only.bind(it)) as RunTestFn
+runTest.skip = __runTest.bind(null, it.skip.bind(it)) as RunTestFn
+runTestMultiline.only = __runTestMultiline.bind(null, it.only.bind(it)) as RunTestFn
+runTestMultiline.skip = __runTestMultiline.bind(null, it.skip.bind(it)) as RunTestFn
+runTestQuickPick.only = __runTestQuickPick.bind(null, it.only.bind(it)) as RunTestQuickPickFn
+runTestQuickPick.skip = __runTestQuickPick.bind(null, it.skip.bind(it)) as RunTestQuickPickFn
+runTestMultilineQuickPick.only = __runTestQuickPick.bind(null, it.only.bind(it)) as RunTestQuickPickFn
+runTestMultilineQuickPick.skip = __runTestQuickPick.bind(null, it.skip.bind(it)) as RunTestQuickPickFn
+
+function __runTest(func: TestFunction, test: string, trimWhitespaces?: boolean) {
   const [title, ...dsl] = test.split('|')
   func(title.trim(), testTemplate('|' + dsl.join('|'), trimWhitespaces))
 }
 
-export const runTestMultiline = (test: string, trimWhitespaces?: boolean) => __runTestMultiline(it, test, trimWhitespaces)
-runTestMultiline.only = (test: string, trimWhitespaces?: boolean) => __runTestMultiline(it.only.bind(it), test, trimWhitespaces)
-runTestMultiline.skip = (test: string, trimWhitespaces?: boolean) => __runTestMultiline(it.skip.bind(it), test, trimWhitespaces)
-
-function __runTestMultiline(func: (title: string, fn?: Func) => Test, test: string, trimWhitespaces?: boolean) {
+function __runTestMultiline(func: TestFunction, test: string, trimWhitespaces?: boolean) {
   const [title, ...dsl] = test.split(/\r?\n/)
   func(title.trim(), testTemplate(dsl.join(EOL), trimWhitespaces))
 }
 
-export const runTestQuickPick = (test: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) =>
-  __runTestQuickPick(it, test, trimWhitespaces, skipSuggestions, cancelQuickPick)
-
-runTestQuickPick.only = (test, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) =>
-  __runTestQuickPick(it.only.bind(it), test, trimWhitespaces, skipSuggestions, cancelQuickPick)
-
-runTestQuickPick.skip = (test, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) =>
-  __runTestQuickPick(it.skip.bind(it), test, trimWhitespaces, skipSuggestions, cancelQuickPick)
-
-function __runTestQuickPick(func: (title: string, fn?: Func) => Test, test: string, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) {
+function __runTestQuickPick(func: TestFunction, test: string, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) {
   const [title, ...dsl] = test.split('|')
   func(title.trim(), testTemplateWithQuickPick('|' + dsl.join('|'), trimWhitespaces, skipSuggestions, cancelQuickPick))
+}
+
+function __runTestMultilineQuickPick(func: TestFunction, test: string, trimWhitespaces?: boolean, skipSuggestions?: number, cancelQuickPick?: boolean) {
+  const [title, ...dsl] = test.split(/\r?\n/)
+  func(title.trim(), testTemplateWithQuickPick(dsl.join(EOL), trimWhitespaces, skipSuggestions, cancelQuickPick))
 }
