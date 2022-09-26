@@ -1,5 +1,5 @@
 import { runTestMultiline as Test, runTestMultilineQuickPick as QuickPick } from './runner'
-import { TabSize } from './utils'
+import { runWithCustomTemplate, TabSize } from './utils'
 import { describe } from 'mocha';
 
 const indent = (size: number) => ' '.repeat(size * TabSize)
@@ -79,6 +79,15 @@ describe('Multiline template tests', () => {
       | \t1,         >> \t1,
       | \t2,         >> \t2,
       | \t3){return} >> \t3)`)
+
+  describe('Without {{expr}}', () => {
+    const run = runWithCustomTemplate('1\n\t1\n1')
+
+    run('expression', `indentation - completely mixed
+      | \tobject.call()        >> \t1
+      | \t  .anotherCall()     >> \t\t1
+      | \t  .lastOne{custom}   >> \t1`)
+  })
 
   Test(`let template - method call in return object method
       | function hoge() {   >> function hoge() {

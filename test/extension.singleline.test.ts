@@ -1,6 +1,7 @@
 import * as vsc from 'vscode'
 import { runTest as Test, runTestQuickPick as QuickPick } from './runner'
 import { describe, before, after } from 'mocha';
+import { runWithCustomTemplate } from './utils';
 
 const config = vsc.workspace.getConfiguration('postfix')
 
@@ -192,36 +193,9 @@ describe('Single line template tests', () => {
   })
 })
 
-function runWithCustomTemplate(template: string) {
-  return (when: string, ...tests: string[]) =>
-    describe(when, () => {
-      before(setCustomTemplate(config, 'custom', template, [when]))
-      after(resetCustomTemplates(config))
-
-      tests.forEach(t => Test(t))
-    })
-}
-
 function setUndefinedMode(config: vsc.WorkspaceConfiguration, value: 'Equal' | 'Typeof' | undefined) {
   return (done: Mocha.Done) => {
     config.update('undefinedMode', value, true).then(done, done)
-  }
-}
-
-function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: string, when: string[]) {
-  return (done: Mocha.Done) => {
-    config.update('customTemplates', [{
-      'name': name,
-      'body': body,
-      'description': 'custom description',
-      'when': when
-    }], true).then(done, done)
-  }
-}
-
-function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
-  return (done: Mocha.Done) => {
-    config.update('customTemplates', undefined, true).then(done, done)
   }
 }
 
