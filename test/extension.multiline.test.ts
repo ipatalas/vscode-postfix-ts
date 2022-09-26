@@ -37,25 +37,25 @@ describe('Multiline template tests', () => {
       | \t  .lastOne(){let} >> \t\t  .lastOne()`)
 
   Test(`return template - method call (indentation - tabs)
-      | \t\tobject.call()     >> \t\treturn object.call()
-      | \t\t\t.anotherCall()  >> \t\t\t.anotherCall()
+      | \t\tobject.call()        >> \t\treturn object.call()
+      | \t\t\t.anotherCall()     >> \t\t\t.anotherCall()
       | \t\t\t.lastOne(){return} >> \t\t\t.lastOne()`)
 
   // first line gets to keep original indentation in VSCode
   Test(`return template - method call (indentation - spaces)
-      | ${indent(2)}object.call()   >> ${indent(2)}return object.call()
-      | ${indent(3)}.anotherCall()  >> \t\t\t.anotherCall()
+      | ${indent(2)}object.call()      >> ${indent(2)}return object.call()
+      | ${indent(3)}.anotherCall()     >> \t\t\t.anotherCall()
       | ${indent(3)}.lastOne(){return} >> \t\t\t.lastOne()`)
 
   Test(`return template - method call (indentation - mixed)
-      | \t\tobject.call()          >> \t\treturn object.call()
-      | ${indent(3)}.anotherCall() >> \t\t\t.anotherCall()
+      | \t\tobject.call()             >> \t\treturn object.call()
+      | ${indent(3)}.anotherCall()    >> \t\t\t.anotherCall()
       | \t\t\t.lastOne(){return}      >> \t\t\t.lastOne()`)
 
   Test(`return template - method call (indentation - completely mixed)
-      | \tobject.call()     >> \treturn object.call()
-      | \t  .anotherCall()  >> \t  .anotherCall()
-      | \t  .lastOne(){return} >> \t  .lastOne()`)
+      | \tobject.call()        >> \treturn object.call()
+      | \t  .anotherCall()     >> \t\t  .anotherCall()
+      | \t  .lastOne(){return} >> \t\t  .lastOne()`)
 
   Test(`let template - property access expression
       | object.   >> let name = object.
