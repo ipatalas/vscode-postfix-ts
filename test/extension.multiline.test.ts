@@ -90,7 +90,7 @@ describe('Multiline template tests', () => {
       | ${indent(3)}.anotherCall() >> \t\t\t.anotherCall()
       | \t\t\t.lastOne(){return}      >> \t\t\t.lastOne()`)
 
-  Test(`return template - method call (indentation - compreturnely mixed)
+  Test(`return template - method call (indentation - completely mixed)
       | \tobject.call()     >> \treturn object.call()
       | \t  .anotherCall()  >> \t\t  .anotherCall()
       | \t  .lastOne(){return} >> \t\t  .lastOne()`)
