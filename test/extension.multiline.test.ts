@@ -1,4 +1,4 @@
-import { runTestMultiline as Test } from './runner'
+import { runTestMultiline as Test, runTestMultilineQuickPick as QuickPick } from './runner'
 import { TabSize } from './utils'
 import { describe } from 'mocha';
 
@@ -35,6 +35,27 @@ describe('Multiline template tests', () => {
       | \tobject.call()     >> \tlet name = object.call()
       | \t  .anotherCall()  >> \t\t  .anotherCall()
       | \t  .lastOne(){let} >> \t\t  .lastOne()`)
+
+  Test(`return template - method call (indentation - tabs)
+      | \t\tobject.call()     >> \t\treturn object.call()
+      | \t\t\t.anotherCall()  >> \t\t\t.anotherCall()
+      | \t\t\t.lastOne(){return} >> \t\t\t.lastOne()`)
+
+  // first line gets to keep original indentation in VSCode
+  Test(`return template - method call (indentation - spaces)
+      | ${indent(2)}object.call()   >> ${indent(2)}return object.call()
+      | ${indent(3)}.anotherCall()  >> \t\t\t.anotherCall()
+      | ${indent(3)}.lastOne(){return} >> \t\t\t.lastOne()`)
+
+  Test(`return template - method call (indentation - mixed)
+      | \t\tobject.call()          >> \t\treturn object.call()
+      | ${indent(3)}.anotherCall() >> \t\t\t.anotherCall()
+      | \t\t\t.lastOne(){return}      >> \t\t\t.lastOne()`)
+
+  Test(`return template - method call (indentation - completely mixed)
+      | \tobject.call()     >> \treturn object.call()
+      | \t  .anotherCall()  >> \t  .anotherCall()
+      | \t  .lastOne(){return} >> \t  .lastOne()`)
 
   Test(`let template - property access expression
       | object.   >> let name = object.
@@ -93,4 +114,20 @@ describe('Multiline template tests', () => {
       | test = () => {      >> test = () => {
       |   wrapMe{log}       >>   console.log(wrapMe)
       | }                   >> }`)
+
+  QuickPick(`not template - whitespaces - first expression
+      | if (          >> if (
+      |   a && (b &&  >>   a && (!b ||
+      |   a           >>   !a
+      |   .a          >>   .a
+      |   .b){not}    >>   .b)
+      | )  {}         >> )  {}`, false, 0)
+
+  QuickPick(`not template - whitespaces - second expression
+      | if (          >> if (
+      |   a && (b &&  >>   !a || (!b ||
+      |   a           >>   !a
+      |   .a          >>   .a
+      |   .b){not}    >>   .b)
+      | )  {}         >> )  {}`, false, 1)
 })
