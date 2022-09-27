@@ -104,13 +104,13 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     return currentNode
   }
 
-  private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo | undefined {
+  private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
     const source = node.getSourceFile()
     const position = ts.getLineAndCharacterOfPosition(source, node.getStart(source))
 
     const line = document.lineAt(position.line)
     const whitespaces = line.text.substring(0, line.firstNonWhitespaceCharacterIndex)
-    let indentSize: number
+    let indentSize = 0
 
     if (AllTabs.test(whitespaces)) {
       indentSize = whitespaces.length
