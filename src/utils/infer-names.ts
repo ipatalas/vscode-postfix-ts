@@ -22,7 +22,7 @@ export const inferVarTemplateName = (node: ts.Node): string[] => {
 }
 
 export const inferForVarTemplate = (node: ts.Node): string[] => {
-  const subjectName = getForExpressionName(node)
+  const subjectName = getLastExpressionName(node)
   if (!subjectName) {
     return
   }
@@ -47,22 +47,30 @@ function beautifyMethodName(name: string) {
   return MethodCallRegex.exec(name)?.groups?.name
 }
 
-function getForExpressionName(node: ts.Node) {
+export function getLastExpressionNode(node: ts.Node) {
   if (ts.isIdentifier(node)) {
-    return node.text
+    return node
   } else if (ts.isPropertyAccessExpression(node)) {
-    return node.name.text
+    return node.name
   } else if (ts.isCallExpression(node)) {
-    return getMethodName(node)
+    return getMethodNode(node)
+  }
+}
+
+export function getLastExpressionName(node: ts.Node) {
+  return getLastExpressionNode(node)?.text
+}
+
+function getMethodNode(node: ts.CallExpression) {
+  if (ts.isIdentifier(node.expression)) {
+    return node.expression
+  } else if (ts.isPropertyAccessExpression(node.expression)) {
+    return node.expression.name
   }
 }
 
 function getMethodName(node: ts.CallExpression) {
-  if (ts.isIdentifier(node.expression)) {
-    return node.expression.text
-  } else if (ts.isPropertyAccessExpression(node.expression)) {
-    return node.expression.name.text
-  }
+  return getMethodNode(node)?.text
 }
 
 function inferNewExpressionVar(node: ts.NewExpression) {

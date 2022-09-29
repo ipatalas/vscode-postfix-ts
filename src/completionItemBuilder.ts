@@ -3,8 +3,9 @@ import ts = require('typescript')
 import { adjustMultilineIndentation } from './utils/multiline-expressions'
 import { SnippetParser } from 'vscode-snippet-parser'
 import { getConfigValue } from './utils'
+import { getLastExpressionName, getLastExpressionNode,  } from './utils/infer-names'
 
-const RegexExpression = '{{expr(?::(upper|lower|capitalize))?}}'
+const RegexExpression = '{{(expr|exprLast|exprRest)(?::(upper|lower|capitalize))?}}'
 
 export class CompletionItemBuilder {
   private item: vsc.CompletionItem
@@ -95,12 +96,22 @@ export class CompletionItemBuilder {
   private replaceExpression = (replacement: string, code: string, customRegex?: string) => {
     const re = new RegExp(customRegex || RegexExpression, 'g')
 
-    return replacement.replace(re, (_match, p1) => {
-      if (p1 && this.filters[p1]) {
-        return this.filters[p1](code)
+    return replacement.replace(re, (_match, type, variant) => {
+      let codeToInsert: string;
+      if (type === 'expr') {
+        codeToInsert = code;
+      } else if (type === 'exprLast') {
+        codeToInsert = getLastExpressionName(this.node);
+      } else {
+        const lastExpr = getLastExpressionNode(this.node)
+        codeToInsert = lastExpr ? code.slice(0, lastExpr.getStart() - this.node.getStart() - 1) /* -1 for dot */ : ''
       }
-      return code;
-    })
+
+      if (variant && this.filters[variant]) {
+        return this.filters[variant](codeToInsert)
+      }
+      return codeToInsert;
+    });
   }
 
   private filters: {[key: string]: (x: string) => string} = {
