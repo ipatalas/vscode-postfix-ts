@@ -41,3 +41,7 @@ function stripLineIndent(line: string, indentSize: number) {
 
   return line
 }
+
+export const adjustLeadingWhitespace = (content: string, leadingWhitespace = '') => {
+  return content.split(/\r?\n/).map((line, i) => !i ? line : leadingWhitespace+line).join('\n')
+}

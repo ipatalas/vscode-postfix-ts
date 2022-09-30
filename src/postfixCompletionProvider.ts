@@ -1,7 +1,7 @@
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
 
-import { IPostfixTemplate } from './template'
+import { IndentInfo, IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
 import { findClosestParent, findNodeAtPosition } from './utils/typescript'
@@ -42,7 +42,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const indentSize = this.getIndentSize(document, currentNode)
+    const indentInfo = this.getIndentInfo(document, currentNode)
     const replacementNode = this.getNodeForReplacement(currentNode)
 
     try {
@@ -56,7 +56,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
           return canUseTemplate
         })
-        .flatMap(t => t.buildCompletionItem(replacementNode, indentSize))
+        .flatMap(t => t.buildCompletionItem(replacementNode, indentInfo))
     } catch (err) {
       console.error('Error while building postfix autocomplete items:')
       console.error(err)
@@ -104,19 +104,23 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     return currentNode
   }
 
-  private getIndentSize(document: vsc.TextDocument, node: ts.Node): number | undefined {
+  private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
     const source = node.getSourceFile()
     const position = ts.getLineAndCharacterOfPosition(source, node.getStart(source))
 
     const line = document.lineAt(position.line)
     const whitespaces = line.text.substring(0, line.firstNonWhitespaceCharacterIndex)
+    let indentSize = 0
 
     if (AllTabs.test(whitespaces)) {
-      return whitespaces.length
+      indentSize = whitespaces.length
+    } else if (AllSpaces.test(whitespaces)) {
+      indentSize = whitespaces.length / (vsc.window.activeTextEditor.options.tabSize as number)
     }
 
-    if (AllSpaces.test(whitespaces)) {
-      return whitespaces.length / (vsc.window.activeTextEditor.options.tabSize as number)
+    return {
+      indentSize,
+      leadingWhitespace: whitespaces
     }
   }
 

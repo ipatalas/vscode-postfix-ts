@@ -1,7 +1,9 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
+import { describe, before, after } from 'mocha';
 import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
+import { runTest } from './runner'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const EOL = require('os').EOL
@@ -103,4 +105,32 @@ function normalizeWhitespaces(text: string) {
     .split(/\r?\n/g)
     .map(line => line.replace(/\t/g, ' '.repeat(TabSize)))
     .join(EOL)
+}
+
+export function runWithCustomTemplate(template: string) {
+  const postfixConfig = vsc.workspace.getConfiguration('postfix')
+  return (when: string, ...tests: string[]) =>
+    describe(when, () => {
+      before(setCustomTemplate(postfixConfig, 'custom', template, [when]))
+      after(resetCustomTemplates(postfixConfig))
+
+      tests.forEach(t => runTest(t))
+    })
+}
+
+function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: string, when: string[]) {
+  return (done: Mocha.Done) => {
+    config.update('customTemplates', [{
+      'name': name,
+      'body': body,
+      'description': 'custom description',
+      'when': when
+    }], true).then(done, done)
+  }
+}
+
+function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
+  return (done: Mocha.Done) => {
+    config.update('customTemplates', undefined, true).then(done, done)
+  }
 }

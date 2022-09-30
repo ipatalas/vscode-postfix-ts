@@ -1,11 +1,12 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
+import { IndentInfo } from '../template'
 import { BaseTemplate } from './baseTemplates'
 
 export class NewTemplate extends BaseTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     return CompletionItemBuilder
-      .create('new', node, indentSize)
+      .create('new', node, indentInfo)
       .replace('new {{expr}}($0)')
       .build()
   }

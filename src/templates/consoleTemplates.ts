@@ -1,5 +1,6 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
+import { IndentInfo } from '../template'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ConsoleTemplate extends BaseExpressionTemplate {
@@ -8,11 +9,11 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
     super(level)
   }
 
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo: IndentInfo) {
     node = this.unwindBinaryExpression(node)
 
     return CompletionItemBuilder
-      .create(this.level, node, indentSize)
+      .create(this.level, node, indentInfo)
       .replace(`console.${this.level}({{expr}})`)
       .build()
   }

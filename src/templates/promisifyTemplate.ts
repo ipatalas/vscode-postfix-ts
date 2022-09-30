@@ -1,11 +1,12 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
+import { IndentInfo } from '../template'
 import { BaseTemplate } from './baseTemplates'
 
 export class PromisifyTemplate extends BaseTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     return CompletionItemBuilder
-      .create('promisify', node, indentSize)
+      .create('promisify', node, indentInfo)
       .replace('Promise<{{expr}}>')
       .build()
   }

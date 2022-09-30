@@ -3,6 +3,7 @@ import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { getConfigValue, getIndentCharacters, getPlaceholderWithOptions } from '../utils'
 import { inferForVarTemplate } from '../utils/infer-names';
+import { IndentInfo } from '../template';
 
 abstract class BaseForTemplate extends BaseTemplate {
   canUse(node: ts.Node): boolean {
@@ -24,13 +25,13 @@ abstract class BaseForTemplate extends BaseTemplate {
 }
 
 export class ForTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
     const prefix = isAwaited ? '(' : ''
     const suffix = isAwaited ? ')' : ''
 
     return CompletionItemBuilder
-      .create('for', node, indentSize)
+      .create('for', node, indentInfo)
       .replace(`for (let \${1:i} = 0; \${1} < \${2:${prefix}{{expr}}${suffix}}.length; \${1}++) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
@@ -49,25 +50,25 @@ const getArrayItemNames = (node: ts.Node): string[] => {
 }
 
 export class ForOfTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     const itemNames = getArrayItemNames(node)
 
     return CompletionItemBuilder
-      .create('forof', node, indentSize)
+      .create('forof', node, indentInfo)
       .replace(`for (let ${getPlaceholderWithOptions(itemNames)} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
 
 export class ForEachTemplate extends BaseForTemplate {
-  buildCompletionItem(node: ts.Node, indentSize?: number) {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
     const prefix = isAwaited ? '(' : ''
     const suffix = isAwaited ? ')' : ''
     const itemNames = getArrayItemNames(node)
 
     return CompletionItemBuilder
-      .create('foreach', node, indentSize)
+      .create('foreach', node, indentInfo)
       .replace(`${prefix}{{expr}}${suffix}.forEach(${getPlaceholderWithOptions(itemNames)} => \${2})`)
       .build()
   }

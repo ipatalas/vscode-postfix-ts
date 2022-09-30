@@ -1,5 +1,5 @@
 import { runTestMultiline as Test, runTestMultilineQuickPick as QuickPick } from './runner'
-import { TabSize } from './utils'
+import { runWithCustomTemplate, TabSize } from './utils'
 import { describe } from 'mocha';
 
 const indent = (size: number) => ' '.repeat(size * TabSize)
@@ -37,25 +37,25 @@ describe('Multiline template tests', () => {
       | \t  .lastOne(){let} >> \t\t  .lastOne()`)
 
   Test(`return template - method call (indentation - tabs)
-      | \t\tobject.call()     >> \t\treturn object.call()
-      | \t\t\t.anotherCall()  >> \t\t\t.anotherCall()
+      | \t\tobject.call()        >> \t\treturn object.call()
+      | \t\t\t.anotherCall()     >> \t\t\t.anotherCall()
       | \t\t\t.lastOne(){return} >> \t\t\t.lastOne()`)
 
   // first line gets to keep original indentation in VSCode
   Test(`return template - method call (indentation - spaces)
-      | ${indent(2)}object.call()   >> ${indent(2)}return object.call()
-      | ${indent(3)}.anotherCall()  >> \t\t\t.anotherCall()
+      | ${indent(2)}object.call()      >> ${indent(2)}return object.call()
+      | ${indent(3)}.anotherCall()     >> \t\t\t.anotherCall()
       | ${indent(3)}.lastOne(){return} >> \t\t\t.lastOne()`)
 
   Test(`return template - method call (indentation - mixed)
-      | \t\tobject.call()          >> \t\treturn object.call()
-      | ${indent(3)}.anotherCall() >> \t\t\t.anotherCall()
+      | \t\tobject.call()             >> \t\treturn object.call()
+      | ${indent(3)}.anotherCall()    >> \t\t\t.anotherCall()
       | \t\t\t.lastOne(){return}      >> \t\t\t.lastOne()`)
 
   Test(`return template - method call (indentation - completely mixed)
-      | \tobject.call()     >> \treturn object.call()
-      | \t  .anotherCall()  >> \t  .anotherCall()
-      | \t  .lastOne(){return} >> \t  .lastOne()`)
+      | \tobject.call()        >> \treturn object.call()
+      | \t  .anotherCall()     >> \t\t  .anotherCall()
+      | \t  .lastOne(){return} >> \t\t  .lastOne()`)
 
   Test(`let template - property access expression
       | object.   >> let name = object.
@@ -69,11 +69,25 @@ describe('Multiline template tests', () => {
       | \t.b        >> \t.b
       | \t.c++{let} >> \t.c++`)
 
+  Test(`return template - method call (equal indentation)
+      | \tobject.call() >> \treturn object.call()
+      | .anotherCall()  >> \t.anotherCall()
+      | .lastOne(){return} >> \t.lastOne()`)
+
   Test(`return template - new expression
       | new Type(    >> return new Type(
       | \t1,         >> \t1,
       | \t2,         >> \t2,
       | \t3){return} >> \t3)`)
+
+  describe('Without {{expr}}', () => {
+    const run = runWithCustomTemplate('1\n\t1\n1')
+
+    run('expression', `indentation - completely mixed
+      | \tobject.call()        >> \t1
+      | \t  .anotherCall()     >> \t\t1
+      | \t  .lastOne{custom}   >> \t1`)
+  })
 
   Test(`let template - method call in return object method
       | function hoge() {   >> function hoge() {
