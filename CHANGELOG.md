@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.11.3] - 2022-10-10
+### Fixed:
+- Fixed binary exrpression regression [#80](https://github.com/ipatalas/vscode-postfix-ts/issues/80)
+- Merged PR [#86](https://github.com/ipatalas/vscode-postfix-ts/pull/86)
+- [Incorrect JSX behavior](https://github.com/ipatalas/vscode-postfix-ts/issues/82)
+- [Incorrect multiline indentation](https://github.com/ipatalas/vscode-postfix-ts/pull/83)
+
 ## [1.11.2] - 2022-09-21
 ### Fixed:
 - Oooops, last release was incorrectly published, fixing manually for now - no changes here, only republish.
