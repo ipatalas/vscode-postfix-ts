@@ -55,7 +55,7 @@ export class ForOfTemplate extends BaseForTemplate {
 
     return CompletionItemBuilder
       .create('forof', node, indentInfo)
-      .replace(`for (let ${getPlaceholderWithOptions(itemNames)} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
+      .replace(`for (const ${getPlaceholderWithOptions(itemNames)} of \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
