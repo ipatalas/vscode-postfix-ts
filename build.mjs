@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 import { build } from 'esbuild'
 
-const production = process.argv[2] === "--production"
-const watch = process.argv[2] === "--watch"
+const production = process.argv.includes("--production")
+const watch = process.argv.includes("--watch")
 
 build({
   entryPoints: ["./src/extension.ts"],
@@ -14,6 +14,7 @@ build({
   minify: production,
   platform: "node",
   logLevel: 'info',
+  watch
 })
   .catch((e) => {
     console.error(e)
