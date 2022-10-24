@@ -143,7 +143,6 @@
     "test": "cross-env NODE_ENV=test node ./out/test/runTests.js",
     "test-with-coverage": "c8 npm test",
     "pretest": "node tasks.mjs pretest && tsc -p ./",
-    "build": "npm run compile",
     "lint": "eslint .",
     "deploy": "vsce publish"
   },
