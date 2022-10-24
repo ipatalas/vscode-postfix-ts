@@ -3,5 +3,3 @@ node_modules
 /coverage
 /.vscode-test
 /test/index.ts
-/tasks.js
-build.js

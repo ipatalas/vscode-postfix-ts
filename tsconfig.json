@@ -8,5 +8,9 @@
     "rootDir": ".",
     "noImplicitOverride": true
   },
-  "exclude": ["node_modules", ".vscode-test", "build.js"]
+  "exclude": [
+    "node_modules",
+    ".vscode-test",
+    "build.mjs"
+  ]
 }
