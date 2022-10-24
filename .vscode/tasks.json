@@ -11,10 +11,15 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "npm: build",
+			"label": "npm: watch",
 			"command": "npm",
-			"args": ["run", "build", "--watch"],
-			"problemMatcher": "$tsc-watch",
+			"args": ["run", "compile", "--", "--watch"],
+      "group": "build",
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
+			"problemMatcher": "$esbuild-watch",
 			"isBackground": true
 		},
 		{
