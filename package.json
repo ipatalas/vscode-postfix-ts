@@ -4,7 +4,7 @@
   "description": "Postfix templates for TypeScript/Javascript",
   "version": "1.11.3",
   "license": "MIT",
-  "publisher": "ipatalas",
+  "publisher": "zardoy",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -15,10 +15,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ipatalas/vscode-postfix-ts"
+    "url": "https://github.com/zardoy/vscode-postfix-ts"
   },
   "bugs": {
-    "url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
+    "url": "https://github.com/zardoy/vscode-postfix-ts/issues"
   },
   "activationEvents": [
     "onLanguage:javascript",
