@@ -1,13 +1,13 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode';
+import * as vsc from 'vscode'
 import { IndentInfo, IPostfixTemplate } from '../template'
-import { findClosestParent, isAssignmentBinaryExpression } from '../utils/typescript';
+import { findClosestParent, isAssignmentBinaryExpression } from '../utils/typescript'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   constructor(public readonly templateName: string) {}
 
   abstract buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo): vsc.CompletionItem
-  abstract canUse  (node: ts.Node) : boolean
+  abstract canUse(node: ts.Node): boolean
 
   protected isSimpleExpression = (node: ts.Node) => ts.isExpressionStatement(node) && !this.isStringLiteral(node)
   protected isPropertyAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PropertyAccessExpression
@@ -66,13 +66,13 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
-        || node.parent && this.isBinaryExpression(node.parent)
+      || node.parent && this.isBinaryExpression(node.parent)
   }
 
   protected unwindBinaryExpression = (node: ts.Node, removeParens = true) => {
     const binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       ? node.expression
-      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
+      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression
 
     if (binaryExpression && !isAssignmentBinaryExpression(binaryExpression)) {
       return binaryExpression

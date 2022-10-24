@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 import { build } from 'esbuild'
 
-const production = process.argv[2] === "--production";
-const watch = process.argv[2] === "--watch";
+const production = process.argv[2] === "--production"
+const watch = process.argv[2] === "--watch"
 
 build({
   entryPoints: ["./src/extension.ts"],
@@ -16,6 +16,6 @@ build({
   logLevel: 'info',
 })
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+    console.error(e)
+    process.exit(1)
+  })

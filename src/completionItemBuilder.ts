@@ -3,7 +3,7 @@ import ts = require('typescript')
 import { adjustLeadingWhitespace, adjustMultilineIndentation } from './utils/multiline-expressions'
 import { SnippetParser } from 'vscode-snippet-parser'
 import { getConfigValue } from './utils'
-import { getLastExpressionName, getLastExpressionNode,  } from './utils/infer-names'
+import { getLastExpressionName, getLastExpressionNode, } from './utils/infer-names'
 import { IndentInfo } from './template'
 
 const RegexExpression = '{{(expr|exprLast|exprRest)(?::(upper|lower|capitalize))?}}'
@@ -19,7 +19,7 @@ export class CompletionItemBuilder {
     }
 
     this.node = node
-    this.item = new vsc.CompletionItem({label: keyword, description: 'POSTFIX'}, vsc.CompletionItemKind.Snippet)
+    this.item = new vsc.CompletionItem({ label: keyword, description: 'POSTFIX' }, vsc.CompletionItemKind.Snippet)
     this.code = adjustMultilineIndentation(node.getText(), indentInfo?.indentSize)
   }
 
@@ -55,7 +55,7 @@ export class CompletionItemBuilder {
       this.item.insertText = new vsc.SnippetString(adjustLeadingWhitespace(
         this.replaceExpression(replacement, escapedCode),
         this.indentInfo.leadingWhitespace
-      ));
+      ))
       this.item.additionalTextEdits = [
         vsc.TextEdit.delete(rangeToDelete)
       ]
@@ -88,12 +88,12 @@ export class CompletionItemBuilder {
     const addCodeBlock = (md: vsc.MarkdownString) => {
       const code = this.replaceExpression(replacement, this.code)
       const snippetPreviewMode = getConfigValue<'raw' | 'inserted'>('snippetPreviewMode')
-      return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts');
+      return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts')
     }
 
     if (!this.item.documentation) {
-      const md = new vsc.MarkdownString();
-      addCodeBlock(md);
+      const md = new vsc.MarkdownString()
+      addCodeBlock(md)
       this.item.documentation = md
     } else {
       addCodeBlock(this.item.documentation as vsc.MarkdownString)
@@ -106,11 +106,11 @@ export class CompletionItemBuilder {
     const re = new RegExp(customRegex || RegexExpression, 'g')
 
     return replacement.replace(re, (_match, type, variant) => {
-      let codeToInsert: string;
+      let codeToInsert: string
       if (type === 'expr') {
-        codeToInsert = code;
+        codeToInsert = code
       } else if (type === 'exprLast') {
-        codeToInsert = getLastExpressionName(this.node);
+        codeToInsert = getLastExpressionName(this.node)
       } else {
         const lastExpr = getLastExpressionNode(this.node)
         codeToInsert = lastExpr ? code.slice(0, lastExpr.getStart() - this.node.getStart() - 1) /* -1 for dot */ : ''
@@ -119,11 +119,11 @@ export class CompletionItemBuilder {
       if (variant && this.filters[variant]) {
         return this.filters[variant](codeToInsert)
       }
-      return codeToInsert;
-    });
+      return codeToInsert
+    })
   }
 
-  private filters: {[key: string]: (x: string) => string} = {
+  private filters: { [key: string]: (x: string) => string } = {
     'upper': (x: string) => x.toUpperCase(),
     'lower': (x: string) => x.toLowerCase(),
     'capitalize': (x: string) => x.substring(0, 1).toUpperCase() + x.substring(1),

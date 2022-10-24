@@ -33,9 +33,9 @@ export class NotTemplate extends BaseTemplate {
       .build()
   }
 
-  canUse (node: ts.Node) {
+  canUse(node: ts.Node) {
     return !this.isTypeNode(node) &&
-        (this.isExpression(node)
+      (this.isExpression(node)
         || this.isUnaryExpression(node)
         || this.isUnaryExpression(node.parent)
         || this.isBinaryExpression(node)

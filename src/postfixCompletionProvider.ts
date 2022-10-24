@@ -12,7 +12,7 @@ let currentSuggestion = undefined
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
   private customTemplateNames: string[] = []
-  private mergeMode: 'append' | 'override';
+  private mergeMode: 'append' | 'override'
 
   constructor() {
     this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode')
