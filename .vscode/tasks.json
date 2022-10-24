@@ -13,7 +13,7 @@
 			"type": "shell",
 			"label": "npm: build",
 			"command": "npm",
-			"args": ["run", "build"],
+			"args": ["run", "build", "--watch"],
 			"problemMatcher": "$tsc-watch",
 			"isBackground": true
 		},

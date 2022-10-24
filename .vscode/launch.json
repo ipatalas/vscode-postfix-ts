@@ -23,7 +23,7 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--disable-extensions",
-        "--extensionDevelopmentPath=${workspaceRoot}",
+        "--extensionDevelopmentPath=${workspaceRoot}/out",
         "--extensionTestsPath=${workspaceRoot}/out/test"
       ],
       "env": {
