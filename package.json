@@ -2,7 +2,7 @@
   "name": "vscode-postfix-ts",
   "displayName": "TS/JS postfix completion",
   "description": "Postfix templates for TypeScript/Javascript",
-  "version": "1.11.3",
+  "version": "20.0.0",
   "license": "MIT",
   "publisher": "zardoy",
   "engines": {
@@ -143,8 +143,7 @@
     "test": "cross-env NODE_ENV=test node ./out/test/runTests.js",
     "test-with-coverage": "c8 npm test",
     "pretest": "node tasks.mjs pretest && tsc -p ./",
-    "prerun": "node tasks.mjs prerun",
-    "build": "npm run prerun && npm run compile",
+    "build": "npm run compile",
     "lint": "eslint .",
     "deploy": "vsce publish"
   },
