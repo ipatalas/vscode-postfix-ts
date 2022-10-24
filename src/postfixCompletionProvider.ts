@@ -36,9 +36,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const currentNode = this.getNodeBeforeTheDot(document, position, dotIdx)
+    const { currentNode, fullSource, fullCurrentNode } = this.getNodeBeforeTheDot(document, position, dotIdx)
 
-    if (!currentNode || this.shouldBeIgnored(document, position)) {
+    if (!currentNode || this.shouldBeIgnored(fullSource, position)) {
       return []
     }
 
@@ -48,7 +48,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     try {
       return this.templates
         .filter(t => {
-          let canUseTemplate = t.canUse(ts.isNonNullExpression(currentNode) ? currentNode.expression : currentNode)
+          let canUseTemplate = t.canUse(ts.isNonNullExpression(fullCurrentNode) ? fullCurrentNode.expression : fullCurrentNode)
 
           if (this.mergeMode === 'override') {
             canUseTemplate &&= (t instanceof CustomTemplate || !this.customTemplateNames.includes(t.templateName))
@@ -66,7 +66,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
-    currentSuggestion =  (item.label as vsc.CompletionItemLabel)?.label || item.label
+    currentSuggestion = (item.label as vsc.CompletionItemLabel)?.label || item.label
     return item
   }
 
@@ -93,6 +93,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     ))
 
     const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ES5, true)
+    const fullSource = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES5, true)
     const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
 
     let currentNode = findNodeAtPosition(source, beforeTheDotPosition)
@@ -101,7 +102,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       currentNode = currentNode.parent
     }
 
-    return currentNode
+    return { currentNode, fullSource, fullCurrentNode: findNodeAtPosition(fullSource, beforeTheDotPosition) }
   }
 
   private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
@@ -124,10 +125,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 
-  private shouldBeIgnored(document: vsc.TextDocument, position: vsc.Position) {
-    const source = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES2020, true, ts.ScriptKind.TSX)
-    const pos = source.getPositionOfLineAndCharacter(position.line, position.character)
-    const node = findNodeAtPosition(source, pos)
+  private shouldBeIgnored(fullSource: ts.SourceFile, position: vsc.Position) {
+    const pos = fullSource.getPositionOfLineAndCharacter(position.line, position.character)
+    const node = findNodeAtPosition(fullSource, pos)
 
     return isComment() || isJsx()
 
