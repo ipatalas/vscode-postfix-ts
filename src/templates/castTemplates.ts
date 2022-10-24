@@ -4,7 +4,7 @@ import { IndentInfo } from '../template'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class CastTemplate extends BaseExpressionTemplate {
-  constructor (private keyword: 'cast' | 'castas') {
+  constructor(private keyword: 'cast' | 'castas') {
     super(keyword)
   }
 
@@ -22,7 +22,7 @@ export class CastTemplate extends BaseExpressionTemplate {
       .build()
   }
 
-  override canUse (node: ts.Node) {
+  override canUse(node: ts.Node) {
     return !this.inIfStatement(node) && !this.isTypeNode(node) &&
       (this.isIdentifier(node) ||
         this.isExpression(node) ||

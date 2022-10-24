@@ -2,8 +2,8 @@ import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { BaseTemplate } from './baseTemplates'
 import { getConfigValue, getIndentCharacters, getPlaceholderWithOptions } from '../utils'
-import { inferForVarTemplate } from '../utils/infer-names';
-import { IndentInfo } from '../template';
+import { inferForVarTemplate } from '../utils/infer-names'
+import { IndentInfo } from '../template'
 
 abstract class BaseForTemplate extends BaseTemplate {
   canUse(node: ts.Node): boolean {
@@ -45,7 +45,7 @@ export class ForTemplate extends BaseForTemplate {
 
 const getArrayItemNames = (node: ts.Node): string[] => {
   const inferVarNameEnabled = getConfigValue<boolean>('inferVariableName')
-  const suggestedNames = inferVarNameEnabled ? inferForVarTemplate(node) : undefined;
+  const suggestedNames = inferVarNameEnabled ? inferForVarTemplate(node) : undefined
   return suggestedNames?.length > 0 ? suggestedNames : ['item']
 }
 

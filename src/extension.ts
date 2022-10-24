@@ -6,7 +6,7 @@ import { notCommand, NOT_COMMAND } from './notCommand'
 
 let completionProvider: vsc.Disposable
 
-export function activate (context: vsc.ExtensionContext): void {
+export function activate(context: vsc.ExtensionContext): void {
   registerCompletionProvider(context)
 
   context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: ts.BinaryExpression[]) => {
@@ -31,10 +31,10 @@ export function activate (context: vsc.ExtensionContext): void {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function deactivate (): void {
+export function deactivate(): void {
 }
 
-function registerCompletionProvider (context: vsc.ExtensionContext) {
+function registerCompletionProvider(context: vsc.ExtensionContext) {
   const provider = new PostfixCompletionProvider()
 
   const DOCUMENT_SELECTOR: vsc.DocumentSelector =

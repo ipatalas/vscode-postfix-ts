@@ -1,6 +1,6 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
-import { describe, before, after } from 'mocha';
+import { describe, before, after } from 'mocha'
 import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'

@@ -1,6 +1,6 @@
 import { testTemplate, testTemplateWithQuickPick } from './utils'
 import { EOL } from 'os'
-import { it, TestFunction } from 'mocha';
+import { it, TestFunction } from 'mocha'
 
 type RunTestFn = {
   (test: string, trimWhitespaces?: boolean): void

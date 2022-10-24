@@ -30,7 +30,7 @@ export class IfTemplate extends BaseIfElseTemplate {
 export class ElseTemplate extends BaseIfElseTemplate {
   buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
     node = this.unwindBinaryExpression(node, false)
-    const replacement = invertExpression(this.unwindBinaryExpression(node, true));
+    const replacement = invertExpression(this.unwindBinaryExpression(node, true))
 
     return CompletionItemBuilder
       .create('else', node, indentInfo)

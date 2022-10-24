@@ -6,7 +6,7 @@ const LANGUAGE = 'postfix'
 
 function pretest() {
   const pkg = readPackageJson()
-  pkg.contributes.languages = [{id: LANGUAGE}]
+  pkg.contributes.languages = [{ id: LANGUAGE }]
   // Activate the extension right after start to avoid delay and failure in first test
   pkg.activationEvents = ['*']
   // Don't use bundler for tests as it breaks template usage tests
@@ -20,5 +20,5 @@ const writePackageJson = (content) => {
 }
 const readPackageJson = () => JSON.parse(readFileSync('package.json', 'utf8'))
 
-const taskToExecute = {pretest}[process.argv[2] ?? '']
+const taskToExecute = { pretest }[process.argv[2] ?? '']
 taskToExecute?.()

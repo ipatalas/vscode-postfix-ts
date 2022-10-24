@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
-import { describe, it } from 'mocha';
+import { describe, it } from 'mocha'
 
 import { getIndentCharacters } from '../src/utils'
 import { invertBinaryExpression, invertExpression } from '../src/utils/invert-expression'
@@ -62,7 +62,7 @@ describe('Utils tests', () => {
   })
 })
 
-function testInvertBinaryExpression (dsl: string) {
+function testInvertBinaryExpression(dsl: string) {
   const [input, expected] = dsl.split('>>').map(x => x.trim())
 
   it(`${input} should invert to ${expected}`, () => {
@@ -75,7 +75,7 @@ function testInvertBinaryExpression (dsl: string) {
   })
 }
 
-function testInvertExpression (dsl: string) {
+function testInvertExpression(dsl: string) {
   const [input, expected] = dsl.split('>>').map(x => x.trim())
 
   it(`${input} should invert to ${expected}`, () => {

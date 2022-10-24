@@ -10,5 +10,22 @@
   "tslint.autoFixOnSave": true,
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "[typescript][javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+  },
+  "typescript.format.enable": true,
+  "typescript.format.semicolons": "remove",
+  "typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": true,
+  "typescript.format.insertSpaceBeforeAndAfterBinaryOperators": true,
+  "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": true,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+  "typescript.format.insertSpaceAfterCommaDelimiter": true,
+  "typescript.format.insertSpaceAfterConstructor": false,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": false,
+  "typescript.format.insertSpaceBeforeFunctionParenthesis": false
 }
