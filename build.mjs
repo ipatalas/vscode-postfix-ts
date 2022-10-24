@@ -14,15 +14,6 @@ build({
   minify: production,
   platform: "node",
   logLevel: 'info',
-  watch: watch && {
-    onRebuild(error) {
-      if (error) {
-        console.error("watch build failed:", error);
-      } else {
-        console.log("watch build succeeded");
-      }
-    },
-  },
 })
   .catch((e) => {
     console.error(e);
