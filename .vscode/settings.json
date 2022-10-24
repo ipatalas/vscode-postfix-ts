@@ -8,9 +8,6 @@
     "out": true // set this to false to include "out" folder in search results
   },
   "tslint.autoFixOnSave": true,
-  "editor.insertSpaces": true,
-  "editor.tabSize": 2,
-  "editor.detectIndentation": false,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
