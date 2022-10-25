@@ -7,6 +7,7 @@ import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
 import { findClosestParent, findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 import { getHtmlLikeEmbedText } from './htmlLikeSupport'
+import { getLastExpressionName } from './utils/infer-names'
 
 let currentSuggestion = undefined
 
@@ -53,6 +54,20 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
           if (this.mergeMode === 'override') {
             canUseTemplate &&= (t instanceof CustomTemplate || !this.customTemplateNames.includes(t.templateName))
+          }
+
+          const isRegexCheckFailing = (regexStr: string | undefined, getMatchingString: () => string) => {
+            if (regexStr === undefined) {
+              return false
+            }
+            return !new RegExp(regexStr).test(getMatchingString())
+          }
+
+          if (isRegexCheckFailing(t.exprRegex, () => replacementNode.getFullText())) {
+            return false
+          }
+          if (isRegexCheckFailing(t.exprLastRegex, () => getLastExpressionName(replacementNode))) {
+            return false
           }
 
           return canUseTemplate

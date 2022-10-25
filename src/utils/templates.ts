@@ -15,7 +15,7 @@ export const loadCustomTemplates = () => {
   const config = vsc.workspace.getConfiguration('postfix')
   const templates = config.get<ICustomTemplateDefinition[]>('customTemplates')
   if (templates) {
-    return templates.map(t => new CustomTemplate(t.name, t.description, t.body, t.when))
+    return templates.map(t => new CustomTemplate(t.name, t.description, t.body, t.when, t.exprRegex, t.exprLastRegex))
   }
 }
 
@@ -51,7 +51,9 @@ export const loadBuiltinTemplates = () => {
 
 interface ICustomTemplateDefinition {
   name: string
-  description: string
   body: string,
-  when: string[]
+  description?: string
+  exprRegex?: string,
+  exprLastRegex?: string,
+  when?: string[]
 }

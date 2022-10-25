@@ -122,6 +122,14 @@
                     "type"
                   ]
                 }
+              },
+              "exprRegex": {
+                "type": "string",
+                "sortText": "z"
+              },
+              "exprLastRegex": {
+                "type": "string",
+                "sortText": "z"
               }
             }
           }
@@ -150,6 +158,7 @@
     "test-with-coverage": "c8 npm test",
     "pretest": "node tasks.mjs pretest && tsc -p ./",
     "lint": "eslint .",
+    "package": "vsce package --no-dependencies",
     "deploy": "vsce publish"
   },
   "devDependencies": {

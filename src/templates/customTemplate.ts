@@ -15,7 +15,7 @@ export class CustomTemplate extends BaseTemplate {
     ['function-call', node => this.isCallExpression(node)]
   ])
 
-  constructor(name: string, private description: string, private body: string, private when: string[]) {
+  constructor(name: string, private description: string, private body: string, private when: string[], public exprRegex?: string, public exprLastRegex?: string) {
     super(name)
   }
 
