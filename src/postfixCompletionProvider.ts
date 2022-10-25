@@ -128,13 +128,15 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
     const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
 
-    let currentNode = findNodeAtPosition(source, beforeTheDotPosition)
-
-    if (ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
-      currentNode = currentNode.parent
+    const findNormalizedNode = (source: ts.SourceFile) => {
+      let node = findNodeAtPosition(source, beforeTheDotPosition)
+      if (ts.isIdentifier(node) && ts.isPropertyAccessExpression(node.parent)) {
+        node = node.parent
+      }
+      return node
     }
 
-    return { currentNode, fullSource, fullCurrentNode: findNodeAtPosition(fullSource, beforeTheDotPosition) }
+    return { currentNode: findNormalizedNode(source), fullSource, fullCurrentNode: findNormalizedNode(fullSource) }
   }
 
   private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
