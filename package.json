@@ -2,7 +2,7 @@
   "name": "postfix-ts",
   "displayName": "TS/JS postfix 2",
   "description": "Postfix templates. Reformed",
-  "version": "20.0.0",
+  "version": "20.0.1",
   "license": "MIT",
   "publisher": "zardoy",
   "engines": {
