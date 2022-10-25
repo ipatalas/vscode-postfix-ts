@@ -6,6 +6,7 @@ import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
 import { findClosestParent, findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
+import { getHtmlLikeEmbedText } from './htmlLikeSupport'
 
 let currentSuggestion = undefined
 
@@ -36,7 +37,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const { currentNode, fullSource, fullCurrentNode } = this.getNodeBeforeTheDot(document, position, dotIdx)
+    const { currentNode, fullSource, fullCurrentNode } = this.getNodeBeforeTheDot(document, position, dotIdx) ?? {}
 
     if (!currentNode || this.shouldBeIgnored(fullSource, position)) {
       return []
@@ -86,14 +87,30 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     return node
   }
 
-  private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {
-    const codeBeforeTheDot = document.getText(new vsc.Range(
-      new vsc.Position(0, 0),
-      new vsc.Position(position.line, dotIdx)
-    ))
+  private getHtmlLikeEmbeddedText(document: vsc.TextDocument, position: vsc.Position) {
+    const knownHtmlLikeLangs = [
+      'html',
+      'vue',
+      'svelte'
+    ]
 
-    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ES5, true)
-    const fullSource = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES5, true)
+    return knownHtmlLikeLangs.includes(document.languageId) ? getHtmlLikeEmbedText(document, document.offsetAt(position)) : undefined
+  }
+
+  private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {
+    const dotOffset = document.offsetAt(position.with({ character: dotIdx }))
+    const speciallyHandledText = this.getHtmlLikeEmbeddedText(document, position)
+
+    if (speciallyHandledText === null) {
+      return
+    }
+
+    const fullText = speciallyHandledText ?? document.getText()
+
+    const codeBeforeTheDot = fullText.slice(0, dotOffset)
+
+    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
+    const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
     const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
 
     let currentNode = findNodeAtPosition(source, beforeTheDotPosition)
