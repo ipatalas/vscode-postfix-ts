@@ -1,7 +1,7 @@
 {
-  "name": "vscode-postfix-ts",
-  "displayName": "TS/JS postfix completion",
-  "description": "Postfix templates for TypeScript/Javascript",
+  "name": "postfix-ts",
+  "displayName": "TS/JS postfix 2",
+  "description": "Postfix templates. Reformed",
   "version": "20.0.0",
   "license": "MIT",
   "publisher": "zardoy",
