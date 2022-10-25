@@ -154,9 +154,8 @@
   "scripts": {
     "vscode:prepublish": "node build.mjs --production",
     "compile": "node build.mjs",
-    "test": "cross-env NODE_ENV=test node ./out/test/runTests.js",
+    "test": "node tasks.mjs pretest && tsc -p ./ && cross-env NODE_ENV=test node ./out/test/runTests.js",
     "test-with-coverage": "c8 npm test",
-    "pretest": "node tasks.mjs pretest && tsc -p ./",
     "lint": "eslint .",
     "package": "vsce package --no-dependencies",
     "deploy": "vsce publish"
