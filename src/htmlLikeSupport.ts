@@ -59,12 +59,12 @@ const getHtmlLikeEmbedRange = (document: vsc.TextDocument, cursorOffset: number,
     }
   }
 
-  if (attrName !== undefined && attrValue !== undefined && validAttributeRegexps[document.languageId].test(attrName)) {
+  if (attrName !== undefined && attrValue !== undefined) {
     // return range without quotes
-    return { start: scanner.getTokenOffset() + 1, end: scanner.getTokenEnd() - 2 }
+    return validAttributeRegexps[document.languageId].test(attrName) ? { start: scanner.getTokenOffset() + 1, end: scanner.getTokenEnd() - 2 } : null
   }
 
-  return null
+  return
 }
 
 export const getHtmlLikeEmbedText = (document: vsc.TextDocument, cursorOffset: number): string | null | undefined => {
