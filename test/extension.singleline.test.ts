@@ -12,6 +12,7 @@ describe('Single line template tests', () => {
   Test('not template - already negated expression | !expr{not}               >> expr')
   Test('let template - binary expression #1       | a * 3{let}               >> let name = a * 3')
   Test('let template - binary expression #2       | a * b{let}               >> let name = a * b')
+  Test('let template - binary expression - nested | x && a * b{let}          >> let name = x && a * b')
   Test('let template - non-null as assertion      | test!{let}               >> let name = test!')
   Test('let template - method call                | obj.call(){let}          >> let name = obj.call()')
   Test('let template - method call with non-null  | obj.call()!{let}         >> let name = obj.call()!')

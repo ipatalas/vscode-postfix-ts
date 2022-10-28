@@ -70,9 +70,13 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected unwindBinaryExpression = (node: ts.Node, removeParens = true) => {
-    const binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
+    let binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       ? node.expression
       : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
+
+    while (binaryExpression && ts.isBinaryExpression(binaryExpression.parent)) {
+      binaryExpression = binaryExpression.parent
+    }
 
     if (binaryExpression && !isAssignmentBinaryExpression(binaryExpression)) {
       return binaryExpression
