@@ -61,6 +61,11 @@ describe('Single line template tests', () => {
   Test('undefined template    | expr{undefined}    >> if(expr===undefined){}', true)
   Test('notundefined template | expr{notundefined} >> if(expr!==undefined){}', true)
 
+  Test('null template         - inside if | if (x & expr{null})         >> if(x&expr===null)', true)
+  Test('notnull template      - inside if | if (x & expr{notnull})      >> if(x&expr!==null)', true)
+  Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&expr===undefined)', true)
+  Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&expr!==undefined)', true)
+
   Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', true)
   Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', true)
   Test('forof template   | expr{forof}         >> for(letitemofexpr){}', true)
@@ -103,6 +108,9 @@ describe('Single line template tests', () => {
 
     Test('undefined template    | expr{undefined}    >> if(typeofexpr==="undefined"){}', true)
     Test('notundefined template | expr{notundefined} >> if(typeofexpr!=="undefined"){}', true)
+
+    Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&typeofexpr==="undefined")', true)
+    Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&typeofexpr!=="undefined")', true)
   })
 
   describe('Infer variable name', () => {

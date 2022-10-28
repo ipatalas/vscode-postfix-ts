@@ -3,8 +3,9 @@ import { IPostfixTemplate } from '../template'
 import { CastTemplate } from '../templates/castTemplates'
 import { ConsoleTemplate } from '../templates/consoleTemplates'
 import { CustomTemplate } from '../templates/customTemplate'
+import { EqualityTemplate } from '../templates/equalityTemplates'
 import { ForTemplate, ForOfTemplate, ForEachTemplate } from '../templates/forTemplates'
-import { IfTemplate, ElseTemplate, IfEqualityTemplate, IfTypeofEqualityTemplate } from '../templates/ifTemplates'
+import { IfTemplate, ElseTemplate, IfEqualityTemplate } from '../templates/ifTemplates'
 import { NewTemplate } from '../templates/newTemplate'
 import { NotTemplate } from '../templates/notTemplate'
 import { PromisifyTemplate } from '../templates/promisifyTemplate'
@@ -35,8 +36,10 @@ export const loadBuiltinTemplates = () => {
     new IfEqualityTemplate('notnull', '!==', null),
     new IfEqualityTemplate('undefined', '===', undefined, true),
     new IfEqualityTemplate('notundefined', '!==', undefined, true),
-    new IfTypeofEqualityTemplate('undefined', '===', undefined),
-    new IfTypeofEqualityTemplate('notundefined', '!==', undefined),
+    new EqualityTemplate('null', '===', null),
+    new EqualityTemplate('notnull', '!==', null),
+    new EqualityTemplate('undefined', '===', undefined, true),
+    new EqualityTemplate('notundefined', '!==', undefined, true),
     new NewTemplate('new'),
     new NotTemplate('not'),
     new PromisifyTemplate('promisify'),

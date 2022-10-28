@@ -45,42 +45,17 @@ export class IfEqualityTemplate extends BaseIfElseTemplate {
   }
 
   override canUse(node: ts.Node) {
-    if (this.isUndefinedTemplate) {
-      const value = getConfigValue<string>('undefinedMode')
-      if (value !== 'Equal') {
-        return false
-      }
-    }
-
     return super.canUse(node) && !this.isBinaryExpression(node)
   }
 
   buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
+    const typeOfMode = this.isUndefinedTemplate && getConfigValue<string>('undefinedMode') == 'Typeof'
+
     return CompletionItemBuilder
       .create(this.keyword, node, indentInfo)
-      .replace(`if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`)
-      .build()
-  }
-}
-
-export class IfTypeofEqualityTemplate extends BaseIfElseTemplate {
-  constructor(private keyword: string, private operator: string, private operand: string) {
-    super(keyword)
-  }
-
-  override canUse(node: ts.Node) {
-    const value = getConfigValue<string>('undefinedMode')
-    if (value !== 'Typeof') {
-      return false
-    }
-
-    return super.canUse(node) && !this.isBinaryExpression(node)
-  }
-
-  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
-    return CompletionItemBuilder
-      .create(this.keyword, node, indentInfo)
-      .replace(`if (typeof {{expr}} ${this.operator} "${this.operand}") {\n${getIndentCharacters()}\${0}\n}`)
+      .replace(typeOfMode
+        ? `if (typeof {{expr}} ${this.operator} "${this.operand}") {\n${getIndentCharacters()}\${0}\n}`
+        : `if ({{expr}} ${this.operator} ${this.operand}) {\n${getIndentCharacters()}\${0}\n}`)
       .build()
   }
 }
