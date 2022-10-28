@@ -28,6 +28,7 @@ describe('Single line template tests', () => {
   Test('let template - string literal #3          | `a string`{let}          >> let name = `a string`')
   Test('let template - string literal #4          | `a ${value} string`{let} >> let name = `a ${value} string`')
   Test('let template - string literal #5          | `a string ${value}`{let} >> let name = `a string ${value}`')
+  Test('let template - escape characters          | `\\\\\\\\`{let}          >> let name = `\\\\\\\\`')
 
   Test('var template          | a.b{var}   >> var name = a.b')
   Test('var template (indent) | \ta.b{var} >> \tvar name = a.b')
@@ -45,6 +46,7 @@ describe('Single line template tests', () => {
   Test('return template | x > 1{return}      >> return x > 1')
   Test('return template | x > y{return}      >> return x > y')
   Test('return template | new Type(){return} >> return new Type()')
+  Test('return template | `\\\\\\\\`{return} >> return `\\\\\\\\`')
 
   Test('if template                       | expr{if}      >> if(expr){}', true)
   Test('if template - binary expression   | a > b{if}     >> if(a>b){}', true)

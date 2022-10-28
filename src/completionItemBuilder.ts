@@ -35,7 +35,7 @@ export class CompletionItemBuilder {
   }
 
   public replace = (replacement: string): CompletionItemBuilder => {
-    this.addCodeBlockDescription(this.replaceExpression(replacement, this.code))
+    this.addCodeBlockDescription(replacement, this.code.replace(/\\/g, '\\\\'))
 
     const src = this.node.getSourceFile()
     const nodeStart = ts.getLineAndCharacterOfPosition(src, this.node.getStart(src))
@@ -49,7 +49,9 @@ export class CompletionItemBuilder {
     const useSnippets = /(?<!\\)\$/.test(replacement)
 
     if (useSnippets) {
-      const escapedCode = this.code.replace(/\$/g, '\\$')
+      const escapedCode = this.code
+        .replace(/\\/g, '\\\\')
+        .replace(/\$/g, '\\$')
 
       this.item.insertText = new vsc.SnippetString(adjustLeadingWhitespace(
         this.replaceExpression(replacement, escapedCode),
@@ -83,9 +85,9 @@ export class CompletionItemBuilder {
     return this
   }
 
-  private addCodeBlockDescription = (replacement: string) => {
+  private addCodeBlockDescription = (replacement: string, inputCode: string) => {
     const addCodeBlock = (md: vsc.MarkdownString) => {
-      const code = this.replaceExpression(replacement, this.code)
+      const code = this.replaceExpression(replacement, inputCode)
       const snippetPreviewMode = getConfigValue<'raw' | 'inserted'>('snippetPreviewMode')
       return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts');
     }
