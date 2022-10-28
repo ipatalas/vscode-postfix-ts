@@ -1,4 +1,5 @@
 const fs = require('fs')
+const EOL = require('os').EOL
 
 const LANGUAGE = 'postfix'
 const task = process.argv.length > 2 && process.argv[2]
@@ -31,7 +32,7 @@ function pretest() {
 	writePackageJson(pkg)
 }
 
-const writePackageJson = (content) => fs.writeFileSync('./package.json', JSON.stringify(content, undefined, '\t'))
+const writePackageJson = (content) => fs.writeFileSync('./package.json', JSON.stringify(content, undefined, '\t').replace(/\n/g, EOL))
 const readPackageJson = () => require('./package.json')
 
 const taskToExecute = tasksMap.get(task)
