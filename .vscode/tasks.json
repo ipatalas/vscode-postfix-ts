@@ -13,12 +13,17 @@
 			"type": "shell",
 			"label": "npm: watch",
 			"command": "npm",
-			"args": ["run", "compile", "--", "--watch"],
-      "group": "build",
-      "presentation": {
-        "panel": "dedicated",
-        "reveal": "never"
-      },
+			"args": [
+				"run",
+				"compile",
+				"--",
+				"--watch"
+			],
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
 			"problemMatcher": "$esbuild-watch",
 			"isBackground": true
 		},
@@ -26,7 +31,10 @@
 			"type": "shell",
 			"label": "npm: pretest",
 			"command": "npm",
-			"args": ["run", "pretest"],
+			"args": [
+				"run",
+				"pretest"
+			],
 		}
 	]
 }
