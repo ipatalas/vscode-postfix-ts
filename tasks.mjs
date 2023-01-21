@@ -1,6 +1,6 @@
-/* eslint-disable no-undef */
 //@ts-check
-import { mkdirSync, readFileSync, writeFileSync } from 'fs'
+import * as process from "node:process";
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 
 const LANGUAGE = 'postfix'
 
