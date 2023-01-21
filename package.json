@@ -24,7 +24,10 @@
 		"onLanguage:javascript",
 		"onLanguage:typescript",
 		"onLanguage:javascriptreact",
-		"onLanguage:typescriptreact"
+		"onLanguage:typescriptreact",
+		"onLanguage:vue",
+		"onLanguage:html",
+		"onLanguage:svelte"
 	],
 	"main": "./out/extension",
 	"contributes": {
@@ -38,7 +41,10 @@
 						"javascript",
 						"typescript",
 						"javascriptreact",
-						"typescriptreact"
+						"typescriptreact",
+						"vue",
+						"svelte",
+						"html"
 					]
 				},
 				"postfix.undefinedMode": {
@@ -170,6 +176,7 @@
 		"lodash": "^4.17.21",
 		"pluralize": "github:plurals/pluralize#36f03cd2d573fa6d23e12e1529fa4627e2af74b4",
 		"typescript": "^4.6.4",
-		"vscode-snippet-parser": "^0.0.5"
+		"vscode-snippet-parser": "^0.0.5",
+		"vscode-html-languageservice": "~5.0.3"
 	}
 }

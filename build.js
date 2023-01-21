@@ -10,6 +10,8 @@ require("esbuild")
     format: "cjs",
     sourcemap: !production,
     minify: production,
+    keepNames: true,
+    mainFields: ['module', 'main'],
     platform: "node",
     watch: watch && {
       onRebuild(error) {
