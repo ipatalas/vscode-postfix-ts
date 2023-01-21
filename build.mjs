@@ -15,6 +15,10 @@ build({
   minify: production,
   platform: "node",
   logLevel: 'info',
+  // needed for debugger
+  keepNames: true,
+  // needed for vscode-* deps
+  mainFields: ['module', 'main'],
   watch
 })
   .catch((e) => {
