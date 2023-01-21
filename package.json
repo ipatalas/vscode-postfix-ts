@@ -144,14 +144,12 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run prerun && node ./build.js --production",
-		"compile": "node ./build.js",
-		"test": "cross-env NODE_ENV=test node ./out/test/runTests.js",
+		"vscode:prepublish": "node build.mjs --production",
+		"compile": "node build.mjs",
+		"test": "node tasks.mjs pretest && tsc -p ./ && cross-env NODE_ENV=test node ./out/test/runTests.js",
 		"test-with-coverage": "c8 npm test",
-		"pretest": "node ./tasks.js pretest && tsc -p ./",
-		"prerun": "node ./tasks.js prerun",
-		"build": "npm run prerun && npm run compile",
 		"lint": "eslint .",
+		"package": "vsce package --no-dependencies",
 		"deploy": "vsce publish"
 	},
 	"devDependencies": {

@@ -123,7 +123,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     return { currentNode: findNormalizedNode(source), fullSource, fullCurrentNode: findNormalizedNode(fullSource) }
   }
-  }
 
   private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
     const source = node.getSourceFile()
