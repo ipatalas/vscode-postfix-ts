@@ -67,7 +67,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
-    currentSuggestion =  (item.label as vsc.CompletionItemLabel)?.label || item.label
+    currentSuggestion = (item.label as vsc.CompletionItemLabel)?.label || item.label
     return item
   }
 
@@ -123,7 +123,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       currentNode,
       fullSource,
       fullCurrentNode: findNodeAtPosition(fullSource, beforeTheDotPosition)
-  }
+    }
   }
 
   private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
