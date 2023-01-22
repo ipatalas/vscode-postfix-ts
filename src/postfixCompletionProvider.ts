@@ -94,7 +94,11 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       'svelte'
     ]
 
-    return knownHtmlLikeLangs.includes(document.languageId) && getHtmlLikeEmbedText(document, document.offsetAt(position))
+    if (knownHtmlLikeLangs.includes(document.languageId)) {
+      return getHtmlLikeEmbedText(document, document.offsetAt(position))
+    }
+
+    return undefined
   }
 
   private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {
@@ -111,11 +115,14 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
     const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
-    const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
+
+    const typedTemplate = document.getText(document.getWordRangeAtPosition(position))
 
     const findNormalizedNode = (source: ts.SourceFile) => {
+      const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
       let node = findNodeAtPosition(source, beforeTheDotPosition)
-      if (ts.isIdentifier(node) && ts.isPropertyAccessExpression(node.parent)) {
+      if (ts.isIdentifier(node) && ts.isPropertyAccessExpression(node.parent)
+        && (node.parent.name.text != typedTemplate || ts.isPrefixUnaryExpression(node.parent.parent))) {
         node = node.parent
       }
       return node
