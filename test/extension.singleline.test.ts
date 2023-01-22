@@ -69,7 +69,7 @@ describe('Single line template tests', () => {
 
   Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', true)
   Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', true)
-  Test('forof template   | expr{forof}         >> for(letitemofexpr){}', true)
+  Test('forof template   | expr{forof}         >> for(constitemofexpr){}', true)
   Test('foreach template | expr{foreach}       >> expr.forEach(item=>)', true)
   Test('awaited foreach  | await expr{foreach} >> (await expr).forEach(item => )')
 
@@ -122,10 +122,10 @@ describe('Single line template tests', () => {
     Test('let template with name - new expression  | new namespace.Type(1, 2, 3){let}    >> let type = new namespace.Type(1, 2, 3)')
     Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}      >> let somethingCool = getSomethingCool(1, 2, 3)')
     Test('let template with name - call expression | this.getSomethingCool(1, 2, 3){let} >> let somethingCool = this.getSomethingCool(1, 2, 3)')
-    Test('forof template with array item name #1   | usersList{forof}                    >> for(letuserofusersList){}', true)
-    Test('forof template with array item name #2   | cookies{forof}                      >> for(letcookieofcookies){}', true)
-    Test('forof template with array item name #3   | order.items{forof}                  >> for(letitemoforder.items){}', true)
-    Test('forof template with array item name #4   | object.getCommands(){forof}         >> for(letcommandofobject.getCommands()){}', true)
+    Test('forof template with array item name #1   | usersList{forof}                    >> for(constuserofusersList){}', true)
+    Test('forof template with array item name #2   | cookies{forof}                      >> for(constcookieofcookies){}', true)
+    Test('forof template with array item name #3   | order.items{forof}                  >> for(constitemoforder.items){}', true)
+    Test('forof template with array item name #4   | object.getCommands(){forof}         >> for(constcommandofobject.getCommands()){}', true)
   })
 
   describe('custom template tests', () => {
