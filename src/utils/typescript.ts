@@ -11,7 +11,7 @@ export const findNodeAtPosition = (source: ts.SourceFile, character: number) => 
   function visitNode(node: ts.Node, depth = 0) {
     const start = node.getStart(source)
     const end = node.getEnd()
-    const isToken = ts.isToken(node) && !ts.isIdentifier(node) && !ts.isTypeNode(node)
+    const isToken = ts.isToken(node) && !ts.isIdentifier(node) && !ts.isTypeNode(node) && !isStringLiteral(node)
 
     if (!isToken && start <= character && character < end) {
       matchingNodes.push({
@@ -56,6 +56,11 @@ export const isAssignmentBinaryExpression = (node: ts.BinaryExpression) => {
     ts.SyntaxKind.QuestionQuestionToken,
     ts.SyntaxKind.BarBarEqualsToken,
   ].includes(node.operatorToken.kind)
+}
+
+export const isStringLiteral = (node: ts.Node) => {
+  return ts.isTemplateSpan(node) || ts.isStringLiteralLike(node)
+    || (ts.isExpressionStatement(node) && ts.isStringLiteralLike(node.expression))
 }
 
 interface INode {

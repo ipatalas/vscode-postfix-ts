@@ -119,6 +119,7 @@
 										"unary-expression",
 										"function-call",
 										"new-expression",
+										"string-literal",
 										"type"
 									]
 								}
@@ -146,6 +147,7 @@
 	"scripts": {
 		"vscode:prepublish": "node build.mjs --production",
 		"compile": "node build.mjs",
+		"pretest": "node tasks.mjs pretest && tsc -p ./",
 		"test": "node tasks.mjs pretest && tsc -p ./ && cross-env NODE_ENV=test node ./out/test/runTests.js",
 		"test-with-coverage": "c8 npm test",
 		"lint": "eslint .",

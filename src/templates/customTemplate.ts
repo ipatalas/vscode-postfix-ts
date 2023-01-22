@@ -2,12 +2,13 @@ import * as ts from 'typescript'
 import { BaseTemplate } from './baseTemplates'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { IndentInfo } from '../template'
+import { isStringLiteral } from '../utils/typescript'
 
 export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
     ['type', node => this.isTypeNode(node)],
     ['identifier', node => this.isIdentifier(node)],
-    ['string-literal', node => this.isStringLiteral(node)],
+    ['string-literal', node => isStringLiteral(node)],
     ['expression', node => this.isExpression(node)],
     ['binary-expression', node => this.isBinaryExpression(node)],
     ['unary-expression', node => this.isUnaryExpression(node.parent)],

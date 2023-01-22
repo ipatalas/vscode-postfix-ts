@@ -4,6 +4,7 @@ import { BaseExpressionTemplate } from './baseTemplates'
 import { getConfigValue, getPlaceholderWithOptions } from '../utils'
 import { inferVarTemplateName } from '../utils/infer-names'
 import { IndentInfo } from '../template'
+import { isStringLiteral } from '../utils/typescript'
 
 export class VarTemplate extends BaseExpressionTemplate {
   constructor(private keyword: 'var' | 'let' | 'const') {
@@ -23,7 +24,7 @@ export class VarTemplate extends BaseExpressionTemplate {
   }
 
   override canUse(node: ts.Node) {
-    return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || this.isStringLiteral(node))
+    return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || isStringLiteral(node))
       && !this.inReturnStatement(node)
       && !this.inFunctionArgument(node)
       && !this.inVariableDeclaration(node)
