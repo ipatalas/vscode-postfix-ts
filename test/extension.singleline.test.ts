@@ -94,6 +94,10 @@ describe('Single line template tests', () => {
   Test('promisify template - custom type   | const x:A.B{promisify}     >> const x:Promise<A.B>')
   Test('promisify template - custom type 2 | const x:A.B.C.D{promisify} >> const x:Promise<A.B.C.D>')
 
+  Test('await template - expression                 | expr{await}       >> await expr')
+  Test('await template - method call                | obj.call(){await} >> await obj.call()')
+  Test('await template - property access expression | obj.a.b{await}    >> await obj.a.b')
+
   QuickPick('not template - complex conditions - first expression               | if (a > b && x * 100{not})    >> if(a>b&&!(x*100))', true, 0)
   QuickPick('not template - complex conditions - second expression              | if (a > b && x * 100{not})    >> if(a<=b||!(x*100))', true, 1)
   QuickPick('not template - complex conditions with parens - first expression   | if (a > b && (x * 100){not})  >> if(a>b&&!(x*100))', true, 0)
