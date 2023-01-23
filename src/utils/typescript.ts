@@ -1,12 +1,14 @@
 import * as ts from 'typescript'
 import * as _ from 'lodash'
 
-export const findNodeAtPosition = (source: ts.SourceFile, character: number) => {
+export const findNodeAtPosition = (source: ts.SourceFile, character: number): ts.Node | undefined => {
   const matchingNodes: INode[] = []
   source.statements.forEach(visitNode)
   const sortedNodes = _.orderBy(matchingNodes, [m => m.width, m => m.depth], ['asc', 'desc'])
 
-  return sortedNodes.length > 0 && sortedNodes[0].node
+  if (sortedNodes.length > 0) {
+    return sortedNodes[0].node
+  }
 
   function visitNode(node: ts.Node, depth = 0) {
     const start = node.getStart(source)

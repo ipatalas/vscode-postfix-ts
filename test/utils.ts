@@ -22,7 +22,7 @@ export function delay(timeout: number) {
 // let's start from high delays and then slowly go to lower delays
 const delaySteps = [2000, 1200, 700, 400, 300, 250]
 
-export const getCurrentDelay = () => (delaySteps.length > 1) ? delaySteps.shift() : delaySteps[0]
+export const getCurrentDelay = () => (delaySteps.length > 1) ? <number>delaySteps.shift() : delaySteps[0]
 
 export function testTemplate(dslString: string, trimWhitespaces?: boolean, preAssertAction?: () => Thenable<void>) {
   const dsl = parseDSL(dslString)

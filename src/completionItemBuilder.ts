@@ -12,7 +12,7 @@ export class CompletionItemBuilder {
   private code: string
   private node: ts.Node
 
-  private constructor(keyword: string, node: ts.Node, private indentInfo?: IndentInfo) {
+  private constructor(keyword: string, node: ts.Node, private indentInfo: IndentInfo) {
     if (ts.isAwaitExpression(node.parent)) {
       node = node.parent
     }
@@ -22,7 +22,7 @@ export class CompletionItemBuilder {
     this.code = adjustMultilineIndentation(node.getText(), indentInfo?.indentSize)
   }
 
-  public static create = (keyword: string, node: ts.Node, indentInfo?: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
+  public static create = (keyword: string, node: ts.Node, indentInfo: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
 
   public command = (command: vsc.Command) => {
     this.item.command = command
@@ -110,7 +110,7 @@ export class CompletionItemBuilder {
       if (p1 && this.filters[p1]) {
         return this.filters[p1](code)
       }
-      return code;
+      return code
     })
   }
 

@@ -16,7 +16,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private mergeMode: 'append' | 'override'
 
   constructor() {
-    this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode')
+    this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode', 'append')
 
     const customTemplates = loadCustomTemplates()
     this.customTemplateNames = customTemplates.map(t => t.templateName)
@@ -121,7 +121,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     const findNormalizedNode = (source: ts.SourceFile) => {
       const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
       let node = findNodeAtPosition(source, beforeTheDotPosition)
-      if (ts.isIdentifier(node) && ts.isPropertyAccessExpression(node.parent)
+      if (node && ts.isIdentifier(node) && ts.isPropertyAccessExpression(node.parent)
         && (node.parent.name.text != typedTemplate || ts.isPrefixUnaryExpression(node.parent.parent))) {
         node = node.parent
       }
@@ -155,9 +155,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     const pos = fullSource.getPositionOfLineAndCharacter(position.line, position.character)
     const node = findNodeAtPosition(fullSource, pos)
 
-    return isComment() || isJsx()
+    return node && (isComment(node) || isJsx(node))
 
-    function isComment() {
+    function isComment(node: ts.Node) {
       return [
         ts.SyntaxKind.JSDocComment,
         ts.SyntaxKind.MultiLineCommentTrivia,
@@ -165,7 +165,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       ].includes(node.kind)
     }
 
-    function isJsx() {
+    function isJsx(node: ts.Node) {
       const jsx = findClosestParent(node, ts.SyntaxKind.JsxElement)
       const jsxFragment = findClosestParent(node, ts.SyntaxKind.JsxFragment)
       const jsxExpression = findClosestParent(node, ts.SyntaxKind.JsxExpression)
