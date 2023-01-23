@@ -1,9 +1,10 @@
 import * as vsc from 'vscode'
-import { runTest as Test, runTestQuickPick as QuickPick } from './runner'
+import { runTest as Test, runTestQuickPick as QuickPick, Options } from './runner'
 import { describe, before, after } from 'mocha'
 import { runWithCustomTemplate } from './utils'
 
 const config = vsc.workspace.getConfiguration('postfix')
+const withTrimWhitespaces: Options = { trimWhitespaces: true }
 
 describe('Single line template tests', () => {
   before(setInferVarName(config, false))
@@ -49,28 +50,28 @@ describe('Single line template tests', () => {
   Test('return template | new Type(){return} >> return new Type()')
   Test('return template | `\\\\\\\\`{return} >> return `\\\\\\\\`')
 
-  Test('if template                       | expr{if}      >> if(expr){}', true)
-  Test('if template - binary expression   | a > b{if}     >> if(a>b){}', true)
-  Test('if template - binary in parens    | (a > b){if}   >> if(a>b){}', true)
-  Test('else template                     | expr{else}    >> if(!expr){}', true)
-  Test('else template - binary expression | x * 100{else} >> if(!(x*100)){}', true)
-  Test('else template - binary expression | a > b{else}   >> if(a<=b){}', true)
-  Test('else template - binary in parens  | (a > b){else} >> if(a<=b){}', true)
+  Test('if template                       | expr{if}      >> if(expr){}', withTrimWhitespaces)
+  Test('if template - binary expression   | a > b{if}     >> if(a>b){}', withTrimWhitespaces)
+  Test('if template - binary in parens    | (a > b){if}   >> if(a>b){}', withTrimWhitespaces)
+  Test('else template                     | expr{else}    >> if(!expr){}', withTrimWhitespaces)
+  Test('else template - binary expression | x * 100{else} >> if(!(x*100)){}', withTrimWhitespaces)
+  Test('else template - binary expression | a > b{else}   >> if(a<=b){}', withTrimWhitespaces)
+  Test('else template - binary in parens  | (a > b){else} >> if(a<=b){}', withTrimWhitespaces)
 
-  Test('null template         | expr{null}         >> if(expr===null){}', true)
-  Test('notnull template      | expr{notnull}      >> if(expr!==null){}', true)
-  Test('undefined template    | expr{undefined}    >> if(expr===undefined){}', true)
-  Test('notundefined template | expr{notundefined} >> if(expr!==undefined){}', true)
+  Test('null template         | expr{null}         >> if(expr===null){}', withTrimWhitespaces)
+  Test('notnull template      | expr{notnull}      >> if(expr!==null){}', withTrimWhitespaces)
+  Test('undefined template    | expr{undefined}    >> if(expr===undefined){}', withTrimWhitespaces)
+  Test('notundefined template | expr{notundefined} >> if(expr!==undefined){}', withTrimWhitespaces)
 
-  Test('null template         - inside if | if (x & expr{null})         >> if(x&expr===null)', true)
-  Test('notnull template      - inside if | if (x & expr{notnull})      >> if(x&expr!==null)', true)
-  Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&expr===undefined)', true)
-  Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&expr!==undefined)', true)
+  Test('null template         - inside if | if (x & expr{null})         >> if(x&expr===null)', withTrimWhitespaces)
+  Test('notnull template      - inside if | if (x & expr{notnull})      >> if(x&expr!==null)', withTrimWhitespaces)
+  Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&expr===undefined)', withTrimWhitespaces)
+  Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&expr!==undefined)', withTrimWhitespaces)
 
-  Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', true)
-  Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', true)
-  Test('forof template   | expr{forof}         >> for(constitemofexpr){}', true)
-  Test('foreach template | expr{foreach}       >> expr.forEach(item=>)', true)
+  Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', withTrimWhitespaces)
+  Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', withTrimWhitespaces)
+  Test('forof template   | expr{forof}         >> for(constitemofexpr){}', withTrimWhitespaces)
+  Test('foreach template | expr{foreach}       >> expr.forEach(item=>)', withTrimWhitespaces)
   Test('awaited foreach  | await expr{foreach} >> (await expr).forEach(item => )')
 
   Test('cast template   | expr{cast}   >> (<>expr)')
@@ -84,9 +85,9 @@ describe('Single line template tests', () => {
   Test('not template - inside a call expression                 | call.expression(expr{not})  >> call.expression(!expr)')
   Test('not template - inside a call expression - negated       | call.expression(!expr{not}) >> call.expression(expr)')
   Test('not template - binary expression                        | x * 100{not}                >> !(x * 100)')
-  Test('not template - inside an if - identifier                | if (expr{not})              >> if(!expr)', true)
-  Test('not template - inside an if - binary                    | if (x * 100{not})           >> if(!(x*100))', true)
-  Test('not template - inside an if - brackets                  | if ((x * 100){not})         >> if(!(x*100))', true)
+  Test('not template - inside an if - identifier                | if (expr{not})              >> if(!expr)', withTrimWhitespaces)
+  Test('not template - inside an if - binary                    | if (x * 100{not})           >> if(!(x*100))', withTrimWhitespaces)
+  Test('not template - inside an if - brackets                  | if ((x * 100){not})         >> if(!(x*100))', withTrimWhitespaces)
   Test('not template - already negated expression - method call | !x.method(){not}            >> x.method()')
 
   Test('promisify template - boolean       | const x:boolean{promisify} >> const x:Promise<boolean>')
@@ -107,11 +108,11 @@ describe('Single line template tests', () => {
     before(setUndefinedMode(config, 'Typeof'))
     after(setUndefinedMode(config, undefined))
 
-    Test('undefined template    | expr{undefined}    >> if(typeofexpr==="undefined"){}', true)
-    Test('notundefined template | expr{notundefined} >> if(typeofexpr!=="undefined"){}', true)
+    Test('undefined template    | expr{undefined}    >> if(typeofexpr==="undefined"){}', withTrimWhitespaces)
+    Test('notundefined template | expr{notundefined} >> if(typeofexpr!=="undefined"){}', withTrimWhitespaces)
 
-    Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&typeofexpr==="undefined")', true)
-    Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&typeofexpr!=="undefined")', true)
+    Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&typeofexpr==="undefined")', withTrimWhitespaces)
+    Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&typeofexpr!=="undefined")', withTrimWhitespaces)
   })
 
   describe('Infer variable name', () => {
@@ -122,10 +123,10 @@ describe('Single line template tests', () => {
     Test('let template with name - new expression  | new namespace.Type(1, 2, 3){let}    >> let type = new namespace.Type(1, 2, 3)')
     Test('let template with name - call expression | getSomethingCool(1, 2, 3){let}      >> let somethingCool = getSomethingCool(1, 2, 3)')
     Test('let template with name - call expression | this.getSomethingCool(1, 2, 3){let} >> let somethingCool = this.getSomethingCool(1, 2, 3)')
-    Test('forof template with array item name #1   | usersList{forof}                    >> for(constuserofusersList){}', true)
-    Test('forof template with array item name #2   | cookies{forof}                      >> for(constcookieofcookies){}', true)
-    Test('forof template with array item name #3   | order.items{forof}                  >> for(constitemoforder.items){}', true)
-    Test('forof template with array item name #4   | object.getCommands(){forof}         >> for(constcommandofobject.getCommands()){}', true)
+    Test('forof template with array item name #1   | usersList{forof}                    >> for(constuserofusersList){}', withTrimWhitespaces)
+    Test('forof template with array item name #2   | cookies{forof}                      >> for(constcookieofcookies){}', withTrimWhitespaces)
+    Test('forof template with array item name #3   | order.items{forof}                  >> for(constitemoforder.items){}', withTrimWhitespaces)
+    Test('forof template with array item name #4   | object.getCommands(){forof}         >> for(constcommandofobject.getCommands()){}', withTrimWhitespaces)
   })
 
   describe('custom template tests', () => {
