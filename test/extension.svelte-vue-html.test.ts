@@ -13,7 +13,7 @@ const html: Options = {
   {{CODE}}
 </script>
 <h1>Hello {name}!</h1>`,
-  extraDelay: 300
+  extraDelay: 500
 }
 
 const Test = (test: string, options?: Pick<Options, 'trimWhitespaces'>) => runTest(test, { ...html, ...options })
