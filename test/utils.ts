@@ -35,7 +35,7 @@ export function testTemplate(dslString: string, options: TestTemplateOptions = {
   return (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: options.fileLanguage || LANGUAGE }).then(async (doc) => {
       try {
-        await selectAndAcceptSuggestion(doc, dsl, options.fileContext)
+        await selectAndAcceptSuggestion(doc, dsl, options)
         await delay(options.extraDelay || 0)
         await options.preAssertAction?.()
 
@@ -74,7 +74,7 @@ export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: b
   })
 }
 
-async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, fileContext?: string) {
+async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, { fileContext, extraDelay }: TestTemplateOptions) {
   const editor = await vsc.window.showTextDocument(doc, vsc.ViewColumn.One)
 
   let startPosition = new vsc.Position(0, 0)
@@ -94,7 +94,7 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
     editor.selection = new vsc.Selection(pos, pos)
 
     await vsc.commands.executeCommand('editor.action.triggerSuggest')
-    await delay(getCurrentDelay())
+    await delay(getCurrentDelay() + extraDelay)
 
     let current = getCurrentSuggestion()
     const first = current
