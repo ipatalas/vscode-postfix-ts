@@ -22,12 +22,6 @@ describe('HTML/Svelte/Vue - smoke tests', () => {
   before(setInferVarName(config, false))
   after(setInferVarName(config, true))
 
-  Test('let template - binary expression #1       | a * 3{let}               >> let name = a * 3')
-  Test('let template - property access expression | obj.a.b{let}             >> let name = obj.a.b')
-  Test('let template - new expression             | new Type(1, 2, 3){let}   >> let name = new Type(1, 2, 3)')
-  Test('let template - string literal #1          | "a string"{let}          >> let name = "a string"')
-  Test('let template - escape characters          | `\\\\\\\\`{let}          >> let name = `\\\\\\\\`')
-
   Test('log template    | expr{log}     >> console.log(expr)')
 
   Test('return template | expr{return}  >> return expr')
@@ -36,6 +30,13 @@ describe('HTML/Svelte/Vue - smoke tests', () => {
 
   Test('if template           | expr{if}      >> if(expr){}', withTrimWhitespaces)
   Test('else template         | expr{else}    >> if(!expr){}', withTrimWhitespaces)
+
+  Test('let template - binary expression #1       | a * 3{let}               >> let name = a * 3')
+  Test('let template - method call                | obj.call(){let}          >> let name = obj.call()')
+  Test('let template - property access expression | obj.a.b{let}             >> let name = obj.a.b')
+  Test('let template - new expression             | new Type(1, 2, 3){let}   >> let name = new Type(1, 2, 3)')
+  Test('let template - string literal #1          | "a string"{let}          >> let name = "a string"')
+  Test('let template - escape characters          | `\\\\\\\\`{let}          >> let name = `\\\\\\\\`')
 
   Test('null template         | expr{null}         >> if(expr===null){}', withTrimWhitespaces)
   Test('notnull template      | expr{notnull}      >> if(expr!==null){}', withTrimWhitespaces)
