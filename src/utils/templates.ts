@@ -1,5 +1,6 @@
 import * as vsc from 'vscode'
 import { IPostfixTemplate } from '../template'
+import { AwaitTemplate } from '../templates/awaitTemplate'
 import { CastTemplate } from '../templates/castTemplates'
 import { ConsoleTemplate } from '../templates/consoleTemplates'
 import { CustomTemplate } from '../templates/customTemplate'
@@ -48,7 +49,8 @@ export const loadBuiltinTemplates = () => {
     new ReturnTemplate('return'),
     new VarTemplate('var'),
     new VarTemplate('let'),
-    new VarTemplate('const')
+    new VarTemplate('const'),
+    new AwaitTemplate('await')
   ]
 
   return templates

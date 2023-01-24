@@ -52,6 +52,7 @@ All available templates (`expr` means the expression on which the template is ap
 | **.castas**       | `(expr as SomeType)` |
 | **.new**          | `new expr()` |
 | **.promisify**    | `Promise<expr>` |
+| **.await**        | `await expr` |
 
 ## Custom templates (1.6.0 and above)
 
