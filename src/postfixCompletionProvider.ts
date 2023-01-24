@@ -6,16 +6,17 @@ import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
 import { findClosestParent, findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
+import { getHtmlLikeEmbedText } from './htmlLikeSupport'
 
 let currentSuggestion = undefined
 
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
   private customTemplateNames: string[] = []
-  private mergeMode: 'append' | 'override';
+  private mergeMode: 'append' | 'override'
 
   constructor() {
-    this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode')
+    this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode', 'append')
 
     const customTemplates = loadCustomTemplates()
     this.customTemplateNames = customTemplates.map(t => t.templateName)
@@ -36,9 +37,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const currentNode = this.getNodeBeforeTheDot(document, position, dotIdx)
+    const { currentNode, fullSource, fullCurrentNode } = this.getNodeBeforeTheDot(document, position, dotIdx)
 
-    if (!currentNode || this.shouldBeIgnored(document, position)) {
+    if (!currentNode || this.shouldBeIgnored(fullSource, position)) {
       return []
     }
 
@@ -48,7 +49,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     try {
       return this.templates
         .filter(t => {
-          let canUseTemplate = t.canUse(ts.isNonNullExpression(currentNode) ? currentNode.expression : currentNode)
+          let canUseTemplate = t.canUse(ts.isNonNullExpression(fullCurrentNode) ? fullCurrentNode.expression : fullCurrentNode)
 
           if (this.mergeMode === 'override') {
             canUseTemplate &&= (t instanceof CustomTemplate || !this.customTemplateNames.includes(t.templateName))
@@ -66,7 +67,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
-    currentSuggestion =  (item.label as vsc.CompletionItemLabel)?.label || item.label
+    currentSuggestion = (item.label as vsc.CompletionItemLabel)?.label || item.label
     return item
   }
 
@@ -86,22 +87,48 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     return node
   }
 
-  private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {
-    const codeBeforeTheDot = document.getText(new vsc.Range(
-      new vsc.Position(0, 0),
-      new vsc.Position(position.line, dotIdx)
-    ))
+  private getHtmlLikeEmbeddedText(document: vsc.TextDocument, position: vsc.Position) {
+    const knownHtmlLikeLangs = [
+      'html',
+      'vue',
+      'svelte'
+    ]
 
-    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ES5, true)
-    const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
-
-    let currentNode = findNodeAtPosition(source, beforeTheDotPosition)
-
-    if (ts.isIdentifier(currentNode) && ts.isPropertyAccessExpression(currentNode.parent)) {
-      currentNode = currentNode.parent
+    if (knownHtmlLikeLangs.includes(document.languageId)) {
+      return getHtmlLikeEmbedText(document, document.offsetAt(position))
     }
 
-    return currentNode
+    return undefined
+  }
+
+  private getNodeBeforeTheDot(document: vsc.TextDocument, position: vsc.Position, dotIdx: number) {
+    const dotOffset = document.offsetAt(position.with({ character: dotIdx }))
+    const speciallyHandledText = this.getHtmlLikeEmbeddedText(document, position)
+
+    if (speciallyHandledText === null) {
+      return {}
+    }
+
+    const fullText = speciallyHandledText ?? document.getText()
+
+    const codeBeforeTheDot = fullText.slice(0, dotOffset)
+
+    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
+    const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
+
+    const typedTemplate = document.getText(document.getWordRangeAtPosition(position))
+
+    const findNormalizedNode = (source: ts.SourceFile) => {
+      const beforeTheDotPosition = ts.getPositionOfLineAndCharacter(source, position.line, dotIdx - 1)
+      let node = findNodeAtPosition(source, beforeTheDotPosition)
+      if (node && ts.isIdentifier(node) && ts.isPropertyAccessExpression(node.parent)
+        && (node.parent.name.text != typedTemplate || ts.isPrefixUnaryExpression(node.parent.parent))) {
+        node = node.parent
+      }
+      return node
+    }
+
+    return { currentNode: findNormalizedNode(source), fullSource, fullCurrentNode: findNormalizedNode(fullSource) }
   }
 
   private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
@@ -124,14 +151,13 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 
-  private shouldBeIgnored(document: vsc.TextDocument, position: vsc.Position) {
-    const source = ts.createSourceFile('test.ts', document.getText(), ts.ScriptTarget.ES2020, true, ts.ScriptKind.TSX)
-    const pos = source.getPositionOfLineAndCharacter(position.line, position.character)
-    const node = findNodeAtPosition(source, pos)
+  private shouldBeIgnored(fullSource: ts.SourceFile, position: vsc.Position) {
+    const pos = fullSource.getPositionOfLineAndCharacter(position.line, position.character)
+    const node = findNodeAtPosition(fullSource, pos)
 
-    return isComment() || isJsx()
+    return node && (isComment(node) || isJsx(node))
 
-    function isComment() {
+    function isComment(node: ts.Node) {
       return [
         ts.SyntaxKind.JSDocComment,
         ts.SyntaxKind.MultiLineCommentTrivia,
@@ -139,7 +165,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       ].includes(node.kind)
     }
 
-    function isJsx() {
+    function isJsx(node: ts.Node) {
       const jsx = findClosestParent(node, ts.SyntaxKind.JsxElement)
       const jsxFragment = findClosestParent(node, ts.SyntaxKind.JsxFragment)
       const jsxExpression = findClosestParent(node, ts.SyntaxKind.JsxExpression)

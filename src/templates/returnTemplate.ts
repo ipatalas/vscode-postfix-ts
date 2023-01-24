@@ -1,6 +1,7 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { IndentInfo } from '../template'
+import { isStringLiteral } from '../utils/typescript'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ReturnTemplate extends BaseExpressionTemplate {
@@ -13,8 +14,8 @@ export class ReturnTemplate extends BaseExpressionTemplate {
       .build()
   }
 
-  override canUse (node: ts.Node) {
-    return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || this.isStringLiteral(node))
+  override canUse(node: ts.Node) {
+    return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || isStringLiteral(node))
       && !this.inReturnStatement(node)
       && !this.inFunctionArgument(node)
       && !this.inVariableDeclaration(node)

@@ -1,73 +1,95 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
-import { describe, before, after } from 'mocha';
+import { describe, before, after } from 'mocha'
 import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'
+import { EOL } from 'node:os'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const EOL = require('os').EOL
 const LANGUAGE = 'postfix'
 
 const config = vsc.workspace.getConfiguration('editor', null)
-export const TabSize = config.get<number>('tabSize')
+export const TabSize = config.get<number>('tabSize') ?? 4
 
 export function delay(timeout: number) {
-  return new Promise<void>(resolve => {
-    setTimeout(resolve, timeout)
-  })
+  return new Promise<void>(resolve => setTimeout(resolve, timeout))
 }
 
 // for some reason editor.action.triggerSuggest needs more delay at the beginning when the process is not yet "warmed up"
 // let's start from high delays and then slowly go to lower delays
 const delaySteps = [2000, 1200, 700, 400, 300, 250]
 
-export const getCurrentDelay = () => (delaySteps.length > 1) ? delaySteps.shift() : delaySteps[0]
+export const getCurrentDelay = () => (delaySteps.length > 1) ? <number>delaySteps.shift() : delaySteps[0]
 
-export function testTemplate(dslString: string, trimWhitespaces?: boolean, preAssertAction?: () => Thenable<void>) {
+export type TestTemplateOptions = Partial<{
+  trimWhitespaces: boolean
+  preAssertAction: () => Thenable<void>
+  fileContext: string
+  fileLanguage: string
+  extraDelay: number
+}>
+
+export function testTemplate(dslString: string, options: TestTemplateOptions = {}) {
   const dsl = parseDSL(dslString)
 
   return (done: Mocha.Done) => {
-    vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
-      return selectAndAcceptSuggestion(doc, dsl).then(async () => {
-        if (preAssertAction) {
-          await preAssertAction()
-        }
+    vsc.workspace.openTextDocument({ language: options.fileLanguage || LANGUAGE }).then(async (doc) => {
+      try {
+        await selectAndAcceptSuggestion(doc, dsl, options.fileContext)
+        await delay(options.extraDelay || 0)
+        await options.preAssertAction?.()
 
-        assertText(doc, dsl.expected, trimWhitespaces)
+        const expected = options.fileContext
+          ? options.fileContext.trim().replace('{{CODE}}', dsl.expected)
+          : dsl.expected
+
+        assertText(doc, expected, options.trimWhitespaces)
         await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
         done()
-      }).catch(async (reason) => {
+      } catch (reason) {
         await vsc.commands.executeCommand('workbench.action.closeActiveEditor')
         done(reason)
-      })
+      }
     })
   }
 }
 
 export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) {
-  return testTemplate(dslString, trimWhitespaces, async () => {
-    if (cancelQuickPick) {
-      await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
-    } else {
-      await delay(100)
+  return testTemplate(dslString, {
+    trimWhitespaces, preAssertAction: async () => {
+      if (cancelQuickPick) {
+        await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
+      } else {
+        await delay(100)
 
-      for (let i = 0; i < skipSuggestions; i++) {
-        await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
+        for (let i = 0; i < skipSuggestions; i++) {
+          await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
+        }
+
+        await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
       }
 
-      await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
+      await delay(100)
     }
-
-    await delay(100)
   })
 }
 
-async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
+async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, fileContext?: string) {
   const editor = await vsc.window.showTextDocument(doc, vsc.ViewColumn.One)
 
-  if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), dsl.input))) {
-    const pos = new vsc.Position(dsl.cursorPosition.line, dsl.cursorPosition.character)
+  let startPosition = new vsc.Position(0, 0)
+
+  if (fileContext) {
+    fileContext = fileContext.trim()
+    const [before, after] = fileContext.split('{{CODE}}')
+    await editor.edit(edit => edit.insert(new vsc.Position(0, 0), before))
+    startPosition = editor.selection.start
+    await editor.edit(edit => edit.insert(startPosition, after))
+  }
+
+  if (await editor.edit(edit => edit.insert(startPosition, dsl.input))) {
+    const { character, line } = dsl.cursorPosition
+    const pos = startPosition.translate(line, character)
 
     editor.selection = new vsc.Selection(pos, pos)
 
@@ -90,11 +112,12 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL) {
   }
 }
 
-function assertText(doc: vsc.TextDocument, expectedResult: string, trimWhitespaces: boolean) {
+function assertText(doc: vsc.TextDocument, expectedResult: string, trimWhitespaces = false) {
   let result = doc.getText()
 
   if (trimWhitespaces) {
-    result = result.replace(/\s/g, '')
+    result = result.replaceAll(/\s/g, '')
+    expectedResult = expectedResult.replaceAll(/\s/g, '')
   }
 
   assert.strictEqual(normalizeWhitespaces(result), normalizeWhitespaces(expectedResult))

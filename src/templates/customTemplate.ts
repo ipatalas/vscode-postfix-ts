@@ -2,12 +2,13 @@ import * as ts from 'typescript'
 import { BaseTemplate } from './baseTemplates'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { IndentInfo } from '../template'
+import { isStringLiteral } from '../utils/typescript'
 
 export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
     ['type', node => this.isTypeNode(node)],
     ['identifier', node => this.isIdentifier(node)],
-    ['string-literal', node => this.isStringLiteral(node)],
+    ['string-literal', node => isStringLiteral(node)],
     ['expression', node => this.isExpression(node)],
     ['binary-expression', node => this.isBinaryExpression(node)],
     ['unary-expression', node => this.isUnaryExpression(node.parent)],
@@ -15,7 +16,7 @@ export class CustomTemplate extends BaseTemplate {
     ['function-call', node => this.isCallExpression(node)]
   ])
 
-  constructor (name: string, private description: string, private body: string, private when: string[]) {
+  constructor(name: string, private description: string, private body: string, private when: string[]) {
     super(name)
   }
 
@@ -31,7 +32,7 @@ export class CustomTemplate extends BaseTemplate {
       .build()
   }
 
-  canUse (node: ts.Node): boolean {
+  canUse(node: ts.Node): boolean {
     return node.parent && (this.when.length === 0 || this.when.some(w => this.condition(node, w)))
   }
 

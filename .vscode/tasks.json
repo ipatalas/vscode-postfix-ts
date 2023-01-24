@@ -11,17 +11,30 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "npm: build",
+			"label": "npm: watch",
 			"command": "npm",
-			"args": ["run", "build"],
-			"problemMatcher": "$tsc-watch",
+			"args": [
+				"run",
+				"compile",
+				"--",
+				"--watch"
+			],
+			"group": "build",
+			"presentation": {
+				"panel": "dedicated",
+				"reveal": "never"
+			},
+			"problemMatcher": "$esbuild-watch",
 			"isBackground": true
 		},
 		{
 			"type": "shell",
 			"label": "npm: pretest",
 			"command": "npm",
-			"args": ["run", "pretest"],
+			"args": [
+				"run",
+				"pretest"
+			],
 		}
 	]
 }

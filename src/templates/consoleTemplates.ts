@@ -1,6 +1,7 @@
 import * as ts from 'typescript'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { IndentInfo } from '../template'
+import { isStringLiteral } from '../utils/typescript'
 import { BaseExpressionTemplate } from './baseTemplates'
 
 export class ConsoleTemplate extends BaseExpressionTemplate {
@@ -21,7 +22,7 @@ export class ConsoleTemplate extends BaseExpressionTemplate {
   isConsoleExpression = (node: ts.Node) => ts.isIdentifier(node) && node.text === 'console'
 
   override canUse(node: ts.Node) {
-    return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || this.isStringLiteral(node))
+    return (super.canUse(node) || this.isNewExpression(node) || this.isObjectLiteral(node) || isStringLiteral(node))
       && !this.inReturnStatement(node)
       && !this.isConsoleExpression(node)
       && !this.inFunctionArgument(node)

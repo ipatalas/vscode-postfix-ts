@@ -1,32 +1,27 @@
 import * as ts from 'typescript'
-import * as vsc from 'vscode';
+import * as vsc from 'vscode'
 import { IndentInfo, IPostfixTemplate } from '../template'
-import { findClosestParent, isAssignmentBinaryExpression } from '../utils/typescript';
+import { findClosestParent, isAssignmentBinaryExpression, isStringLiteral } from '../utils/typescript'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   constructor(public readonly templateName: string) {}
 
   abstract buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo): vsc.CompletionItem
-  abstract canUse  (node: ts.Node) : boolean
+  abstract canUse(node: ts.Node): boolean
 
-  protected isSimpleExpression = (node: ts.Node) => ts.isExpressionStatement(node) && !this.isStringLiteral(node)
-  protected isPropertyAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PropertyAccessExpression
-  protected isElementAccessExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.ElementAccessExpression
+  protected isSimpleExpression = (node: ts.Node) => ts.isExpressionStatement(node) && !isStringLiteral(node)
+  protected isPropertyAccessExpression = (node: ts.Node) => ts.isPropertyAccessExpression(node)
+  protected isElementAccessExpression = (node: ts.Node) => ts.isElementAccessExpression(node)
   protected isExpression = (node: ts.Node) => this.isSimpleExpression(node) || this.isPropertyAccessExpression(node) || this.isElementAccessExpression(node)
   protected isIdentifier = (node: ts.Node) => ts.isIdentifier(node) && !this.inTypeReference(node.parent)
 
-  protected isUnaryExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.PostfixUnaryExpression || node.kind === ts.SyntaxKind.PrefixUnaryExpression
-  protected isCallExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.CallExpression
-  protected isNewExpression = (node: ts.Node) => node.kind === ts.SyntaxKind.NewExpression
+  protected isUnaryExpression = (node: ts.Node) => ts.isPostfixUnaryExpression(node) || ts.isPrefixUnaryExpression(node)
+  protected isCallExpression = (node: ts.Node) => ts.isCallExpression(node)
+  protected isNewExpression = (node: ts.Node) => ts.isNewExpression(node)
   protected inFunctionArgument = (node: ts.Node) => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
 
   protected isObjectLiteral = (node: ts.Node) => {
     return ts.isBlock(node) && (node.statements.length === 0 || node.statements.some(x => ts.isLabeledStatement(x)))
-  }
-
-  protected isStringLiteral = (node: ts.Node) => {
-    return ts.isTemplateSpan(node)
-      || (ts.isExpressionStatement(node) && (ts.isStringLiteral(node.expression) || ts.isNoSubstitutionTemplateLiteral(node.expression)))
   }
 
   protected isTypeNode = (node: ts.Node) => {
@@ -66,13 +61,13 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
-        || node.parent && this.isBinaryExpression(node.parent)
+      || node.parent && this.isBinaryExpression(node.parent)
   }
 
   protected unwindBinaryExpression = (node: ts.Node, removeParens = true) => {
     let binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       ? node.expression
-      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression;
+      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression
 
     while (binaryExpression && ts.isBinaryExpression(binaryExpression.parent)) {
       binaryExpression = binaryExpression.parent

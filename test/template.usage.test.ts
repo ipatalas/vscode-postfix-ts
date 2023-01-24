@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as _ from 'lodash'
 import * as vsc from 'vscode'
-import { describe, afterEach, it } from 'mocha';
+import { describe, afterEach, it } from 'mocha'
 
 import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'
@@ -59,7 +59,7 @@ describe('Template usage', () => {
   testTemplateUsage('object literal expression', '{}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
   testTemplateUsage('object literal expression', '{foo:"foo"}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
-  testTemplateUsage('expression as argument', 'function.call("arg", expr.{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
+  testTemplateUsage('expression as argument', 'function.call("arg", expr{cursor})', [...CAST_TEMPLATES, 'not', 'new'])
 
   testTemplateUsage('string literal - single quote', '\'a string\'', STRING_LITERAL_TEMPLATES)
   testTemplateUsage('string literal - double quote', '"a string"', STRING_LITERAL_TEMPLATES)

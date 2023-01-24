@@ -12,17 +12,17 @@ export class CompletionItemBuilder {
   private code: string
   private node: ts.Node
 
-  private constructor(keyword: string, node: ts.Node, private indentInfo?: IndentInfo) {
+  private constructor(keyword: string, node: ts.Node, private indentInfo: IndentInfo) {
     if (ts.isAwaitExpression(node.parent)) {
       node = node.parent
     }
 
     this.node = node
-    this.item = new vsc.CompletionItem({label: keyword, description: 'POSTFIX'}, vsc.CompletionItemKind.Snippet)
+    this.item = new vsc.CompletionItem({ label: keyword, description: 'POSTFIX' }, vsc.CompletionItemKind.Snippet)
     this.code = adjustMultilineIndentation(node.getText(), indentInfo?.indentSize)
   }
 
-  public static create = (keyword: string, node: ts.Node, indentInfo?: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
+  public static create = (keyword: string, node: ts.Node, indentInfo: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
 
   public command = (command: vsc.Command) => {
     this.item.command = command
@@ -56,7 +56,7 @@ export class CompletionItemBuilder {
       this.item.insertText = new vsc.SnippetString(adjustLeadingWhitespace(
         this.replaceExpression(replacement, escapedCode),
         this.indentInfo.leadingWhitespace
-      ));
+      ))
       this.item.additionalTextEdits = [
         vsc.TextEdit.delete(rangeToDelete)
       ]
@@ -89,12 +89,12 @@ export class CompletionItemBuilder {
     const addCodeBlock = (md: vsc.MarkdownString) => {
       const code = this.replaceExpression(replacement, inputCode)
       const snippetPreviewMode = getConfigValue<'raw' | 'inserted'>('snippetPreviewMode')
-      return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts');
+      return md.appendCodeblock(snippetPreviewMode === 'inserted' ? new SnippetParser().text(code) : code, 'ts')
     }
 
     if (!this.item.documentation) {
-      const md = new vsc.MarkdownString();
-      addCodeBlock(md);
+      const md = new vsc.MarkdownString()
+      addCodeBlock(md)
       this.item.documentation = md
     } else {
       addCodeBlock(this.item.documentation as vsc.MarkdownString)
@@ -110,11 +110,11 @@ export class CompletionItemBuilder {
       if (p1 && this.filters[p1]) {
         return this.filters[p1](code)
       }
-      return code;
+      return code
     })
   }
 
-  private filters: {[key: string]: (x: string) => string} = {
+  private filters: { [key: string]: (x: string) => string } = {
     'upper': (x: string) => x.toUpperCase(),
     'lower': (x: string) => x.toLowerCase(),
     'capitalize': (x: string) => x.substring(0, 1).toUpperCase() + x.substring(1),
