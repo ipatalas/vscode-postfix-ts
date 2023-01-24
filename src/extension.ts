@@ -37,8 +37,9 @@ export function deactivate(): void {
 function registerCompletionProvider(context: vsc.ExtensionContext) {
   const provider = new PostfixCompletionProvider()
 
+  const TESTS_SELECTOR: vsc.DocumentSelector = ['postfix', 'html']
   const DOCUMENT_SELECTOR: vsc.DocumentSelector =
-    process.env.NODE_ENV === 'test' ? 'postfix' : vsc.workspace.getConfiguration('postfix').get('languages')
+    process.env.NODE_ENV === 'test' ? TESTS_SELECTOR : <string[]>vsc.workspace.getConfiguration('postfix').get('languages')
 
   completionProvider = vsc.languages.registerCompletionItemProvider(DOCUMENT_SELECTOR, provider, '.')
   context.subscriptions.push(completionProvider)

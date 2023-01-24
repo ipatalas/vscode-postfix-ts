@@ -19,6 +19,8 @@ export const loadCustomTemplates = () => {
   if (templates) {
     return templates.map(t => new CustomTemplate(t.name, t.description, t.body, t.when))
   }
+
+  return []
 }
 
 export const loadBuiltinTemplates = () => {
@@ -33,14 +35,14 @@ export const loadBuiltinTemplates = () => {
     new ForEachTemplate('foreach'),
     new IfTemplate('if'),
     new ElseTemplate('else'),
-    new IfEqualityTemplate('null', '===', null),
-    new IfEqualityTemplate('notnull', '!==', null),
-    new IfEqualityTemplate('undefined', '===', undefined, true),
-    new IfEqualityTemplate('notundefined', '!==', undefined, true),
-    new EqualityTemplate('null', '===', null),
-    new EqualityTemplate('notnull', '!==', null),
-    new EqualityTemplate('undefined', '===', undefined, true),
-    new EqualityTemplate('notundefined', '!==', undefined, true),
+    new IfEqualityTemplate('null', '===', 'null'),
+    new IfEqualityTemplate('notnull', '!==', 'null'),
+    new IfEqualityTemplate('undefined', '===', 'undefined', true),
+    new IfEqualityTemplate('notundefined', '!==', 'undefined', true),
+    new EqualityTemplate('null', '===', 'null'),
+    new EqualityTemplate('notnull', '!==', 'null'),
+    new EqualityTemplate('undefined', '===', 'undefined', true),
+    new EqualityTemplate('notundefined', '!==', 'undefined', true),
     new NewTemplate('new'),
     new NotTemplate('not'),
     new PromisifyTemplate('promisify'),
