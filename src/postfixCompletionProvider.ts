@@ -10,6 +10,9 @@ import { getHtmlLikeEmbedText } from './htmlLikeSupport'
 
 let currentSuggestion = undefined
 
+// eslint-disable-next-line prefer-const
+export let overrideTsxEnabled = false
+
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
   private customTemplateNames: string[] = []
@@ -133,6 +136,10 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   private convertToScriptKind(document: vsc.TextDocument) {
+    if (overrideTsxEnabled) {
+      overrideTsxEnabled = false
+      return ts.ScriptKind.TSX
+    }
     switch (document.languageId) {
     case 'javascript':
       return ts.ScriptKind.JS
