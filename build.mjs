@@ -1,6 +1,6 @@
 import { build } from 'esbuild'
-import * as process from "node:process";
-import * as console from "node:console";
+import * as process from "node:process"
+import * as console from "node:console"
 
 const production = process.argv.includes("--production")
 const watch = process.argv.includes("--watch")
