@@ -7,9 +7,6 @@
   "search.exclude": {
     "out": true // set this to false to include "out" folder in search results
   },
-  "editor.detectIndentation": false,
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
   "tslint.autoFixOnSave": true,
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
