@@ -1,7 +1,7 @@
 import * as assert from 'assert'
 import * as _ from 'lodash'
 import * as vsc from 'vscode'
-import { describe, afterEach, it } from 'mocha'
+import { describe, afterEach, it, before, after } from 'mocha'
 
 import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'
@@ -41,6 +41,8 @@ const BINARY_EXPRESSION_TEMPLATES = [
   'not',
   'return'
 ]
+
+const config = vsc.workspace.getConfiguration('postfix')
 
 describe('Template usage', () => {
   afterEach(done => {
@@ -93,7 +95,20 @@ describe('Template usage', () => {
 
   testTemplateUsage('cursor in wrong place #1', 'test.something = {cursor-no-dot}', [])
   testTemplateUsage('cursor in wrong place #2', 'test.something = new{cursor-no-dot}', [])
+
+  describe('when some templates are disabled', () => {
+    before(setDisabledTemplates(config, ['var', 'forof']))
+    after(setDisabledTemplates(config, []))
+
+    testTemplateUsage('identifier expression', 'expr', _.difference(ALL_TEMPLATES, ['var', 'forof']))
+  })
 })
+
+function setDisabledTemplates(config: vsc.WorkspaceConfiguration, value: string[]) {
+  return (done: Mocha.Done) => {
+    config.update('disabledTemplates', value, true).then(done, done)
+  }
+}
 
 function testTemplateUsage(testDescription: string, initialText: string, expectedTemplates: string[]) {
   it(testDescription, (done: Mocha.Done) => {
