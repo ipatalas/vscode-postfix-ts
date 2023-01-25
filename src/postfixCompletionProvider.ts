@@ -113,7 +113,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const codeBeforeTheDot = fullText.slice(0, dotOffset)
 
-    const scriptKind = document.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.TSX
+    const scriptKind = this.convertToScriptKind(document)
     const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, scriptKind)
     const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, scriptKind)
 
@@ -130,6 +130,21 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     return { currentNode: findNormalizedNode(source), fullSource, fullCurrentNode: findNormalizedNode(fullSource) }
+  }
+
+  private convertToScriptKind(document: vsc.TextDocument) {
+    switch (document.languageId) {
+      case 'javascript':
+        return ts.ScriptKind.JS
+      case 'typescript':
+        return ts.ScriptKind.TS
+      case 'javascriptreact':
+        return ts.ScriptKind.JSX
+      case 'typescriptreact':
+        return ts.ScriptKind.TSX
+      default:
+        return ts.ScriptKind.Unknown
+    }
   }
 
   private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
