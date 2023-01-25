@@ -98,6 +98,16 @@ describe('Multiline template tests', () => {
       |   }                 >>   }
       | }                   >> }`)
 
+  Test(`let template - no postfixes incorrect jsx parsing
+      | const func1 = <T>() => {} >> const func1 = <T>() => {}
+      | const func2 = () => {     >> const func2 = () => {
+      |     let b                 >>     let b
+      |     a = () => {           >>     a = () => {
+      |         b = c             >>         b = c
+      |         b{let}            >>         let name = b
+      |     }                     >>     }
+      | }                         >> }`)
+
   Test(`log template - in arrow function
       | test = () => {      >> test = () => {
       |   wrapMe{log}       >>   console.log(wrapMe)
