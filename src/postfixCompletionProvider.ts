@@ -113,8 +113,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const codeBeforeTheDot = fullText.slice(0, dotOffset)
 
-    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
-    const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TSX)
+    const scriptKind = document.languageId === 'typescript' ? ts.ScriptKind.TS : ts.ScriptKind.TSX
+    const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, scriptKind)
+    const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, scriptKind)
 
     const typedTemplate = document.getText(document.getWordRangeAtPosition(position))
 
