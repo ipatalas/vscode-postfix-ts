@@ -10,8 +10,7 @@ import { getHtmlLikeEmbedText } from './htmlLikeSupport'
 
 let currentSuggestion = undefined
 
-// eslint-disable-next-line prefer-const
-export let overrideTsxEnabled = false
+export const overrideTsxEnabled = { value: false }
 
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
@@ -136,21 +135,20 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   private convertToScriptKind(document: vsc.TextDocument) {
-    if (overrideTsxEnabled) {
-      overrideTsxEnabled = false
+    if (overrideTsxEnabled.value) {
       return ts.ScriptKind.TSX
     }
     switch (document.languageId) {
-    case 'javascript':
-      return ts.ScriptKind.JS
-    case 'typescript':
-      return ts.ScriptKind.TS
-    case 'javascriptreact':
-      return ts.ScriptKind.JSX
-    case 'typescriptreact':
-      return ts.ScriptKind.TSX
-    default:
-      return ts.ScriptKind.Unknown
+      case 'javascript':
+        return ts.ScriptKind.JS
+      case 'typescript':
+        return ts.ScriptKind.TS
+      case 'javascriptreact':
+        return ts.ScriptKind.JSX
+      case 'typescriptreact':
+        return ts.ScriptKind.TSX
+      default:
+        return ts.ScriptKind.Unknown
     }
   }
 
