@@ -1,182 +1,187 @@
 {
-	"name": "vscode-postfix-ts",
-	"displayName": "TS/JS postfix completion",
-	"description": "Postfix templates for TypeScript/Javascript",
-	"version": "1.11.3",
-	"license": "MIT",
-	"publisher": "ipatalas",
-	"engines": {
-		"vscode": "^1.60.0"
-	},
-	"icon": "images/logo.png",
-	"categories": [
-		"Snippets",
-		"Other"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ipatalas/vscode-postfix-ts"
-	},
-	"bugs": {
-		"url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
-	},
-	"activationEvents": [
-		"onLanguage:javascript",
-		"onLanguage:typescript",
-		"onLanguage:javascriptreact",
-		"onLanguage:typescriptreact",
-		"onLanguage:vue",
-		"onLanguage:html",
-		"onLanguage:svelte"
-	],
-	"main": "./out/extension",
-	"contributes": {
-		"configuration": {
-			"title": "Postfix completion",
-			"properties": {
-				"postfix.languages": {
-					"type": "array",
-					"description": "A list of languages in which the completion will be available",
-					"default": [
-						"javascript",
-						"typescript",
-						"javascriptreact",
-						"typescriptreact",
-						"vue",
-						"svelte",
-						"html"
-					]
-				},
-				"postfix.undefinedMode": {
-					"type": "string",
-					"markdownDescription": "Determines how the `.undefined` and `.notundefined` templates work",
-					"default": "Equal",
-					"enum": [
-						"Equal",
-						"Typeof"
-					],
-					"enumDescriptions": [
-						"if (expr === undefined)",
-						"if (typeof expr === \"undefined\")"
-					]
-				},
-				"postfix.snippetPreviewMode": {
-					"type": "string",
-					"enum": [
-						"raw",
-						"inserted"
-					],
-					"default": "inserted",
-					"markdownEnumDescriptions": [
-						"Raw snippet as you defined in settings.json",
-						"The inserted text variant"
-					]
-				},
-				"postfix.customTemplates": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"required": [
-							"name",
-							"body"
-						],
-						"defaultSnippets": [
-							{
-								"label": "New postfix",
-								"body": {
-									"name": "$1",
-									"body": "$2",
-									"when": [
-										"$3"
-									]
-								}
-							}
-						],
-						"properties": {
-							"name": {
-								"type": "string",
-								"suggestSortText": "0",
-								"description": "Name of the template. It will be used in auto-complete suggestions"
-							},
-							"description": {
-								"type": "string",
-								"description": "Description of the template. It will be used in auto-complete suggestions"
-							},
-							"body": {
-								"type": "string",
-								"markdownDescription": "Body of the template. `{{expr}}` will be replaced with the expression before the cursor"
-							},
-							"when": {
-								"type": "array",
-								"description": "Context in which the template should be suggested",
-								"uniqueItems": true,
-								"items": {
-									"type": "string",
-									"enum": [
-										"identifier",
-										"expression",
-										"binary-expression",
-										"unary-expression",
-										"function-call",
-										"new-expression",
-										"string-literal",
-										"type"
-									]
-								}
-							}
-						}
-					}
-				},
-				"postfix.customTemplate.mergeMode": {
-					"type": "string",
-					"markdownDescription": "Determines how custom templates are shown if they share a name with built-in template:\n`append` - both built-in and custom template will be shown\n`override` - only custom template will be shown (it overrides built-in one)",
-					"default": "append",
-					"enum": [
-						"append",
-						"override"
-					]
-				},
-				"postfix.inferVariableName": {
-					"type": "boolean",
-					"markdownDescription": "Try to guess variable names for `var`, `let`, `const`, `forEach` and `forof` templates.",
-					"default": true
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "node build.mjs --production",
-		"compile": "node build.mjs",
-		"pretest": "node tasks.mjs pretest && tsc -p ./",
-		"test": "node tasks.mjs pretest && tsc -p ./ && cross-env NODE_ENV=test node ./out/test/runTests.js",
-		"test-with-coverage": "c8 npm test",
-		"lint": "eslint .",
-		"package": "vsce package --no-dependencies",
-		"deploy": "vsce publish"
-	},
-	"devDependencies": {
-		"@types/lodash": "^4.14.182",
-		"@types/mocha": "^9.1.1",
-		"@types/node": "^16.11.7",
-		"@types/pluralize": "^0.0.29",
-		"@types/vscode": "^1.60.0",
-		"@typescript-eslint/eslint-plugin": "^5.25.0",
-		"@typescript-eslint/parser": "^5.25.0",
-		"@vscode/test-electron": "^2.1.3",
-		"c8": "^7.12.0",
-		"cross-env": "^7.0.3",
-		"esbuild": "^0.13.15",
-		"eslint": "^8.16.0",
-		"glob": "^8.0.3",
-		"mocha": "^10.0.0",
-		"source-map-support": "0.5.21",
-		"vsce": "^2.11.0"
-	},
-	"dependencies": {
-		"lodash": "^4.17.21",
-		"pluralize": "github:plurals/pluralize#36f03cd2d573fa6d23e12e1529fa4627e2af74b4",
-		"typescript": "^4.6.4",
-		"vscode-snippet-parser": "^0.0.5",
-		"vscode-html-languageservice": "~5.0.3"
-	}
+  "name": "vscode-postfix-ts",
+  "displayName": "TS/JS postfix completion",
+  "description": "Postfix templates for TypeScript/Javascript",
+  "version": "1.11.3",
+  "license": "MIT",
+  "publisher": "ipatalas",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "icon": "images/logo.png",
+  "categories": [
+    "Snippets",
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipatalas/vscode-postfix-ts"
+  },
+  "bugs": {
+    "url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescriptreact",
+    "onLanguage:vue",
+    "onLanguage:html",
+    "onLanguage:svelte"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "configuration": {
+      "title": "Postfix completion",
+      "properties": {
+        "postfix.languages": {
+          "type": "array",
+          "description": "A list of languages in which the completion will be available",
+          "default": [
+            "javascript",
+            "typescript",
+            "javascriptreact",
+            "typescriptreact",
+            "vue",
+            "svelte",
+            "html"
+          ]
+        },
+        "postfix.undefinedMode": {
+          "type": "string",
+          "markdownDescription": "Determines how the `.undefined` and `.notundefined` templates work",
+          "default": "Equal",
+          "enum": [
+            "Equal",
+            "Typeof"
+          ],
+          "enumDescriptions": [
+            "if (expr === undefined)",
+            "if (typeof expr === \"undefined\")"
+          ]
+        },
+        "postfix.snippetPreviewMode": {
+          "type": "string",
+          "enum": [
+            "raw",
+            "inserted"
+          ],
+          "default": "inserted",
+          "markdownEnumDescriptions": [
+            "Raw snippet as you defined in settings.json",
+            "The inserted text variant"
+          ]
+        },
+        "postfix.customTemplates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "body"
+            ],
+            "defaultSnippets": [
+              {
+                "label": "New postfix",
+                "body": {
+                  "name": "$1",
+                  "body": "$2",
+                  "when": [
+                    "$3"
+                  ]
+                }
+              }
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "suggestSortText": "0",
+                "description": "Name of the template. It will be used in auto-complete suggestions"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the template. It will be used in auto-complete suggestions"
+              },
+              "body": {
+                "type": "string",
+                "markdownDescription": "Body of the template. `{{expr}}` will be replaced with the expression before the cursor"
+              },
+              "when": {
+                "type": "array",
+                "description": "Context in which the template should be suggested",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "identifier",
+                    "expression",
+                    "binary-expression",
+                    "unary-expression",
+                    "function-call",
+                    "new-expression",
+                    "string-literal",
+                    "type"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "postfix.customTemplate.mergeMode": {
+          "type": "string",
+          "markdownDescription": "Determines how custom templates are shown if they share a name with built-in template:\n`append` - both built-in and custom template will be shown\n`override` - only custom template will be shown (it overrides built-in one)",
+          "default": "append",
+          "enum": [
+            "append",
+            "override"
+          ]
+        },
+        "postfix.inferVariableName": {
+          "type": "boolean",
+          "markdownDescription": "Try to guess variable names for `var`, `let`, `const`, `forEach` and `forof` templates.",
+          "default": true
+        },
+        "postfix.disabledTemplates": {
+          "type": "array",
+          "markdownDescription": "Name all built-in templates that you want to disable, eg. `forof`",
+          "default": []
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node build.mjs --production",
+    "compile": "node build.mjs",
+    "pretest": "node tasks.mjs pretest && tsc -p ./",
+    "test": "cross-env NODE_ENV=test node ./out/test/runTests.js",
+    "test-with-coverage": "c8 npm test",
+    "lint": "eslint .",
+    "package": "vsce package --no-dependencies",
+    "deploy": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.182",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^16.11.7",
+    "@types/pluralize": "^0.0.29",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "@vscode/test-electron": "^2.2.2",
+    "c8": "^7.12.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.17.4",
+    "eslint": "^8.32.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "source-map-support": "0.5.21"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^2.16.0",
+    "lodash": "^4.17.21",
+    "pluralize": "github:plurals/pluralize#36f03cd2d573fa6d23e12e1529fa4627e2af74b4",
+    "typescript": "^4.9.4",
+    "vscode-html-languageservice": "^5.0.4",
+    "vscode-snippet-parser": "^0.0.5"
+  }
 }

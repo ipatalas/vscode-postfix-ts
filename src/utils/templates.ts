@@ -24,6 +24,9 @@ export const loadCustomTemplates = () => {
 }
 
 export const loadBuiltinTemplates = () => {
+  const config = vsc.workspace.getConfiguration('postfix')
+  const disabledTemplates = config.get<string[]>('disabledTemplates', [])
+
   const templates: IPostfixTemplate[] = [
     new CastTemplate('cast'),
     new CastTemplate('castas'),
@@ -53,7 +56,7 @@ export const loadBuiltinTemplates = () => {
     new AwaitTemplate('await')
   ]
 
-  return templates
+  return templates.filter(t => !disabledTemplates.includes(t.templateName))
 }
 
 interface ICustomTemplateDefinition {
