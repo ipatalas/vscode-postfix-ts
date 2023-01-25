@@ -57,20 +57,19 @@ export function testTemplate(dslString: string, options: TestTemplateOptions = {
 
 export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: boolean, skipSuggestions = 0, cancelQuickPick = false) {
   return testTemplate(dslString, {
-    trimWhitespaces, preAssertAction: async () => {
+    trimWhitespaces,
+    preAssertAction: async () => {
       if (cancelQuickPick) {
         await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
       } else {
-        await delay(100)
-
-        for (let i = 0; i < skipSuggestions; i++) {
+        for (let i = 0; i < skipSuggestions + 1; i++) {
           await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
         }
 
         await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
-      }
 
-      await delay(100)
+        await delay(100)
+      }
     }
   })
 }
@@ -101,18 +100,18 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
     if (!completion) {
       throw new Error(`Completion not found: ${dsl.template}`)
     }
-    if (completion.command) {
-      throw new Error(`Command is not supported in tests`)
-    }
     const edit = new vsc.WorkspaceEdit()
     // SnippetTextEdit requires 1.72.0
     const mainEdit = (typeof completion.insertText === 'string' ? vsc.TextEdit : (vsc as any).SnippetTextEdit).replace(
       (completion.range as { inserting: vsc.Range; replacing: vsc.Range }).replacing,
       completion.insertText
     )
-    const edits: vsc.TextEdit[] = [...completion.additionalTextEdits, mainEdit]
+    const edits: vsc.TextEdit[] = [...completion.additionalTextEdits ?? [], mainEdit]
     edit.set(doc.uri, edits)
     await vsc.workspace.applyEdit(edit)
+    if (completion.command) {
+      await vsc.commands.executeCommand(completion.command.command, ...completion.command.arguments)
+    }
   }
 }
 
