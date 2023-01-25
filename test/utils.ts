@@ -1,10 +1,10 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
 import { describe, before, after } from 'mocha'
-import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'
 import { EOL } from 'node:os'
+import * as _ from 'lodash'
 
 const LANGUAGE = 'postfix'
 
@@ -17,6 +17,7 @@ export function delay(timeout: number) {
 
 // for some reason editor.action.triggerSuggest needs more delay at the beginning when the process is not yet "warmed up"
 // let's start from high delays and then slowly go to lower delays
+
 const delaySteps = [2000, 1200, 700, 400, 300, 250]
 
 export const getCurrentDelay = () => (delaySteps.length > 1) ? <number>delaySteps.shift() : delaySteps[0]
@@ -93,22 +94,25 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
 
     editor.selection = new vsc.Selection(pos, pos)
 
-    await vsc.commands.executeCommand('editor.action.triggerSuggest')
-    await delay(getCurrentDelay())
-
-    let current = getCurrentSuggestion()
-    const first = current
-
-    while (current !== dsl.template) {
-      await vsc.commands.executeCommand('selectNextSuggestion')
-      current = getCurrentSuggestion()
-
-      if (current === first) {
-        break
-      }
+    // these properties of completion are normalized by API (always defined): sortText, kind, insertText, sortText, range (inserting, replacing), keepWhitespace
+    const completions: vsc.CompletionList = await vsc.commands.executeCommand('vscode.executeCompletionItemProvider', doc.uri, editor.selection.start)
+    completions.items = _.sortBy(completions.items, ({ sortText }) => sortText)
+    const completion = completions.items.find(({ label }) => (typeof label === 'object' ? label.label : label) === dsl.template)
+    if (!completion) {
+      throw new Error(`Completion not found: ${dsl.template}`)
     }
-
-    return vsc.commands.executeCommand('acceptSelectedSuggestion')
+    if (completion.command) {
+      throw new Error(`Command is not supported in tests`)
+    }
+    const edit = new vsc.WorkspaceEdit()
+    // SnippetTextEdit requires 1.72.0
+    const mainEdit = (typeof completion.insertText === 'string' ? vsc.TextEdit : (vsc as any).SnippetTextEdit).replace(
+      (completion.range as { inserting: vsc.Range; replacing: vsc.Range }).replacing,
+      completion.insertText
+    )
+    const edits: vsc.TextEdit[] = [...completion.additionalTextEdits, mainEdit]
+    edit.set(doc.uri, edits)
+    await vsc.workspace.applyEdit(edit)
   }
 }
 
