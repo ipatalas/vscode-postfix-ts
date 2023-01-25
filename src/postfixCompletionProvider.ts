@@ -134,16 +134,16 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
   private convertToScriptKind(document: vsc.TextDocument) {
     switch (document.languageId) {
-      case 'javascript':
-        return ts.ScriptKind.JS
-      case 'typescript':
-        return ts.ScriptKind.TS
-      case 'javascriptreact':
-        return ts.ScriptKind.JSX
-      case 'typescriptreact':
-        return ts.ScriptKind.TSX
-      default:
-        return ts.ScriptKind.Unknown
+    case 'javascript':
+      return ts.ScriptKind.JS
+    case 'typescript':
+      return ts.ScriptKind.TS
+    case 'javascriptreact':
+      return ts.ScriptKind.JSX
+    case 'typescriptreact':
+      return ts.ScriptKind.TSX
+    default:
+      return ts.ScriptKind.Unknown
     }
   }
 
