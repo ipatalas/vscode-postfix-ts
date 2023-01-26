@@ -1,6 +1,6 @@
 # vscode-postfix-ts
 
-[![MarketPlace Tag](https://vsmarketplacebadge.apphb.com/version-short/ipatalas.vscode-postfix-ts.svg)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
+[![MarketPlace Tag](https://img.shields.io/visual-studio-marketplace/v/ipatalas.vscode-postfix-ts)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
 [![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/ipatalas.vscode-postfix-ts)](https://marketplace.visualstudio.com/items?itemName=ipatalas.vscode-postfix-ts)
 [![codecov](https://codecov.io/gh/ipatalas/vscode-postfix-ts/branch/develop/graph/badge.svg)](https://codecov.io/gh/ipatalas/vscode-postfix-ts)
 
