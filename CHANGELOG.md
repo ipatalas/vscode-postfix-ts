@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.12.0] - 2023-01-26
+### Added:
+- [.null & .undefined postfixes in if](https://github.com/ipatalas/vscode-postfix-ts/issues/89)
+- [Svelte/Vue/Html support](https://github.com/ipatalas/vscode-postfix-ts/issues/97) - thx @zardoy for great work!
+- long awaited `await` template
+- option to disable particular built-in templates (see `postfix.disabledBuiltinTemplates`)
+### Fixed:
+- [Incorrect '\\\\' escaping](https://github.com/ipatalas/vscode-postfix-ts/issues/94)
+- [Doesn't work correctly in complex binary expressions](https://github.com/ipatalas/vscode-postfix-ts/issues/88)
+- Merged PR [#100](https://github.com/ipatalas/vscode-postfix-ts/pull/100) - fix for #99
+
 ## [1.11.3] - 2022-10-10
 ### Fixed:
 - Fixed binary exrpression regression [#80](https://github.com/ipatalas/vscode-postfix-ts/issues/80)
@@ -21,7 +32,7 @@
 ### Added:
 - Infer variable names for some templates [#63](https://github.com/ipatalas/vscode-postfix-ts/issues/63) - many thanks to @zardoy for great ideas and part of the implementation
 - Merged PR [#73](https://github.com/ipatalas/vscode-postfix-ts/pull/73) - minor improvement for custom templates management
-### Fixed: 
+### Fixed:
 - [Doesn't always work in binary expression](https://github.com/ipatalas/vscode-postfix-ts/issues/67)
 - [Templates did not work inside nested method declaration](https://github.com/ipatalas/vscode-postfix-ts/issues/66)
 - Merged PR [#70](https://github.com/ipatalas/vscode-postfix-ts/pull/70) - Fix for [#69](https://github.com/ipatalas/vscode-postfix-ts/issues/69)
