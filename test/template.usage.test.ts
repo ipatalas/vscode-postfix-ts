@@ -106,7 +106,7 @@ describe('Template usage', () => {
 
 function setDisabledTemplates(config: vsc.WorkspaceConfiguration, value: string[]) {
   return (done: Mocha.Done) => {
-    config.update('disabledTemplates', value, true).then(done, done)
+    config.update('disabledBuiltinTemplates', value, true).then(done, done)
   }
 }
 

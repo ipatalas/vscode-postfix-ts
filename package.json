@@ -141,9 +141,13 @@
           "markdownDescription": "Try to guess variable names for `var`, `let`, `const`, `forEach` and `forof` templates.",
           "default": true
         },
-        "postfix.disabledTemplates": {
+        "postfix.disabledBuiltinTemplates": {
           "type": "array",
           "markdownDescription": "Name all built-in templates that you want to disable, eg. `forof`",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
           "default": []
         }
       }

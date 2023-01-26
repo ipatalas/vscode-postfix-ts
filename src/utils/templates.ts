@@ -25,7 +25,7 @@ export const loadCustomTemplates = () => {
 
 export const loadBuiltinTemplates = () => {
   const config = vsc.workspace.getConfiguration('postfix')
-  const disabledTemplates = config.get<string[]>('disabledTemplates', [])
+  const disabledTemplates = config.get<string[]>('disabledBuiltinTemplates', [])
 
   const templates: IPostfixTemplate[] = [
     new CastTemplate('cast'),
