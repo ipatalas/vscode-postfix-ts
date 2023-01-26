@@ -3,7 +3,7 @@ import * as _ from 'lodash'
 import * as vsc from 'vscode'
 import { describe, afterEach, it, before, after } from 'mocha'
 
-import { getCurrentSuggestion, resetCurrentSuggestion } from '../src/postfixCompletionProvider'
+import { getCurrentSuggestion, resetCurrentSuggestion, overrideTsxEnabled } from '../src/postfixCompletionProvider'
 import { getCurrentDelay, delay } from './utils'
 
 const LANGUAGE = 'postfix'
@@ -84,9 +84,17 @@ describe('Template usage', () => {
   testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'new', 'await'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
-  testTemplateUsage('inside JSX fragment', '<>a{cursor}</>', [])
-  testTemplateUsage('inside JSX element', '<p>a{cursor}</p>', [])
-  testTemplateUsage('inside JSX expression', '<p hidden={showMe{cursor}}>test</p>', ALL_TEMPLATES)
+  describe('JSX tests', () => {
+    before(() => {
+      overrideTsxEnabled.value = true
+    })
+    testTemplateUsage('inside JSX fragment', '<>a{cursor}</>', [])
+    testTemplateUsage('inside JSX element', '<p>a{cursor}</p>', [])
+    testTemplateUsage('inside JSX expression', '<p hidden={showMe{cursor}}>test</p>', ALL_TEMPLATES)
+    after(() => {
+      overrideTsxEnabled.value = false
+    })
+  })
 
   testTemplateUsage('inside var declaration - function', 'const f1 = function () { expr{cursor}', ALL_TEMPLATES)
   testTemplateUsage('inside var declaration - arrow function', 'const f3 = () => { expr{cursor}', ALL_TEMPLATES)

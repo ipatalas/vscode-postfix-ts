@@ -16,6 +16,8 @@ module.exports = {
     "no-constant-condition": ["error", { "checkLoops": false }],
     "curly": ["error"],
     "brace-style": "error",
-    "indent": ["error", 2]
+    "indent": ["error", 2, {
+      SwitchCase: 1
+    }]
   }
-};
+}
