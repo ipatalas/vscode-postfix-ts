@@ -68,18 +68,18 @@ To configure a template you need to set `postfix.customTemplates` setting. It's 
 }
 ```
 
-`name` defines what will be the name of the suggestion  
-`description` will show additional optional description when suggestion panel is opened  
-`body` defines how the template will work (see below)  
-`when` defines conditions when the template should be suggested  
+`name` defines what will be the name of the suggestion
+`description` will show additional optional description when suggestion panel is opened
+`body` defines how the template will work (see below)
+`when` defines conditions when the template should be suggested
 
 ### Template body
 
-Template body defines how will the expression before the cursor be replaced.  
+Template body defines how will the expression before the cursor be replaced.
 It supports standard Visual Studio Code [Snippet syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax).
 There is also one special placeholder that can be used:
 
-- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression 
+- `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression
 - this placeholder can have modifiers (`uppercase`, `lowercase`, `capitalize`) which can be used in the following way:
 ```JSON
 {
@@ -90,7 +90,7 @@ There is also one special placeholder that can be used:
 }
 ```
 
-This snippet will have the following outcome (name of the original identifier has been capitalized): 
+This snippet will have the following outcome (name of the original identifier has been capitalized):
 ![capitalize example](images/capitalize.gif)
 
 ### Template conditions
@@ -104,6 +104,7 @@ This snippet will have the following outcome (name of the original identifier ha
 - `new-expression`: a new expression, ie. `new Type(arg1, arg2)`
 - `function-call`: a function call expression, ie. `func()`, `object.method()` and so on
 - `type`: type in function/variable definition, ie. `const x: string`
+- `string-literal`: string literal, ie. `'a string'` or `"string in double quotes"`
 
 If no conditions are specified then given template will be available under all possible situations
 
@@ -128,6 +129,7 @@ This plugin contributes the following [settings](https://code.visualstudio.com/d
   - `override` - only custom template will be shown (it overrides built-in one)
 - `postfix.undefinedMode`: determines the behavior of `.undefined` and `.notundefined` templates, either equality comparison or typeof
 - `postfix.inferVariableName`: enables variable name inferring
+- `postfix.disabledBuiltinTemplates`: allows to disable particular built-in templates (for instance discouraged `var`)
 
 The `postfix.languages` setting can be used to make the extension available for inline JS/TS which is in other files like **.html**, **.vue** or others. You must still include `javascript` and `typescript` if you want the extension to be available there among the others.
 
