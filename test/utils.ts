@@ -101,12 +101,12 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
       throw new Error(`Completion not found: ${dsl.template}`)
     }
     const edit = new vsc.WorkspaceEdit()
-    // SnippetTextEdit requires 1.72.0
-    const mainEdit = (typeof completion.insertText === 'string' ? vsc.TextEdit : (vsc as any).SnippetTextEdit).replace(
-      (completion.range as { inserting: vsc.Range; replacing: vsc.Range }).replacing,
-      completion.insertText
-    )
-    const edits: vsc.TextEdit[] = [...completion.additionalTextEdits ?? [], mainEdit]
+    const range = (completion.range as { inserting: vsc.Range; replacing: vsc.Range }).replacing
+    const mainEdit = typeof completion.insertText === 'string'
+      ? vsc.TextEdit.replace(range, completion.insertText)
+      : vsc.SnippetTextEdit.replace(range, completion.insertText)
+
+    const edits = [...completion.additionalTextEdits ?? [], mainEdit]
     edit.set(doc.uri, edits)
     await vsc.workspace.applyEdit(edit)
     if (completion.command) {

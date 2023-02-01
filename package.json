@@ -6,7 +6,7 @@
   "license": "MIT",
   "publisher": "ipatalas",
   "engines": {
-    "vscode": "^1.60.0"
+    "vscode": "^1.72.0"
   },
   "icon": "images/logo.png",
   "categories": [
@@ -164,7 +164,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^16.11.7",
     "@types/pluralize": "^0.0.29",
-    "@types/vscode": "^1.60.0",
+    "@types/vscode": "^1.72.0",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
     "@vscode/test-electron": "^2.2.2",
