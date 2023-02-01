@@ -46,12 +46,13 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     const indentInfo = this.getIndentInfo(document, currentNode)
-    const replacementNode = this.getNodeForReplacement(currentNode)
+    const node = this.isTypeReference(fullCurrentNode) ? fullCurrentNode : currentNode
+    const replacementNode = this.getNodeForReplacement(node)
 
     try {
       return this.templates
         .filter(t => {
-          let canUseTemplate = t.canUse(ts.isNonNullExpression(fullCurrentNode) ? fullCurrentNode.expression : fullCurrentNode)
+          let canUseTemplate = t.canUse(ts.isNonNullExpression(node) ? node.expression : node)
 
           if (this.mergeMode === 'override') {
             canUseTemplate &&= (t instanceof CustomTemplate || !this.customTemplateNames.includes(t.templateName))
@@ -73,6 +74,11 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     return item
   }
 
+  private isTypeReference = (node: ts.Node) => {
+    const typeRef = findClosestParent(node, ts.SyntaxKind.TypeReference)
+    return !!typeRef
+  }
+
   private getNodeForReplacement = (node: ts.Node) => {
     if (ts.isTemplateSpan(node)) {
       return node.parent
@@ -82,8 +88,14 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return node.parent
     }
 
-    if (ts.isTypeReferenceNode(node.parent) || (node.parent.parent && ts.isTypeReferenceNode(node.parent.parent))) {
-      return findClosestParent(node, ts.SyntaxKind.TypeReference)
+    if (ts.isQualifiedName(node.parent)) {
+      const typeRef = findClosestParent<ts.TypeReferenceNode>(node, ts.SyntaxKind.TypeReference)
+
+      if (ts.isQualifiedName(typeRef.typeName)) {
+        return typeRef.typeName.left
+      }
+
+      return typeRef
     }
 
     return node
@@ -112,7 +124,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     const fullText = speciallyHandledText ?? document.getText()
-
     const codeBeforeTheDot = fullText.slice(0, dotOffset)
 
     const scriptKind = this.convertToScriptKind(document)
@@ -181,6 +192,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     function isComment(node: ts.Node) {
       return [
         ts.SyntaxKind.JSDocComment,
+        ts.SyntaxKind.JSDoc,
         ts.SyntaxKind.MultiLineCommentTrivia,
         ts.SyntaxKind.SingleLineCommentTrivia
       ].includes(node.kind)
