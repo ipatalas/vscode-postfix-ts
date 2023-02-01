@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.12.0] - 2023-01-26
+## [1.12.0] - 2023-02-01
 ### Added:
 - [.null & .undefined postfixes in if](https://github.com/ipatalas/vscode-postfix-ts/issues/89)
 - [Svelte/Vue/Html support](https://github.com/ipatalas/vscode-postfix-ts/issues/97) - thx @zardoy for great work!
