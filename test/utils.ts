@@ -1,6 +1,6 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
-import { describe, before, after } from 'mocha'
+import { describe, before, after, TestFunction, it } from 'mocha'
 import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'
@@ -156,4 +156,19 @@ function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
   return (done: Mocha.Done) => {
     config.update('customTemplates', undefined, true).then(done, done)
   }
+}
+
+type ParametersSkipFirst<T extends (...args: unknown[]) => void> = T extends (first: TestFunction, ...args: infer P) => void ? P : never
+type TestFnSkipFirstParam<T extends (...args: unknown[]) => void> = (...args: ParametersSkipFirst<T>) => void
+type RunTestFn<T extends (...args: unknown[]) => void> = TestFnSkipFirstParam<T> & {
+  only: TestFnSkipFirstParam<T>
+  skip: TestFnSkipFirstParam<T>
+}
+
+export function makeTestFunction<T extends (first: TestFunction, ...args: unknown[]) => void>(testFn: T) {
+  const result = testFn.bind(null, it) as RunTestFn<T>
+  result.only = testFn.bind(null, it.only.bind(it)) as RunTestFn<T>
+  result.skip = testFn.bind(null, it.skip.bind(it)) as RunTestFn<T>
+
+  return result
 }

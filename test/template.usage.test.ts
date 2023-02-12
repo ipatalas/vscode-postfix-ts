@@ -1,10 +1,10 @@
 import * as assert from 'assert'
 import * as _ from 'lodash'
 import * as vsc from 'vscode'
-import { describe, afterEach, it, before, after } from 'mocha'
+import { describe, afterEach, before, after, TestFunction } from 'mocha'
 
 import { getCurrentSuggestion, resetCurrentSuggestion, overrideTsxEnabled } from '../src/postfixCompletionProvider'
-import { getCurrentDelay, delay } from './utils'
+import { getCurrentDelay, delay, makeTestFunction } from './utils'
 
 const LANGUAGE = 'postfix'
 
@@ -43,6 +43,7 @@ const BINARY_EXPRESSION_TEMPLATES = [
 ]
 
 const config = vsc.workspace.getConfiguration('postfix')
+const testTemplateUsage = makeTestFunction<typeof __testTemplateUsage>(__testTemplateUsage)
 
 describe('Template usage', () => {
   afterEach(done => {
@@ -84,16 +85,15 @@ describe('Template usage', () => {
   testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'new', 'await'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
+
   describe('JSX tests', () => {
-    before(() => {
-      overrideTsxEnabled.value = true
-    })
+    before(() => overrideTsxEnabled.value = true)
+
     testTemplateUsage('inside JSX fragment', '<>a{cursor}</>', [])
     testTemplateUsage('inside JSX element', '<p>a{cursor}</p>', [])
     testTemplateUsage('inside JSX expression', '<p hidden={showMe{cursor}}>test</p>', ALL_TEMPLATES)
-    after(() => {
-      overrideTsxEnabled.value = false
-    })
+
+    after(() => overrideTsxEnabled.value = false)
   })
 
   testTemplateUsage('inside var declaration - function', 'const f1 = function () { expr{cursor}', ALL_TEMPLATES)
@@ -118,8 +118,8 @@ function setDisabledTemplates(config: vsc.WorkspaceConfiguration, value: string[
   }
 }
 
-function testTemplateUsage(testDescription: string, initialText: string, expectedTemplates: string[]) {
-  it(testDescription, (done: Mocha.Done) => {
+function __testTemplateUsage(func: TestFunction, testDescription: string, initialText: string, expectedTemplates: string[]) {
+  func(testDescription, (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: LANGUAGE }).then((doc) => {
       return getAvailableSuggestions(doc, initialText).then(templates => {
         assert.deepStrictEqual(_.sortBy(templates), _.sortBy(expectedTemplates))
