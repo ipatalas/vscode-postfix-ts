@@ -82,6 +82,8 @@ describe('Single line template tests', () => {
   Test('new template - assignment binary expression | a = B{new}          >> a = new B()')
 
   Test('not template                                            | expr{not}                   >> !expr')
+  Test('not template - strict equality                          | if (a === b{not})           >> if (a !== b)')
+  Test('not template - instanceof                               | if (a instanceof b{not})    >> if (!(a instanceof b))')
   Test('not template - ??=                                      | a ??= b{not}                >> a ??= !b')
   Test('not template - with non-null assertion                  | expr!{not}                  >> !expr!')
   Test('not template - inside a call expression                 | call.expression(expr{not})  >> call.expression(!expr)')
