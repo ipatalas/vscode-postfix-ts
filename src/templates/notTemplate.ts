@@ -43,6 +43,14 @@ export class NotTemplate extends BaseTemplate {
         || this.isIdentifier(node))
   }
 
+  private isStrictEqualityOrInstanceofBinaryEpxression = (node: ts.Node) => {
+    return ts.isBinaryExpression(node) && [
+      ts.SyntaxKind.EqualsEqualsEqualsToken,
+      ts.SyntaxKind.ExclamationEqualsEqualsToken,
+      ts.SyntaxKind.InstanceOfKeyword
+    ].includes(node.operatorToken.kind)
+  }
+
   private getBinaryExpressions = (node: ts.Node) => {
     const possibleExpressions = [node]
 
@@ -57,6 +65,14 @@ export class NotTemplate extends BaseTemplate {
 
   private normalizeBinaryExpression = (node: ts.Node) => {
     if (ts.isParenthesizedExpression(node.parent) && ts.isBinaryExpression(node.parent.expression)) {
+      return node.parent
+    }
+
+    if (ts.isPrefixUnaryExpression(node) && node.operator === ts.SyntaxKind.ExclamationToken) {
+      return node
+    }
+
+    if (this.isStrictEqualityOrInstanceofBinaryEpxression(node.parent)) {
       return node.parent
     }
 
