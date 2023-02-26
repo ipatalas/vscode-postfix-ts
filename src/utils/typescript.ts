@@ -47,7 +47,7 @@ export const isAssignmentBinaryExpression = (node: ts.BinaryExpression) => {
     ts.SyntaxKind.GreaterThanGreaterThanGreaterThanEqualsToken,
     // relatively new
     ts.SyntaxKind.AmpersandAmpersandEqualsToken,
-    ts.SyntaxKind.QuestionQuestionToken,
+    ts.SyntaxKind.QuestionQuestionEqualsToken,
     ts.SyntaxKind.BarBarEqualsToken,
   ].includes(node.operatorToken.kind)
 }

@@ -56,11 +56,11 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   }
 
   protected isBinaryExpression = (node: ts.Node) => {
-    if (ts.isBinaryExpression(node)) {
+    if (ts.isBinaryExpression(node) && !isAssignmentBinaryExpression(node)) {
       return true
     }
 
-    return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
+    return ts.isParenthesizedExpression(node) && this.isBinaryExpression(node.expression)
       || node.parent && this.isBinaryExpression(node.parent)
   }
 

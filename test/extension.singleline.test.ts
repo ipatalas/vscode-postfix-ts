@@ -77,10 +77,12 @@ describe('Single line template tests', () => {
   Test('cast template   | expr{cast}   >> (<>expr)')
   Test('castas template | expr{castas} >> (expr as )')
 
-  Test('new template - identifier                 | Type{new}           >> new Type()')
-  Test('new template - property access expression | namespace.Type{new} >> new namespace.Type()')
+  Test('new template - identifier                   | Type{new}           >> new Type()')
+  Test('new template - property access expression   | namespace.Type{new} >> new namespace.Type()')
+  Test('new template - assignment binary expression | a = B{new}          >> a = new B()')
 
   Test('not template                                            | expr{not}                   >> !expr')
+  Test('not template - ??=                                      | a ??= b{not}                >> a ??= !b')
   Test('not template - with non-null assertion                  | expr!{not}                  >> !expr!')
   Test('not template - inside a call expression                 | call.expression(expr{not})  >> call.expression(!expr)')
   Test('not template - inside a call expression - negated       | call.expression(!expr{not}) >> call.expression(expr)')
