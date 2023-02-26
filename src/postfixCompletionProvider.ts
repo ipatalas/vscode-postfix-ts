@@ -4,7 +4,7 @@ import * as ts from 'typescript'
 import { IndentInfo, IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
 import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
-import { findClosestParent, findNodeAtPosition } from './utils/typescript'
+import { findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 import { getHtmlLikeEmbedText } from './htmlLikeSupport'
 
@@ -75,7 +75,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   }
 
   private isTypeReference = (node: ts.Node) => {
-    const typeRef = findClosestParent(node, ts.SyntaxKind.TypeReference)
+    const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
     return !!typeRef
   }
 
@@ -89,7 +89,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     if (ts.isQualifiedName(node.parent)) {
-      const typeRef = findClosestParent<ts.TypeReferenceNode>(node, ts.SyntaxKind.TypeReference)
+      const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
 
       if (ts.isQualifiedName(typeRef.typeName)) {
         return typeRef.typeName.left
@@ -199,9 +199,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     function isJsx(node: ts.Node) {
-      const jsx = findClosestParent(node, ts.SyntaxKind.JsxElement)
-      const jsxFragment = findClosestParent(node, ts.SyntaxKind.JsxFragment)
-      const jsxExpression = findClosestParent(node, ts.SyntaxKind.JsxExpression)
+      const jsx = ts.findAncestor(node, ts.isJsxElement)
+      const jsxFragment = ts.findAncestor(node, ts.isJsxFragment)
+      const jsxExpression = ts.findAncestor(node, ts.isJsxExpression)
 
       return (!!jsx || !!jsxFragment) && !jsxExpression
     }
