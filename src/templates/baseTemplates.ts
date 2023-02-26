@@ -60,7 +60,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
       return true
     }
 
-    return ts.isParenthesizedExpression(node) && this.isBinaryExpression(node.expression)
+    return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       || node.parent && this.isBinaryExpression(node.parent)
   }
 
