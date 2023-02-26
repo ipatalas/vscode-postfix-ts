@@ -1,7 +1,7 @@
 import * as ts from 'typescript'
 import * as vsc from 'vscode'
 import { IndentInfo, IPostfixTemplate } from '../template'
-import { findClosestParent, isAssignmentBinaryExpression, isStringLiteral } from '../utils/typescript'
+import { isAssignmentBinaryExpression, isStringLiteral } from '../utils/typescript'
 
 export abstract class BaseTemplate implements IPostfixTemplate {
   constructor(public readonly templateName: string) {}
@@ -67,7 +67,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected unwindBinaryExpression = (node: ts.Node, removeParens = true) => {
     let binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       ? node.expression
-      : findClosestParent(node, ts.SyntaxKind.BinaryExpression) as ts.BinaryExpression
+      : ts.findAncestor(node, ts.isBinaryExpression)
 
     while (binaryExpression && ts.isBinaryExpression(binaryExpression.parent)) {
       binaryExpression = binaryExpression.parent
