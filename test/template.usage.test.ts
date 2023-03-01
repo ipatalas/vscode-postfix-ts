@@ -11,7 +11,7 @@ const LANGUAGE = 'postfix'
 const VAR_TEMPLATES = ['var', 'let', 'const']
 const FOR_TEMPLATES = ['for', 'forof', 'foreach']
 const CONSOLE_TEMPLATES = ['log', 'warn', 'error']
-const EQUALITY_TEMPLATES = ['null', 'notnull', 'undefined', 'notundefined']
+const EQUALITY_TEMPLATES = ['null', 'notnull', 'undefined', 'notundefined', 'new']
 const IF_TEMPLATES = ['if', 'else', 'null', 'notnull', 'undefined', 'notundefined']
 const CAST_TEMPLATES = ['cast', 'castas']
 const TYPE_TEMPLATES = ['promisify']
@@ -79,10 +79,10 @@ describe('Template usage', () => {
   testTemplateUsage('inside return - arrow function', 'return items.map(x => { result{cursor} })', ALL_TEMPLATES)
   testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', ALL_TEMPLATES)
 
-  testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'new', 'await'])
+  testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'await'])
   testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not'])
   testTemplateUsage('inside assignment statement - short-circuit', 'test *= expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not'])
-  testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'new', 'await'])
+  testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'await'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 
