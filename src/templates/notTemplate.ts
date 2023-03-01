@@ -43,7 +43,7 @@ export class NotTemplate extends BaseTemplate {
         || this.isIdentifier(node))
   }
 
-  private isStrictEqualityOrInstanceofBinaryEpxression = (node: ts.Node) => {
+  private isStrictEqualityOrInstanceofBinaryExpression = (node: ts.Node) => {
     return ts.isBinaryExpression(node) && [
       ts.SyntaxKind.EqualsEqualsEqualsToken,
       ts.SyntaxKind.ExclamationEqualsEqualsToken,
@@ -72,7 +72,7 @@ export class NotTemplate extends BaseTemplate {
       return node
     }
 
-    if (this.isStrictEqualityOrInstanceofBinaryEpxression(node.parent)) {
+    if (this.isStrictEqualityOrInstanceofBinaryExpression(node.parent)) {
       return node.parent
     }
 
