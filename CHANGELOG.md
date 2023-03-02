@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.12.1] - 2023-03-02
+### Fixed:
+- Merged PR [#110](https://github.com/ipatalas/vscode-postfix-ts/pull/110) - fix for #108 and #109 - thx @zardoy for reporting and fixing!
+
 ## [1.12.0] - 2023-02-01
 ### Added:
 - [.null & .undefined postfixes in if](https://github.com/ipatalas/vscode-postfix-ts/issues/89)
