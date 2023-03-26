@@ -38,7 +38,8 @@ All available templates (`expr` means the expression on which the template is ap
 | **.undefined**    | `if (expr === undefined)` or `if (typeof expr === "undefined")` (see [settings](#Configuration)) |
 | **.notundefined** | `if (expr !== undefined)` or `if (typeof expr !== "undefined")` (see [settings](#Configuration))|
 | **.for**          | `for (let i = 0; i < expr.Length; i++)` |
-| **.forof**        | `for (let item of expr)` |
+| **.forof**        | `for (const item of expr)` |
+| **.forin**        | `for (const item in expr)` |
 | **.foreach**      | `expr.forEach(item => )` |
 | **.not**          | `!expr` |
 | **.return**       | `return expr` |
@@ -53,6 +54,8 @@ All available templates (`expr` means the expression on which the template is ap
 | **.new**          | `new expr()` |
 | **.promisify**    | `Promise<expr>` |
 | **.await**        | `await expr` |
+
+If for any reason you don't like either of those templates you can disable them one by one using `postfix.disabledBuiltinTemplates` setting.
 
 ## Custom templates (1.6.0 and above)
 
