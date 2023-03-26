@@ -5,7 +5,7 @@ import { CastTemplate } from '../templates/castTemplates'
 import { ConsoleTemplate } from '../templates/consoleTemplates'
 import { CustomTemplate } from '../templates/customTemplate'
 import { EqualityTemplate } from '../templates/equalityTemplates'
-import { ForTemplate, ForOfTemplate, ForEachTemplate } from '../templates/forTemplates'
+import { ForTemplate, ForOfTemplate, ForEachTemplate, ForInTemplate } from '../templates/forTemplates'
 import { IfTemplate, ElseTemplate, IfEqualityTemplate } from '../templates/ifTemplates'
 import { NewTemplate } from '../templates/newTemplate'
 import { NotTemplate } from '../templates/notTemplate'
@@ -35,6 +35,7 @@ export const loadBuiltinTemplates = () => {
     new ConsoleTemplate('error'),
     new ForTemplate('for'),
     new ForOfTemplate('forof'),
+    new ForInTemplate('forin'),
     new ForEachTemplate('foreach'),
     new IfTemplate('if'),
     new ElseTemplate('else'),

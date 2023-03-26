@@ -71,6 +71,7 @@ describe('Single line template tests', () => {
   Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', withTrimWhitespaces)
   Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', withTrimWhitespaces)
   Test('forof template   | expr{forof}         >> for(constitemofexpr){}', withTrimWhitespaces)
+  Test('forin template   | expr{forin}         >> for(constkeyinexpr){}', withTrimWhitespaces)
   Test('foreach template | expr{foreach}       >> expr.forEach(item=>)', withTrimWhitespaces)
   Test('awaited foreach  | await expr{foreach} >> (await expr).forEach(item => )')
 

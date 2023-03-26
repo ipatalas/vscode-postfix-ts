@@ -43,6 +43,21 @@ export class ForTemplate extends BaseForTemplate {
   }
 }
 
+export class ForInTemplate extends BaseForTemplate {
+  buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
+    return CompletionItemBuilder
+      .create('forin', node, indentInfo)
+      .replace(`for (const \${1:key} in \${2:{{expr}}}) {\n${getIndentCharacters()}\${0}\n}`)
+      .build()
+  }
+
+  override canUse(node: ts.Node) {
+    const isAwaited = node.parent && ts.isAwaitExpression(node.parent)
+
+    return super.canUse(node) && !isAwaited
+  }
+}
+
 const getArrayItemNames = (node: ts.Node): string[] => {
   const inferVarNameEnabled = getConfigValue<boolean>('inferVariableName')
   const suggestedNames = inferVarNameEnabled ? inferForVarTemplate(node) : undefined
