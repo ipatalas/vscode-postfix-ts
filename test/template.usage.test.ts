@@ -9,7 +9,7 @@ import { getCurrentDelay, delay, makeTestFunction } from './utils'
 const LANGUAGE = 'postfix'
 
 const VAR_TEMPLATES = ['var', 'let', 'const']
-const FOR_TEMPLATES = ['for', 'forof', 'foreach']
+const FOR_TEMPLATES = ['for', 'forin', 'forof', 'foreach']
 const CONSOLE_TEMPLATES = ['log', 'warn', 'error']
 const EQUALITY_TEMPLATES = ['null', 'notnull', 'undefined', 'notundefined', 'new']
 const IF_TEMPLATES = ['if', 'else', 'null', 'notnull', 'undefined', 'notundefined']
@@ -51,7 +51,7 @@ describe('Template usage', () => {
   })
 
   testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
-  testTemplateUsage('awaited expression', 'await expr', _.difference(ALL_TEMPLATES, ['new', 'await']))
+  testTemplateUsage('awaited expression', 'await expr', _.difference(ALL_TEMPLATES, ['new', 'await', 'forin']))
   testTemplateUsage('method call expression', 'expr.call()', _.difference(ALL_TEMPLATES, ['for', 'new']))
   testTemplateUsage('property access expression', 'expr.a.b.c', ALL_TEMPLATES)
   testTemplateUsage('element access expression', 'expr.a.b[c]', _.difference(ALL_TEMPLATES, ['new']))
