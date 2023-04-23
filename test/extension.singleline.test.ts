@@ -77,6 +77,7 @@ describe('Single line template tests', () => {
 
   Test('cast template   | expr{cast}   >> (<>expr)')
   Test('castas template | expr{castas} >> (expr as )')
+  Test('call template   | expr{call}   >> (expr)')
 
   Test('new template - identifier                   | Type{new}           >> new Type()')
   Test('new template - property access expression   | namespace.Type{new} >> new namespace.Type()')

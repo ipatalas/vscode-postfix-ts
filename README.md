@@ -51,6 +51,7 @@ All available templates (`expr` means the expression on which the template is ap
 | **.warn**         | `console.warn(expr)` |
 | **.cast**         | `(<SomeType>expr)` |
 | **.castas**       | `(expr as SomeType)` |
+| **.call**         | `{cursor}(expr)` |
 | **.new**          | `new expr()` |
 | **.promisify**    | `Promise<expr>` |
 | **.await**        | `await expr` |

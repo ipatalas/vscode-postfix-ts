@@ -24,7 +24,8 @@ const ALL_TEMPLATES = [
   'not',
   'return',
   'new',
-  'await'
+  'await',
+  'call'
 ]
 const STRING_LITERAL_TEMPLATES = [
   ...VAR_TEMPLATES,
@@ -39,13 +40,14 @@ const BINARY_EXPRESSION_TEMPLATES = [
   'if',
   'else',
   'not',
-  'return'
+  'return',
+  'call'
 ]
 
 const config = vsc.workspace.getConfiguration('postfix')
 const testTemplateUsage = makeTestFunction<typeof __testTemplateUsage>(__testTemplateUsage)
 
-describe('Template usage', () => {
+describe.only('Template usage', () => {
   afterEach(done => {
     vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
   })
@@ -59,11 +61,11 @@ describe('Template usage', () => {
   testTemplateUsage('binary expression', '(x > y)', BINARY_EXPRESSION_TEMPLATES)
   testTemplateUsage('unary expression', 'expr++', _.difference(ALL_TEMPLATES, [...FOR_TEMPLATES, 'new', 'await']))
   testTemplateUsage('conditional expression', 'if (x * 100{cursor})', ['not'])
-  testTemplateUsage('return expression', 'return x * 100', [...CAST_TEMPLATES, 'not'])
+  testTemplateUsage('return expression', 'return x * 100', [...CAST_TEMPLATES, 'not', 'call'])
   testTemplateUsage('object literal expression', '{}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
   testTemplateUsage('object literal expression', '{foo:"foo"}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
-  testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return'])
-  testTemplateUsage('expression as argument', 'function.call("arg", expr{cursor})', [...CAST_TEMPLATES, 'not', 'new', 'await'])
+  testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return', 'call'])
+  testTemplateUsage('expression as argument', 'function.call("arg", expr{cursor})', [...CAST_TEMPLATES, 'not', 'new', 'await', 'call'])
 
   testTemplateUsage('string literal - single quote', '\'a string\'', STRING_LITERAL_TEMPLATES)
   testTemplateUsage('string literal - double quote', '"a string"', STRING_LITERAL_TEMPLATES)
@@ -79,10 +81,10 @@ describe('Template usage', () => {
   testTemplateUsage('inside return - arrow function', 'return items.map(x => { result{cursor} })', ALL_TEMPLATES)
   testTemplateUsage('inside return - function', 'return items.map(function(x) { result{cursor} })', ALL_TEMPLATES)
 
-  testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'await'])
-  testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not'])
-  testTemplateUsage('inside assignment statement - short-circuit', 'test *= expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not'])
-  testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'await'])
+  testTemplateUsage('inside variable declaration', 'var test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'await', 'call'])
+  testTemplateUsage('inside assignment statement', 'test = expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'call'])
+  testTemplateUsage('inside assignment statement - short-circuit', 'test *= expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'call'])
+  testTemplateUsage('inside return', 'return expr{cursor}', [...CAST_TEMPLATES, ...EQUALITY_TEMPLATES, 'not', 'await', 'call'])
   testTemplateUsage('inside single line comment', '// expr', [])
   testTemplateUsage('inside multi line comment', '/* expr{cursor} */', [])
 

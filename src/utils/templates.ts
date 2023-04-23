@@ -12,6 +12,7 @@ import { NotTemplate } from '../templates/notTemplate'
 import { PromisifyTemplate } from '../templates/promisifyTemplate'
 import { ReturnTemplate } from '../templates/returnTemplate'
 import { VarTemplate } from '../templates/varTemplates'
+import { CallTemplate } from '../templates/callTemplate'
 
 export const loadCustomTemplates = () => {
   const config = vsc.workspace.getConfiguration('postfix')
@@ -30,6 +31,7 @@ export const loadBuiltinTemplates = () => {
   const templates: IPostfixTemplate[] = [
     new CastTemplate('cast'),
     new CastTemplate('castas'),
+    new CallTemplate('call'),
     new ConsoleTemplate('log'),
     new ConsoleTemplate('warn'),
     new ConsoleTemplate('error'),
