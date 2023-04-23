@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.13.0] - 2023-04-23
+### Added:
+- `forin` template
+- `call` template
+### Changed:
+- Updated dependencies to support TypeScript 5.0
+
 ## [1.12.1] - 2023-03-02
 ### Fixed:
 - Merged PR [#110](https://github.com/ipatalas/vscode-postfix-ts/pull/110) - fix for #108 and #109 - thx @zardoy for reporting and fixing!
