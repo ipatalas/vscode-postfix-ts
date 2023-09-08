@@ -79,7 +79,7 @@ To configure a template you need to set `postfix.customTemplates` setting. It's 
 
 ### Template body
 
-Template body defines how will the expression before the cursor be replaced.
+Template body defines how will the expression before the cursor be replaced. Body can be defined either as single string or array of strings. If it's an array then strings will be joined with a newline character.
 It supports standard Visual Studio Code [Snippet syntax](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_snippet-syntax).
 There is also one special placeholder that can be used:
 
