@@ -3,6 +3,7 @@ import { BaseTemplate } from './baseTemplates'
 import { CompletionItemBuilder } from '../completionItemBuilder'
 import { IndentInfo } from '../template'
 import { isStringLiteral } from '../utils/typescript'
+import { CustomTemplateBodyType } from '../utils/templates'
 
 export class CustomTemplate extends BaseTemplate {
   private conditionsMap = new Map<string, (node: ts.Node) => boolean>([
@@ -16,7 +17,7 @@ export class CustomTemplate extends BaseTemplate {
     ['function-call', node => this.isCallExpression(node)]
   ])
 
-  constructor(name: string, private description: string, private body: string, private when: string[]) {
+  constructor(name: string, private description: string, private body: CustomTemplateBodyType, private when: string[]) {
     super(name)
   }
 
@@ -25,10 +26,12 @@ export class CustomTemplate extends BaseTemplate {
       node = this.unwindBinaryExpression(node)
     }
 
+    const body = Array.isArray(this.body) ? this.body.join('\n') : this.body
+
     return CompletionItemBuilder
       .create(this.templateName, node, indentInfo)
       .description(this.description)
-      .replace(this.body)
+      .replace(body)
       .build()
   }
 

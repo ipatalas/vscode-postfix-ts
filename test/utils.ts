@@ -5,6 +5,7 @@ import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'
 import { EOL } from 'node:os'
+import { CustomTemplateBodyType } from '../src/utils/templates'
 
 const LANGUAGE = 'postfix'
 
@@ -130,7 +131,7 @@ function normalizeWhitespaces(text: string) {
     .join(EOL)
 }
 
-export function runWithCustomTemplate(template: string) {
+export function runWithCustomTemplate(template: CustomTemplateBodyType) {
   const postfixConfig = vsc.workspace.getConfiguration('postfix')
   return (when: string, ...tests: string[]) =>
     describe(when, () => {
@@ -141,7 +142,7 @@ export function runWithCustomTemplate(template: string) {
     })
 }
 
-function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: string, when: string[]) {
+function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: CustomTemplateBodyType, when: string[]) {
   return (done: Mocha.Done) => {
     config.update('customTemplates', [{
       'name': name,

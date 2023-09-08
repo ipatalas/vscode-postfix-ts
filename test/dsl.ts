@@ -27,7 +27,7 @@ export function parseDSL(input: string) {
       cursorCharacter = match.index + template.length + 1
     }
 
-    inputLines.push(input)
+    input && inputLines.push(input)
     expectedLines.push(expected)
   }
 

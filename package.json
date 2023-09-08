@@ -103,7 +103,17 @@
                 "description": "Description of the template. It will be used in auto-complete suggestions"
               },
               "body": {
-                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ],
                 "markdownDescription": "Body of the template. `{{expr}}` will be replaced with the expression before the cursor"
               },
               "when": {

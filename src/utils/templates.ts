@@ -62,9 +62,11 @@ export const loadBuiltinTemplates = () => {
   return templates.filter(t => !disabledTemplates.includes(t.templateName))
 }
 
+export type CustomTemplateBodyType = string | string[]
+
 interface ICustomTemplateDefinition {
   name: string
   description: string
-  body: string,
+  body: CustomTemplateBodyType,
   when: string[]
 }

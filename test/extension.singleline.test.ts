@@ -216,6 +216,14 @@ describe('Single line template tests', () => {
 
     run('identifier', 'expr{custom}           | expr{custom}        >> console.log("$TM_LINE_NUMBER", $1.expr)')
   })
+
+  describe('custom template defined as array', () => {
+    const run = runWithCustomTemplate(['Line 1 {{expr}}', ' Line 2 {{expr}}', '  Line 3 {{expr}}'])
+
+    run('identifier', `expr{custom}           | expr{custom}        >> Line 1 expr
+                                                                    >>  Line 2 expr
+                                                                    >>   Line 3 expr`)
+  })
 })
 
 function setUndefinedMode(config: vsc.WorkspaceConfiguration, value: 'Equal' | 'Typeof' | undefined) {
