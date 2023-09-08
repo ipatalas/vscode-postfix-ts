@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.13.1] - 2023-09-08
+### Added:
+- option to define custom template as array of strings [#115](https://github.com/ipatalas/vscode-postfix-ts/issues/115)
+
 ## [1.13.0] - 2023-04-23
 ### Added:
 - `forin` template
