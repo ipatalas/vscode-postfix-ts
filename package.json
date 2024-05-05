@@ -27,7 +27,8 @@
     "onLanguage:typescriptreact",
     "onLanguage:vue",
     "onLanguage:html",
-    "onLanguage:svelte"
+    "onLanguage:svelte",
+    "workspaceContains:.enable-postfix"
   ],
   "main": "./out/extension",
   "contributes": {
