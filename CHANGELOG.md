@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.13.2] - 2024-05-05
+### Added:
+- option to enable extension based on .enablepostfix file [#116](https://github.com/ipatalas/vscode-postfix-ts/issues/116)
+
 ## [1.13.1] - 2023-09-08
 ### Added:
 - option to define custom template as array of strings [#115](https://github.com/ipatalas/vscode-postfix-ts/issues/115)
