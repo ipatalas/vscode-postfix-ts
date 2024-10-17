@@ -84,7 +84,7 @@ It supports standard Visual Studio Code [Snippet syntax](https://code.visualstud
 There is also one special placeholder that can be used:
 
 - `{{expr}}`: this will be replaced by the expression on which the template is applied so for example `!{{expr}}` will simply negate the expression
-- this placeholder can have modifiers (`uppercase`, `lowercase`, `capitalize`) which can be used in the following way:
+- this placeholder can have modifiers (`upper`, `lower`, `capitalize`) which can be used in the following way:
 ```JSON
 {
     "name": "useState",
