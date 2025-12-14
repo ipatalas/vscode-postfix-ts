@@ -18,8 +18,6 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   protected isUnaryExpression = (node: ts.Node) => ts.isPostfixUnaryExpression(node) || ts.isPrefixUnaryExpression(node)
   protected isCallExpression = (node: ts.Node) => ts.isCallExpression(node)
   protected isNewExpression = (node: ts.Node) => ts.isNewExpression(node)
-  protected isFunctionExpression = (node: ts.Node) => ts.isFunctionExpression(node)
-  protected isArrowFunction = (node: ts.Node) => ts.isArrowFunction(node)
   protected inFunctionArgument = (node: ts.Node) => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
 
   protected isObjectLiteral = (node: ts.Node) => {

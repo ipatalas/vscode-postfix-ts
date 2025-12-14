@@ -22,7 +22,9 @@ export class CallTemplate extends BaseTemplate {
         this.isUnaryExpression(node) ||
         this.isBinaryExpression(node) ||
         this.isCallExpression(node) ||
-        this.isFunctionExpression(node) ||
-        this.isArrowFunction(node))
+        // Support function expressions and arrow functions (but not method declarations)
+        // Note: We can't use isAnyFunction() as it includes method declarations
+        ts.isFunctionExpression(node) ||
+        ts.isArrowFunction(node))
   }
 }
