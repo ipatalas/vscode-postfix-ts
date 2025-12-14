@@ -22,7 +22,7 @@ export class CallTemplate extends BaseTemplate {
         this.isUnaryExpression(node) ||
         this.isBinaryExpression(node) ||
         this.isCallExpression(node) ||
-        ts.isFunctionExpression(node) ||
-        ts.isArrowFunction(node))
+        this.isFunctionExpression(node) ||
+        this.isArrowFunction(node))
   }
 }
