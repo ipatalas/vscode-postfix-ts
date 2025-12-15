@@ -78,6 +78,10 @@ describe('Single line template tests', () => {
   Test('cast template   | expr{cast}   >> (<>expr)')
   Test('castas template | expr{castas} >> (expr as )')
   Test('call template   | expr{call}   >> (expr)')
+  Test('call template - function expression       | function(){}{call}       >> (function(){})')
+  Test('call template - async function expression | async function(){}{call} >> (async function(){})')
+  Test('call template - arrow function            | ()=>{}{call}             >> (()=>{})')
+  Test('call template - async arrow function      | async ()=>{}{call}       >> (async ()=>{})')
 
   Test('new template - identifier                   | Type{new}           >> new Type()')
   Test('new template - property access expression   | namespace.Type{new} >> new namespace.Type()')

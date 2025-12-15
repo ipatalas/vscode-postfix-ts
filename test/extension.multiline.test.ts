@@ -80,6 +80,11 @@ describe('Multiline template tests', () => {
       | \t2,         >> \t2,
       | \t3){return} >> \t3)`)
 
+  Test(`call template - async function expression
+      | async function() { >> (async function() {
+      | \treturn true       >> \treturn true
+      | }{call}             >> })`)
+
   describe('Without {{expr}}', () => {
     const run = runWithCustomTemplate('1\n\t1\n1')
 
