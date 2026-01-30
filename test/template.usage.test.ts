@@ -33,6 +33,13 @@ const STRING_LITERAL_TEMPLATES = [
   'return'
 ]
 
+const FUNCTION_EXPRESSION_TEMPLATES = [
+  ...VAR_TEMPLATES,
+  ...CONSOLE_TEMPLATES,
+  'return',
+  'call'
+]
+
 const BINARY_EXPRESSION_TEMPLATES = [
   ...VAR_TEMPLATES,
   ...CONSOLE_TEMPLATES,
@@ -66,10 +73,11 @@ describe('Template usage', () => {
   testTemplateUsage('object literal expression', '{foo:"foo"}', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, 'return'])
   testTemplateUsage('new expression', 'new Class()', [...VAR_TEMPLATES, ...CONSOLE_TEMPLATES, ...CAST_TEMPLATES, 'return', 'call'])
   testTemplateUsage('expression as argument', 'function.call("arg", expr{cursor})', [...CAST_TEMPLATES, 'not', 'new', 'await', 'call'])
-  testTemplateUsage('function expression', 'function(){}', ['call'])
-  testTemplateUsage('async function expression', 'async function(){}', ['call'])
-  testTemplateUsage('arrow function', '()=>{}', ['call'])
-  testTemplateUsage('async arrow function', 'async ()=>{}', ['call'])
+
+  testTemplateUsage('function expression', 'function(){}', FUNCTION_EXPRESSION_TEMPLATES)
+  testTemplateUsage('async function expression', 'async function(){}', FUNCTION_EXPRESSION_TEMPLATES)
+  testTemplateUsage('arrow function', '()=>{}', FUNCTION_EXPRESSION_TEMPLATES)
+  testTemplateUsage('async arrow function', 'async ()=>{}', FUNCTION_EXPRESSION_TEMPLATES)
 
   testTemplateUsage('string literal - single quote', '\'a string\'', STRING_LITERAL_TEMPLATES)
   testTemplateUsage('string literal - double quote', '"a string"', STRING_LITERAL_TEMPLATES)

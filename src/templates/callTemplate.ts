@@ -9,6 +9,12 @@ export class CallTemplate extends BaseTemplate {
   }
 
   override buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo) {
+    if (this.isFunctionExpression(node) || this.isArrowFunction(node)) {
+      return CompletionItemBuilder.create(this.keyword, node.parent, indentInfo)
+        .replace('({{expr}})$0')
+        .build()
+    }
+
     return CompletionItemBuilder.create(this.keyword, node, indentInfo)
       .replace('$0({{expr}})')
       .build()
@@ -22,9 +28,15 @@ export class CallTemplate extends BaseTemplate {
         this.isUnaryExpression(node) ||
         this.isBinaryExpression(node) ||
         this.isCallExpression(node) ||
-        // Support function expressions and arrow functions (but not method declarations)
-        // Note: We can't use isAnyFunction() as it includes method declarations
-        ts.isFunctionExpression(node) ||
-        ts.isArrowFunction(node))
+        this.isFunctionExpression(node) ||
+        this.isArrowFunction(node))
+  }
+
+  private isFunctionExpression(node: ts.Node) {
+    return ts.isBlock(node) && ts.isFunctionDeclaration(node.parent)
+  }
+
+  private isArrowFunction(node: ts.Node) {
+    return ts.isBlock(node) && ts.isArrowFunction(node.parent)
   }
 }
