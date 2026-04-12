@@ -6,6 +6,9 @@
     "lib": [
       "ES2021"
     ],
+    "types": [
+      "node"
+    ],
     "sourceMap": true,
     "rootDir": ".",
     "noImplicitOverride": true,

@@ -1,10 +1,12 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
+import { sortBy } from 'lodash'
 import { describe, before, after, TestFunction, it } from 'mocha'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'
 import { EOL } from 'node:os'
 import { CustomTemplateBodyType } from '../src/utils/templates'
+import { SnippetParser } from 'vscode-snippet-parser'
 
 const LANGUAGE = 'postfix'
 
@@ -15,18 +17,11 @@ export function delay(timeout: number) {
   return new Promise<void>(resolve => setTimeout(resolve, timeout))
 }
 
-// for some reason editor.action.triggerSuggest needs more delay at the beginning when the process is not yet "warmed up"
-// let's start from high delays and then slowly go to lower delays
-const delaySteps = [2000, 1200, 700, 400, 300, 250]
-
-export const getCurrentDelay = () => (delaySteps.length > 1) ? <number>delaySteps.shift() : delaySteps[0]
-
 export type TestTemplateOptions = Partial<{
   trimWhitespaces: boolean
   preAssertAction: () => Thenable<void>
   fileContext: string
   fileLanguage: string
-  extraDelay: number
 }>
 
 export function testTemplate(dslString: string, options: TestTemplateOptions = {}) {
@@ -36,7 +31,6 @@ export function testTemplate(dslString: string, options: TestTemplateOptions = {
     vsc.workspace.openTextDocument({ language: options.fileLanguage || LANGUAGE }).then(async (doc) => {
       try {
         await selectAndAcceptSuggestion(doc, dsl, options.fileContext)
-        await delay(options.extraDelay || 0)
         await options.preAssertAction?.()
 
         const expected = options.fileContext
@@ -60,7 +54,7 @@ export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: b
       if (cancelQuickPick) {
         await vsc.commands.executeCommand('workbench.action.closeQuickOpen')
       } else {
-        await delay(100)
+        await delay(50)
 
         for (let i = 0; i < skipSuggestions; i++) {
           await vsc.commands.executeCommand('workbench.action.quickOpenSelectNext')
@@ -69,7 +63,7 @@ export function testTemplateWithQuickPick(dslString: string, trimWhitespaces?: b
         await vsc.commands.executeCommand('workbench.action.acceptSelectedQuickOpenItem')
       }
 
-      await delay(100)
+      await delay(50)
     }
   })
 }
@@ -93,30 +87,32 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
 
     editor.selection = new vsc.Selection(pos, pos)
 
-    const completionList = await vsc.commands.executeCommand<vsc.CompletionList>(
-      'vscode.executeCompletionItemProvider',
-      doc.uri,
-      pos
-    )
+    const completions = await vsc.commands.executeCommand<vsc.CompletionList>('vscode.executeCompletionItemProvider', doc.uri, pos)
+    const sortedItems = sortBy(completions.items, ({ sortText }) => sortText)
 
-    const index = completionList.items.findIndex(x => {
-      const label = (x.label as vsc.CompletionItemLabel)
-      return label?.description === "POSTFIX" && label?.label === dsl.template
-    })
-
-    if (index === -1) {
-      throw new Error(`Suggestion "${dsl.template}" not found. Available suggestions: ${completionList.items.map(x => (x.label as vsc.CompletionItemLabel)?.label || x.label).join(', ')}`)
+    const completion = sortedItems.find(({ label }) => (typeof label === 'object' ? label.label : label) === dsl.template)
+    if (!completion) {
+      throw new Error(`Completion not found: ${dsl.template}`)
     }
+    const range = (completion.range as { inserting: vsc.Range; replacing: vsc.Range }).replacing
+    // Always use TextEdit (not SnippetTextEdit) so that workspace.applyEdit does not
+    // run VSCode's snippet auto-indentation pass, which would prepend the current
+    // line's indentation to every newline inside the snippet — doubling the tabs
+    // that adjustLeadingWhitespace already baked into the text.
+    // Tab-stop defaults are expanded via SnippetParser so the inserted text is correct.
+    const insertText = completion.insertText instanceof vsc.SnippetString
+      ? new SnippetParser().text(completion.insertText.value)
+      : completion.insertText as string ?? ''
+    const mainEdit = vsc.TextEdit.replace(range, insertText)
 
-    await vsc.commands.executeCommand('editor.action.triggerSuggest')
-    await delay(getCurrentDelay())
+    const edits = [...completion.additionalTextEdits ?? [], mainEdit]
+    const edit = new vsc.WorkspaceEdit()
+    edit.set(doc.uri, edits)
+    await vsc.workspace.applyEdit(edit)
 
-    for (let i = 0; i < index; i++) {
-      await vsc.commands.executeCommand('selectNextSuggestion')
-      await delay(10)
+    if (completion.command) {
+      await vsc.commands.executeCommand(completion.command.command, ...(completion.command.arguments || []))
     }
-
-    return vsc.commands.executeCommand('acceptSelectedSuggestion')
   }
 }
 

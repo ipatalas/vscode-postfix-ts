@@ -12,8 +12,7 @@ const html: Options = {
   let name = 'world';
   {{CODE}}
 </script>
-<h1>Hello {name}!</h1>`,
-  extraDelay: 1500
+<h1>Hello {name}!</h1>`
 }
 
 const Test = (test: string, options?: Pick<Options, 'trimWhitespaces'>) => runTest(test, { ...html, ...options })
