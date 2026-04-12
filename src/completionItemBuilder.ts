@@ -12,7 +12,7 @@ export class CompletionItemBuilder {
   private code: string
   private node: ts.Node
 
-  private constructor(keyword: string, node: ts.Node, private indentInfo: IndentInfo) {
+  private constructor(keyword: string, node: ts.Node, private indentInfo?: IndentInfo) {
     if (ts.isAwaitExpression(node.parent)) {
       node = node.parent
     }
@@ -22,7 +22,7 @@ export class CompletionItemBuilder {
     this.code = adjustMultilineIndentation(node.getText(), indentInfo?.indentSize)
   }
 
-  public static create = (keyword: string, node: ts.Node, indentInfo: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
+  public static create = (keyword: string, node: ts.Node, indentInfo?: IndentInfo) => new CompletionItemBuilder(keyword, node, indentInfo)
 
   public command = (command: vsc.Command) => {
     this.item.command = command
@@ -55,7 +55,7 @@ export class CompletionItemBuilder {
 
       this.item.insertText = new vsc.SnippetString(adjustLeadingWhitespace(
         this.replaceExpression(replacement, escapedCode),
-        this.indentInfo.leadingWhitespace
+        this.indentInfo?.leadingWhitespace
       ))
       this.item.additionalTextEdits = [
         vsc.TextEdit.delete(rangeToDelete)
@@ -67,7 +67,7 @@ export class CompletionItemBuilder {
       this.item.additionalTextEdits = [
         vsc.TextEdit.replace(rangeToDelete, adjustLeadingWhitespace(
           this.replaceExpression(replacement.replace(/\\\$/g, '$$'), this.code),
-          this.indentInfo.leadingWhitespace
+          this.indentInfo?.leadingWhitespace
         ))
       ]
     }

@@ -1,7 +1,6 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
 import { describe, before, after, TestFunction, it } from 'mocha'
-import { getCurrentSuggestion } from '../src/postfixCompletionProvider'
 import { parseDSL, ITestDSL } from './dsl'
 import { runTest } from './runner'
 import { EOL } from 'node:os'
@@ -94,19 +93,27 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
 
     editor.selection = new vsc.Selection(pos, pos)
 
+    const completionList = await vsc.commands.executeCommand<vsc.CompletionList>(
+      'vscode.executeCompletionItemProvider',
+      doc.uri,
+      pos
+    )
+
+    const index = completionList.items.findIndex(x => {
+      const label = (x.label as vsc.CompletionItemLabel)
+      return label?.description === "POSTFIX" && label?.label === dsl.template
+    })
+
+    if (index === -1) {
+      throw new Error(`Suggestion "${dsl.template}" not found. Available suggestions: ${completionList.items.map(x => (x.label as vsc.CompletionItemLabel)?.label || x.label).join(', ')}`)
+    }
+
     await vsc.commands.executeCommand('editor.action.triggerSuggest')
     await delay(getCurrentDelay())
 
-    let current = getCurrentSuggestion()
-    const first = current
-
-    while (current !== dsl.template) {
+    for (let i = 0; i < index; i++) {
       await vsc.commands.executeCommand('selectNextSuggestion')
-      current = getCurrentSuggestion()
-
-      if (current === first) {
-        break
-      }
+      await delay(10)
     }
 
     return vsc.commands.executeCommand('acceptSelectedSuggestion')
@@ -159,17 +166,27 @@ function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
   }
 }
 
-type ParametersSkipFirst<T extends (...args: unknown[]) => void> = T extends (first: TestFunction, ...args: infer P) => void ? P : never
-type TestFnSkipFirstParam<T extends (...args: unknown[]) => void> = (...args: ParametersSkipFirst<T>) => void
-type RunTestFn<T extends (...args: unknown[]) => void> = TestFnSkipFirstParam<T> & {
-  only: TestFnSkipFirstParam<T>
-  skip: TestFnSkipFirstParam<T>
+type Tail<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never
+type TestArgs<F extends (test: TestFunction, ...args: never[]) => unknown> =
+  Tail<Parameters<F>>
+
+type WrappedTestFunction<F extends (test: TestFunction, ...args: never[]) => unknown> = {
+  (...args: TestArgs<F>): void
+  only(...args: TestArgs<F>): void
+  skip(...args: TestArgs<F>): void
 }
 
-export function makeTestFunction<T extends (first: TestFunction, ...args: unknown[]) => void>(testFn: T) {
-  const result = testFn.bind(null, it) as RunTestFn<T>
-  result.only = testFn.bind(null, it.only.bind(it)) as RunTestFn<T>
-  result.skip = testFn.bind(null, it.skip.bind(it)) as RunTestFn<T>
+export function makeTestFunction<F extends (test: TestFunction, ...args: never[]) => unknown>(
+  fn: F
+): WrappedTestFunction<F> {
+  const wrap =
+    (variant: TestFunction) =>
+      (...args: TestArgs<F>) =>
+        fn(variant, ...args)
 
-  return result
+  const wrapper = wrap(it) as WrappedTestFunction<F>
+  wrapper.only = wrap(it.only as unknown as TestFunction)
+  wrapper.skip = wrap(it.skip as unknown as TestFunction)
+
+  return wrapper
 }

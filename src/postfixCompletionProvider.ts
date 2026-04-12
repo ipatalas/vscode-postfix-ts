@@ -8,8 +8,6 @@ import { findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 import { getHtmlLikeEmbedText } from './htmlLikeSupport'
 
-let currentSuggestion = undefined
-
 export const overrideTsxEnabled = { value: false }
 
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
@@ -41,7 +39,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     const { currentNode, fullSource, fullCurrentNode } = this.getNodeBeforeTheDot(document, position, dotIdx)
 
-    if (!currentNode || this.shouldBeIgnored(fullSource, position)) {
+    if (!currentNode || !fullCurrentNode || this.shouldBeIgnored(fullSource, position)) {
       return []
     }
 
@@ -69,11 +67,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 
-  resolveCompletionItem(item: vsc.CompletionItem, _token: vsc.CancellationToken): vsc.ProviderResult<vsc.CompletionItem> {
-    currentSuggestion = (item.label as vsc.CompletionItemLabel)?.label || item.label
-    return item
-  }
-
   private isTypeReference = (node: ts.Node) => {
     const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
     return !!typeRef
@@ -91,11 +84,11 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     if (ts.isQualifiedName(node.parent)) {
       const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
 
-      if (ts.isQualifiedName(typeRef.typeName)) {
+      if (typeRef && ts.isQualifiedName(typeRef.typeName)) {
         return typeRef.typeName.left
       }
 
-      return typeRef
+      return typeRef || node
     }
 
     return node
@@ -174,7 +167,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     if (AllTabs.test(whitespaces)) {
       indentSize = whitespaces.length
     } else if (AllSpaces.test(whitespaces)) {
-      indentSize = whitespaces.length / (vsc.window.activeTextEditor.options.tabSize as number)
+      indentSize = whitespaces.length / (vsc.window.activeTextEditor?.options.tabSize as number || 2)
     }
 
     return {
@@ -207,6 +200,3 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
   }
 }
-
-export const getCurrentSuggestion = () => currentSuggestion
-export const resetCurrentSuggestion = () => currentSuggestion = undefined

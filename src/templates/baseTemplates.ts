@@ -9,22 +9,22 @@ export abstract class BaseTemplate implements IPostfixTemplate {
   abstract buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo): vsc.CompletionItem
   abstract canUse(node: ts.Node): boolean
 
-  protected isSimpleExpression = (node: ts.Node) => ts.isExpressionStatement(node) && !isStringLiteral(node)
-  protected isPropertyAccessExpression = (node: ts.Node) => ts.isPropertyAccessExpression(node)
-  protected isElementAccessExpression = (node: ts.Node) => ts.isElementAccessExpression(node)
-  protected isExpression = (node: ts.Node) => this.isSimpleExpression(node) || this.isPropertyAccessExpression(node) || this.isElementAccessExpression(node)
-  protected isIdentifier = (node: ts.Node) => ts.isIdentifier(node) && !this.inTypeReference(node.parent)
+  protected isSimpleExpression = (node: ts.Node): boolean => ts.isExpressionStatement(node) && !isStringLiteral(node)
+  protected isPropertyAccessExpression = (node: ts.Node): boolean => ts.isPropertyAccessExpression(node)
+  protected isElementAccessExpression = (node: ts.Node): boolean => ts.isElementAccessExpression(node)
+  protected isExpression = (node: ts.Node): boolean => this.isSimpleExpression(node) || this.isPropertyAccessExpression(node) || this.isElementAccessExpression(node)
+  protected isIdentifier = (node: ts.Node): boolean => ts.isIdentifier(node) && !this.inTypeReference(node.parent)
 
-  protected isUnaryExpression = (node: ts.Node) => ts.isPostfixUnaryExpression(node) || ts.isPrefixUnaryExpression(node)
-  protected isCallExpression = (node: ts.Node) => ts.isCallExpression(node)
-  protected isNewExpression = (node: ts.Node) => ts.isNewExpression(node)
-  protected inFunctionArgument = (node: ts.Node) => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
+  protected isUnaryExpression = (node: ts.Node): boolean => ts.isPostfixUnaryExpression(node) || ts.isPrefixUnaryExpression(node)
+  protected isCallExpression = (node: ts.Node): boolean => ts.isCallExpression(node)
+  protected isNewExpression = (node: ts.Node): boolean => ts.isNewExpression(node)
+  protected inFunctionArgument = (node: ts.Node): boolean => ts.isCallExpression(node.parent) && node.parent.arguments.includes(node as ts.Expression)
 
-  protected isObjectLiteral = (node: ts.Node) => {
+  protected isObjectLiteral = (node: ts.Node): boolean => {
     return ts.isBlock(node) && (node.statements.length === 0 || node.statements.some(x => ts.isLabeledStatement(x)))
   }
 
-  protected isTypeNode = (node: ts.Node) => {
+  protected isTypeNode = (node: ts.Node): boolean => {
     if (ts.isTypeNode(node)) { // built-in types
       return true
     }
@@ -33,21 +33,21 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return node.parent && this.inTypeReference(node.parent)
   }
 
-  protected inAwaitedExpression = (node: ts.Node) => {
+  protected inAwaitedExpression = (node: ts.Node): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
     return node.kind === ts.SyntaxKind.AwaitExpression || (node.parent && this.inAwaitedExpression(node.parent))
   }
 
-  protected inReturnStatement = (node: ts.Node) => {
+  protected inReturnStatement = (node: ts.Node): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
     return node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
   }
 
-  protected inVariableDeclaration = (node: ts.Node) => {
+  protected inVariableDeclaration = (node: ts.Node): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
@@ -55,7 +55,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return node.kind === ts.SyntaxKind.VariableDeclaration || node.parent && this.inVariableDeclaration(node.parent)
   }
 
-  protected isBinaryExpression = (node: ts.Node) => {
+  protected isBinaryExpression = (node: ts.Node): boolean => {
     if (ts.isBinaryExpression(node) && !isAssignmentBinaryExpression(node)) {
       return true
     }
@@ -64,7 +64,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
       || node.parent && this.isBinaryExpression(node.parent)
   }
 
-  protected unwindBinaryExpression = (node: ts.Node, removeParens = true) => {
+  protected unwindBinaryExpression = (node: ts.Node, removeParens = true): ts.Node => {
     let binaryExpression = removeParens && ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
       ? node.expression
       : ts.findAncestor(node, ts.isBinaryExpression)
@@ -84,7 +84,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isMethodDeclaration(node)
   }
 
-  protected inAssignmentStatement = (node: ts.Node) => {
+  protected inAssignmentStatement = (node: ts.Node): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
@@ -96,7 +96,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return node.parent && this.inAssignmentStatement(node.parent)
   }
 
-  protected inIfStatement = (node: ts.Node, expressionNode?: ts.Node) => {
+  protected inIfStatement = (node: ts.Node, expressionNode?: ts.Node): boolean => {
     if (ts.isIfStatement(node)) {
       return !expressionNode || node.expression === expressionNode
     }
@@ -104,7 +104,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return node.parent && this.inIfStatement(node.parent, node)
   }
 
-  protected inTypeReference = (node: ts.Node) => {
+  protected inTypeReference = (node: ts.Node): boolean => {
     if (ts.isTypeReferenceNode(node)) {
       return true
     }
@@ -114,9 +114,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
 }
 
 export abstract class BaseExpressionTemplate extends BaseTemplate {
-  abstract override buildCompletionItem(node: ts.Node, indentInfo?: IndentInfo)
-
-  canUse(node: ts.Node) {
+  canUse(node: ts.Node): boolean {
     return !this.inIfStatement(node) && !this.isTypeNode(node) && !this.inAssignmentStatement(node) &&
       (this.isIdentifier(node) ||
         this.isExpression(node) ||
