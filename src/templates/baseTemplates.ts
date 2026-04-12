@@ -33,11 +33,11 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     return node.parent && this.inTypeReference(node.parent)
   }
 
-  protected inAwaitedExpression = (node: ts.Node): boolean => {
+  protected inAwaitedExpression = (node: ts.Node, checkParent = true): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
-    return node.kind === ts.SyntaxKind.AwaitExpression || (node.parent && this.inAwaitedExpression(node.parent))
+    return node.kind === ts.SyntaxKind.AwaitExpression || (checkParent && node.parent && this.inAwaitedExpression(node.parent, checkParent))
   }
 
   protected inReturnStatement = (node: ts.Node): boolean => {

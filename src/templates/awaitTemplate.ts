@@ -13,7 +13,9 @@ export class AwaitTemplate extends BaseExpressionTemplate {
 
   override canUse(node: ts.Node) {
     return !this.isTypeNode(node) && !this.inAssignmentStatement(node)
-      && !this.isBinaryExpression(node) && !this.inAwaitedExpression(node) &&
+      && !this.isBinaryExpression(node)
+      && !this.inAwaitedExpression(node, false)
+      && !this.inAwaitedExpression(node.parent, false) &&
       (this.isIdentifier(node) ||
         this.isExpression(node) ||
         this.isCallExpression(node))
