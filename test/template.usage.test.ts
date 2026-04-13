@@ -56,7 +56,11 @@ const testTemplateUsage = makeTestFunction(__testTemplateUsage)
 
 describe('Template usage', () => {
   afterEach(done => {
-    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => done(), err => done(err))
+    vsc.commands.executeCommand('workbench.action.closeOtherEditors').then(() => {
+      done()
+    }, (err: unknown) => {
+      done(err)
+    })
   })
 
   testTemplateUsage('identifier expression', 'expr', ALL_TEMPLATES)
@@ -139,7 +143,7 @@ function __testTemplateUsage(func: TestFunction, testDescription: string, initia
       return getAvailableSuggestions(doc, initialText).then(templates => {
         assert.deepStrictEqual(_.sortBy(templates), _.sortBy(expectedTemplates))
         done()
-      }).then(undefined, (reason) => {
+      }).then(undefined, (reason: unknown) => {
         done(reason)
       })
     })
@@ -162,7 +166,9 @@ async function getAvailableSuggestions(doc: vsc.TextDocument, initialText: strin
     }
   }
 
-  if (await editor.edit(edit => edit.insert(new vsc.Position(0, 0), initialText))) {
+  if (await editor.edit(edit => {
+    edit.insert(new vsc.Position(0, 0), initialText)
+  })) {
     const pos = new vsc.Position(0, cursorIdx + 1)
     editor.selection = new vsc.Selection(pos, pos)
 
@@ -174,7 +180,7 @@ async function getAvailableSuggestions(doc: vsc.TextDocument, initialText: strin
 
     const suggestions = completionList.items
       .map(x => x.label as vsc.CompletionItemLabel)
-      .filter(x => x?.description === 'POSTFIX')
+      .filter(x => x.description === 'POSTFIX')
       .map(x => x.label)
 
     return suggestions

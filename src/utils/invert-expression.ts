@@ -15,10 +15,10 @@ const logicalOperatorMapping = new Map<ts.SyntaxKind, ts.SyntaxKind>([
   [ts.SyntaxKind.BarBarToken, ts.SyntaxKind.AmpersandAmpersandToken]
 ])
 
-export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets = false): string => {
-  let op = operatorMapping.get(expr.operatorToken.kind) || reverseMapping.get(expr.operatorToken.kind)
+export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets = false): string | undefined => {
+  let op = operatorMapping.get(expr.operatorToken.kind) ?? reverseMapping.get(expr.operatorToken.kind)
   if (op) {
-    return `${expr.left.getText()} ${ts.tokenToString(op)} ${expr.right.getText()}`
+    return `${expr.left.getText()} ${ts.tokenToString(op) ?? ''} ${expr.right.getText()}`
   }
 
   op = logicalOperatorMapping.get(expr.operatorToken.kind)
@@ -28,7 +28,7 @@ export const invertBinaryExpression = (expr: ts.BinaryExpression, addOrBrackets 
     const match = /^\s+/.exec(expr.right.getFullText())
     const leadingWhitespaces = match ? match[0] : ' '
 
-    const result = `${left} ${ts.tokenToString(op)}${leadingWhitespaces + right}`
+    const result = `${left} ${ts.tokenToString(op) ?? ''}${leadingWhitespaces + right}`
 
     return addOrBrackets && op === ts.SyntaxKind.BarBarToken ? `(${result})` : result
   }

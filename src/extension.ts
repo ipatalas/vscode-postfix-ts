@@ -9,10 +9,10 @@ let completionProvider: vsc.Disposable
 export function activate(context: vsc.ExtensionContext): void {
   registerCompletionProvider(context)
 
-  context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, async (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: ts.BinaryExpression[]) => {
+  context.subscriptions.push(vsc.commands.registerTextEditorCommand(NOT_COMMAND, (editor: vsc.TextEditor, _: vsc.TextEditorEdit, ...args: ts.BinaryExpression[]) => {
     const [...expressions] = args
 
-    await notCommand(editor, expressions)
+    notCommand(editor, expressions)
   }))
 
   context.subscriptions.push(vsc.workspace.onDidChangeConfiguration(e => {
@@ -20,11 +20,9 @@ export function activate(context: vsc.ExtensionContext): void {
       return
     }
 
-    if (completionProvider) {
       const idx = context.subscriptions.indexOf(completionProvider)
       context.subscriptions.splice(idx, 1)
       completionProvider.dispose()
-    }
 
     registerCompletionProvider(context)
   }))
@@ -39,7 +37,9 @@ function registerCompletionProvider(context: vsc.ExtensionContext) {
 
   const TESTS_SELECTOR: vsc.DocumentSelector = ['postfix', 'html']
   const DOCUMENT_SELECTOR: vsc.DocumentSelector =
-    process.env.NODE_ENV === 'test' ? TESTS_SELECTOR : <string[]>vsc.workspace.getConfiguration('postfix').get('languages')
+    process.env.NODE_ENV === 'test'
+      ? TESTS_SELECTOR
+      : vsc.workspace.getConfiguration('postfix').get('languages') ?? ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']
 
   completionProvider = vsc.languages.registerCompletionItemProvider(DOCUMENT_SELECTOR, provider, '.')
   context.subscriptions.push(completionProvider)

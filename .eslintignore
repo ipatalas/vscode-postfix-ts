@@ -1,5 +1,0 @@
-out
-node_modules
-/coverage
-/.vscode-test
-/test/index.ts

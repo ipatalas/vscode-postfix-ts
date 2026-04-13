@@ -55,7 +55,9 @@ export class NotTemplate extends BaseTemplate {
     const possibleExpressions = [node]
 
     do {
-      this.isBinaryExpression(node.parent) && possibleExpressions.push(node.parent)
+      if (this.isBinaryExpression(node.parent)) {
+        possibleExpressions.push(node.parent)
+      }
 
       node = node.parent
     } while (node.parent)

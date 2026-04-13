@@ -15,7 +15,9 @@ const html: Options = {
 <h1>Hello {name}!</h1>`
 }
 
-const Test = (test: string, options?: Pick<Options, 'trimWhitespaces'>) => runTest(test, { ...html, ...options })
+const Test = (test: string, options?: Pick<Options, 'trimWhitespaces'>) => {
+  runTest(test, { ...html, ...options }); 
+}
 
 describe('HTML/Svelte/Vue - smoke tests', () => {
   before(setInferVarName(config, false))

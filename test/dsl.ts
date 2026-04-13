@@ -10,7 +10,7 @@ export function parseDSL(input: string) {
   const lines = input.split(/\r?\n/).filter(l => l.length > 0)
 
   for (let i = 0; i < lines.length; i++) {
-    let [input, expected] = lines[i].split('>> ')
+    let [input, expected] = lines[i]?.split('>> ') as [string, string]
     input = input.trimEnd()
 
     const leadingMark = /^\s*\| /.exec(input)
@@ -20,14 +20,15 @@ export function parseDSL(input: string) {
 
     const match = /(?<!\$)\{(\w+)\}/.exec(input)
     if (match !== null) {
-      template = match[1]
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      template = match[1]!
       input = input.replace(match[0], `.${template}`)
 
       cursorLine = i
       cursorCharacter = match.index + template.length + 1
     }
 
-    input && inputLines.push(input)
+    inputLines.push(...(input ? [input] : []))
     expectedLines.push(expected)
   }
 

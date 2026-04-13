@@ -88,7 +88,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
         return typeRef.typeName.left
       }
 
-      return typeRef || node
+      return typeRef ?? node
     }
 
     return node
@@ -184,7 +184,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
 
     function isComment(node: ts.Node) {
       return [
-        ts.SyntaxKind.JSDocComment,
         ts.SyntaxKind.JSDoc,
         ts.SyntaxKind.MultiLineCommentTrivia,
         ts.SyntaxKind.SingleLineCommentTrivia

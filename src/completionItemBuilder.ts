@@ -1,5 +1,5 @@
 import * as vsc from 'vscode'
-import ts = require('typescript')
+import * as ts from 'typescript'
 import { adjustLeadingWhitespace, adjustMultilineIndentation } from './utils/multiline-expressions'
 import { SnippetParser } from 'vscode-snippet-parser'
 import { getConfigValue } from './utils'
@@ -34,7 +34,7 @@ export class CompletionItemBuilder {
     return this
   }
 
-  public replace = (replacement: string): CompletionItemBuilder => {
+  public replace = (replacement: string): this => {
     this.addCodeBlockDescription(replacement, this.code.replace(/\\/g, '\\\\'))
 
     const src = this.node.getSourceFile()
@@ -75,7 +75,7 @@ export class CompletionItemBuilder {
     return this
   }
 
-  public description = (description: string): CompletionItemBuilder => {
+  public description = (description: string): this => {
     if (!description) {
       return this
     }
@@ -104,9 +104,9 @@ export class CompletionItemBuilder {
   public build = () => this.item
 
   private replaceExpression = (replacement: string, code: string, customRegex?: string) => {
-    const re = new RegExp(customRegex || RegexExpression, 'g')
+    const re = new RegExp(customRegex ?? RegexExpression, 'g')
 
-    return replacement.replace(re, (_match, p1) => {
+    return replacement.replace(re, (_match, p1: string) => {
       if (p1 && this.filters[p1]) {
         return this.filters[p1](code)
       }
@@ -114,7 +114,7 @@ export class CompletionItemBuilder {
     })
   }
 
-  private filters: { [key: string]: (x: string) => string } = {
+  private filters: Record<string, (x: string) => string> = {
     'upper': (x: string) => x.toUpperCase(),
     'lower': (x: string) => x.toLowerCase(),
     'capitalize': (x: string) => x.substring(0, 1).toUpperCase() + x.substring(1),

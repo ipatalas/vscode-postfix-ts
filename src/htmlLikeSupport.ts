@@ -1,13 +1,14 @@
 import * as vsc from 'vscode'
-import { getLanguageService, TokenType } from 'vscode-html-languageservice'
+import { getLanguageService, TokenType, Node } from 'vscode-html-languageservice'
 
 const languageService = getLanguageService()
 
-const getHtmlLikeEmbedRange = (document: vsc.TextDocument, cursorOffset: number): undefined | null | Record<'start' | 'end', number> => {
-  const html = languageService.parseHTMLDocument({ ...document, uri: undefined })
+
+const getHtmlLikeEmbedRange = (document: vsc.TextDocument, cursorOffset: number): undefined | null | Partial<Record<'start' | 'end', number>> => {
+  const html = languageService.parseHTMLDocument({ ...document, uri: document.uri.toString() })
   const node = html.findNodeAt(cursorOffset)
 
-  let mostTopNode = node
+  let mostTopNode: Node | undefined = node
   while (mostTopNode?.tag) {
     if (mostTopNode.tag === 'style') {
       return null
@@ -23,7 +24,7 @@ const getHtmlLikeEmbedRange = (document: vsc.TextDocument, cursorOffset: number)
   }
   // vue: not sure of custom blocks, probably should also be ignored
 
-  const validAttributeRegexps = {
+  const validAttributeRegexps: Record<string, RegExp> = {
     html: /^on/,
     vue: /^(?::|@|v-)/
   }
@@ -60,7 +61,7 @@ const getHtmlLikeEmbedRange = (document: vsc.TextDocument, cursorOffset: number)
 
   if (attrName !== undefined && attrValue !== undefined) {
     // return range without quotes
-    if (validAttributeRegexps[document.languageId].test(attrName)) {
+    if (validAttributeRegexps[document.languageId]?.test(attrName)) {
       return { start: scanner.getTokenOffset() + 1, end: scanner.getTokenEnd() - 2 }
     } else {
       return null

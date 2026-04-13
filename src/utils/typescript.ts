@@ -23,7 +23,9 @@ export const findNodeAtPosition = (source: ts.SourceFile, character: number): ts
       })
     }
 
-    node.getChildren(source).forEach(n => visitNode(n, depth + 1))
+    node.getChildren(source).forEach(n => {
+      visitNode(n, depth + 1)
+    })
   }
 }
 

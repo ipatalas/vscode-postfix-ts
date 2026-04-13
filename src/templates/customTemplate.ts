@@ -41,6 +41,6 @@ export class CustomTemplate extends BaseTemplate {
 
   condition = (node: ts.Node, when: string) => {
     const callback = this.conditionsMap.get(when)
-    return callback && callback(node)
+    return callback?.(node)
   }
 }

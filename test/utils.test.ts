@@ -8,6 +8,9 @@ import { invertBinaryExpression, invertExpression } from '../src/utils/invert-ex
 
 describe('Utils tests', () => {
   it('getIndentCharacters when spaces', () => {
+    if (!vsc.window.activeTextEditor) {
+      assert.fail('No active text editor')
+    }
     vsc.window.activeTextEditor.options.insertSpaces = true
     vsc.window.activeTextEditor.options.tabSize = 4
 
@@ -16,6 +19,9 @@ describe('Utils tests', () => {
   })
 
   it('getIndentCharacters when tabs', () => {
+    if (!vsc.window.activeTextEditor) {
+      assert.fail('No active text editor')
+    }
     vsc.window.activeTextEditor.options.insertSpaces = false
 
     const result = getIndentCharacters()
@@ -63,7 +69,7 @@ describe('Utils tests', () => {
 })
 
 function testInvertBinaryExpression(dsl: string) {
-  const [input, expected] = dsl.split('>>').map(x => x.trim())
+  const [input, expected] = dsl.split('>>').map(x => x.trim()) as [string, string]
 
   it(`${input} should invert to ${expected}`, () => {
     const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
@@ -76,7 +82,7 @@ function testInvertBinaryExpression(dsl: string) {
 }
 
 function testInvertExpression(dsl: string) {
-  const [input, expected] = dsl.split('>>').map(x => x.trim())
+  const [input, expected] = dsl.split('>>').map(x => x.trim()) as [string, string]
 
   it(`${input} should invert to ${expected}`, () => {
     const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)

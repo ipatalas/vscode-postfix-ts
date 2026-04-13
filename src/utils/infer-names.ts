@@ -1,6 +1,6 @@
-import _ = require("lodash")
-import pluralize = require("pluralize")
-import ts = require("typescript")
+import * as _ from "lodash"
+import * as pluralize from "pluralize"
+import * as ts from "typescript"
 
 const MethodCallRegex = /^(get|read|create|retrieve|select|modify|update|use|find)(?<name>[A-Z].+?)?$/
 const CleanNameRegex = /((By|With|From).*$)|(Sync$)|.*(?=Items|Lines$)/

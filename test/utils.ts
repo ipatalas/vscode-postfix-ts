@@ -28,7 +28,7 @@ export function testTemplate(dslString: string, options: TestTemplateOptions = {
   const dsl = parseDSL(dslString)
 
   return (done: Mocha.Done) => {
-    vsc.workspace.openTextDocument({ language: options.fileLanguage || LANGUAGE }).then(async (doc) => {
+    vsc.workspace.openTextDocument({ language: options.fileLanguage ?? LANGUAGE }).then(async (doc) => {
       try {
         await selectAndAcceptSuggestion(doc, dsl, options.fileContext)
         await options.preAssertAction?.()
@@ -76,12 +76,18 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
   if (fileContext) {
     fileContext = fileContext.trim()
     const [before, after] = fileContext.split('{{CODE}}')
-    await editor.edit(edit => edit.insert(new vsc.Position(0, 0), before))
+    await editor.edit(edit => {
+      edit.insert(new vsc.Position(0, 0), before ?? '')
+    })
     startPosition = editor.selection.start
-    await editor.edit(edit => edit.insert(startPosition, after))
+    await editor.edit(edit => {
+      edit.insert(startPosition, after ?? '')
+    })
   }
 
-  if (await editor.edit(edit => edit.insert(startPosition, dsl.input))) {
+  if (await editor.edit(edit => {
+    edit.insert(startPosition, dsl.input)
+  })) {
     const { character, line } = dsl.cursorPosition
     const pos = startPosition.translate(line, character)
 
@@ -102,7 +108,7 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
     // Tab-stop defaults are expanded via SnippetParser so the inserted text is correct.
     const insertText = completion.insertText instanceof vsc.SnippetString
       ? new SnippetParser().text(completion.insertText.value)
-      : completion.insertText as string ?? ''
+      : completion.insertText ?? ''
     const mainEdit = vsc.TextEdit.replace(range, insertText)
 
     const edits = [...completion.additionalTextEdits ?? [], mainEdit]
@@ -111,7 +117,8 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
     await vsc.workspace.applyEdit(edit)
 
     if (completion.command) {
-      await vsc.commands.executeCommand(completion.command.command, ...(completion.command.arguments || []))
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      await vsc.commands.executeCommand(completion.command.command, ...(completion.command.arguments ?? []))
     }
   }
 }
@@ -141,7 +148,9 @@ export function runWithCustomTemplate(template: CustomTemplateBodyType) {
       before(setCustomTemplate(postfixConfig, 'custom', template, [when]))
       after(resetCustomTemplates(postfixConfig))
 
-      tests.forEach(t => runTest(t))
+      tests.forEach(t => {
+        runTest(t)
+      })
     })
 }
 
@@ -166,7 +175,7 @@ type Tail<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never
 type TestArgs<F extends (test: TestFunction, ...args: never[]) => unknown> =
   Tail<Parameters<F>>
 
-type WrappedTestFunction<F extends (test: TestFunction, ...args: never[]) => unknown> = {
+interface WrappedTestFunction<F extends (test: TestFunction, ...args: never[]) => unknown> {
   (...args: TestArgs<F>): void
   only(...args: TestArgs<F>): void
   skip(...args: TestArgs<F>): void

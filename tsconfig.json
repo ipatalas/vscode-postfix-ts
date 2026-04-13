@@ -9,9 +9,12 @@
     "types": [
       "node"
     ],
+    "strict": true,
+    "strictNullChecks": true,
     "sourceMap": true,
     "rootDir": ".",
     "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
     "strictBindCallApply": true
   },
   "exclude": [

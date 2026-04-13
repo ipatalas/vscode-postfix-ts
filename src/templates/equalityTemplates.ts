@@ -1,4 +1,4 @@
-import ts = require("typescript")
+import * as ts from "typescript"
 import { CompletionItemBuilder } from "../completionItemBuilder"
 import { IndentInfo } from "../template"
 import { getConfigValue } from "../utils"
