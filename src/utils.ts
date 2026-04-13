@@ -12,7 +12,11 @@ export const getConfigValue = <Type>(name: string): Type | undefined => {
   return vsc.workspace.getConfiguration('postfix', null).get<Type>(name)
 }
 
-export const getPlaceholderWithOptions = (options: string[], placeholderNumber = 1) => {
+export const getPlaceholderWithOptions = (options: string[] | undefined, placeholderNumber = 1) => {
+  if (!options || options.length === 0) {
+    return `\${${placeholderNumber}}`
+  }
+
   if (options.length > 1) {
     return `\${${placeholderNumber}|${options.join(',')}|}`
   }

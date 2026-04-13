@@ -7,12 +7,13 @@ const CleanNameRegex = /((By|With|From).*$)|(Sync$)|.*(?=Items|Lines$)/
 
 const lowerFirst = (name: string) => name && _.lowerFirst(name)
 
-export const inferVarTemplateName = (node: ts.Node): string[] => {
+export const inferVarTemplateName = (node: ts.Node): string[] | undefined => {
   if (ts.isNewExpression(node)) {
-    return [lowerFirst(inferNewExpressionVar(node))]
+    const name = inferNewExpressionVar(node)
+    return name ? [lowerFirst(name)] : undefined
   } else if (ts.isCallExpression(node)) {
     const methodName = getMethodName(node)
-    const name = beautifyMethodName(methodName)
+    const name = methodName && beautifyMethodName(methodName)
     if (!name) {
       return
     }
@@ -21,7 +22,7 @@ export const inferVarTemplateName = (node: ts.Node): string[] => {
   }
 }
 
-export const inferForVarTemplate = (node: ts.Node): string[] => {
+export const inferForVarTemplate = (node: ts.Node): string[] | undefined => {
   const subjectName = getForExpressionName(node)
   if (!subjectName) {
     return
@@ -37,10 +38,11 @@ export const inferForVarTemplate = (node: ts.Node): string[] => {
     .map(lowerFirst)
 }
 
-function getUniqueVariants(name?: string) {
+function getUniqueVariants(name?: string): string[] {
   const cleanerVariant = name?.replace(CleanNameRegex, '')
   const uniqueValues = [...new Set([cleanerVariant, name])]
-  return uniqueValues.filter(x => x)
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return uniqueValues.filter(x => x).map(x => x!)
 }
 
 function beautifyMethodName(name: string) {
@@ -65,7 +67,7 @@ function getMethodName(node: ts.CallExpression) {
   }
 }
 
-function inferNewExpressionVar(node: ts.NewExpression) {
+function inferNewExpressionVar(node: ts.NewExpression): string | undefined {
   if (ts.isIdentifier(node.expression)) {
     return node.expression.text
   } else if (ts.isPropertyAccessExpression(node.expression)) {
