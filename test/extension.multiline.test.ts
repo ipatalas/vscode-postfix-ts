@@ -1,5 +1,5 @@
-import { runTestMultiline as Test, runTestMultilineQuickPick as QuickPick } from './runner'
-import { runWithCustomTemplate, TabSize } from './utils'
+import { runTestMultiline as Test, runTestMultilineQuickPick as QuickPick, runWithCustomTemplate } from './runner'
+import { TabSize } from './utils'
 import { describe } from 'mocha'
 
 const indent = (size: number) => ' '.repeat(size * TabSize)

@@ -7,7 +7,7 @@ export const findNodeAtPosition = (source: ts.SourceFile, character: number): ts
   const sortedNodes = _.orderBy(matchingNodes, [m => m.width, m => m.depth], ['asc', 'desc'])
 
   if (sortedNodes.length > 0) {
-    return sortedNodes[0].node
+    return sortedNodes[0]?.node
   }
 
   function visitNode(node: ts.Node, depth = 0) {

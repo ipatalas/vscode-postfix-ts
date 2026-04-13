@@ -1,7 +1,6 @@
 import * as vsc from 'vscode'
-import { Options, runTest } from './runner'
+import { Options, runTest, runWithCustomTemplate } from './runner'
 import { describe, before, after } from 'mocha'
-import { runWithCustomTemplate } from './utils'
 
 const config = vsc.workspace.getConfiguration('postfix')
 const withTrimWhitespaces: Options = { trimWhitespaces: true }
@@ -16,7 +15,7 @@ const html: Options = {
 }
 
 const Test = (test: string, options?: Pick<Options, 'trimWhitespaces'>) => {
-  runTest(test, { ...html, ...options }); 
+  runTest(test, { ...html, ...options })
 }
 
 describe('HTML/Svelte/Vue - smoke tests', () => {

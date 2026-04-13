@@ -15,7 +15,7 @@ export function adjustMultilineIndentation(code: string, indentSize?: number) {
     return code
   }
 
-  const newLine = reNewLine.exec(code)[0]
+  const newLine = reNewLine.exec(code)?.[0] ?? '\n'
 
   return lines.map((line, i) => i > 0 ? stripLineIndent(line, indentSize) : line)
     .join(newLine)
@@ -33,7 +33,7 @@ function stripLineIndent(line: string, indentSize: number) {
     return line.substring(indentSize)
   }
 
-  const tabSize = vsc.window.activeTextEditor.options.tabSize as number
+  const tabSize = vsc.window.activeTextEditor?.options.tabSize as number || 4
 
   if (AllSpaces.test(whitespaces) && indentSize <= (whitespaces.length / tabSize)) {
     return line.substring(indentSize * tabSize)

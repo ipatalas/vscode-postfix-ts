@@ -187,7 +187,7 @@
     "cross-env": "^7.0.3",
     "esbuild": "^0.17.4",
     "eslint": "^10.2.0",
-    "glob": "^8.1.0",
+    "glob": "^13.0.6",
     "mocha": "^10.2.0",
     "source-map-support": "0.5.21",
     "typescript-eslint": "^8.58.1"

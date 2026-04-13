@@ -13,6 +13,7 @@
     "strictNullChecks": true,
     "sourceMap": true,
     "rootDir": ".",
+    "esModuleInterop": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "strictBindCallApply": true

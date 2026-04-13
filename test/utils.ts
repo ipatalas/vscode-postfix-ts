@@ -1,11 +1,9 @@
 import * as vsc from 'vscode'
 import * as assert from 'assert'
 import { sortBy } from 'lodash'
-import { describe, before, after, TestFunction, it } from 'mocha'
+import { TestFunction, it } from 'mocha'
 import { parseDSL, ITestDSL } from './dsl'
-import { runTest } from './runner'
 import { EOL } from 'node:os'
-import { CustomTemplateBodyType } from '../src/utils/templates'
 import { SnippetParser } from 'vscode-snippet-parser'
 
 const LANGUAGE = 'postfix'
@@ -139,36 +137,6 @@ function normalizeWhitespaces(text: string) {
     .split(/\r?\n/g)
     .map(line => line.replace(/\t/g, ' '.repeat(TabSize)))
     .join(EOL)
-}
-
-export function runWithCustomTemplate(template: CustomTemplateBodyType) {
-  const postfixConfig = vsc.workspace.getConfiguration('postfix')
-  return (when: string, ...tests: string[]) =>
-    describe(when, () => {
-      before(setCustomTemplate(postfixConfig, 'custom', template, [when]))
-      after(resetCustomTemplates(postfixConfig))
-
-      tests.forEach(t => {
-        runTest(t)
-      })
-    })
-}
-
-function setCustomTemplate(config: vsc.WorkspaceConfiguration, name: string, body: CustomTemplateBodyType, when: string[]) {
-  return (done: Mocha.Done) => {
-    config.update('customTemplates', [{
-      'name': name,
-      'body': body,
-      'description': 'custom description',
-      'when': when
-    }], true).then(done, done)
-  }
-}
-
-function resetCustomTemplates(config: vsc.WorkspaceConfiguration) {
-  return (done: Mocha.Done) => {
-    config.update('customTemplates', undefined, true).then(done, done)
-  }
 }
 
 type Tail<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never

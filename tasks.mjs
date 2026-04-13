@@ -14,6 +14,7 @@ function pretest() {
   writePackageJson(pkg)
 }
 
+// @ts-ignore
 const writePackageJson = (content) => {
   mkdirSync('./out', { recursive: true, })
   writeFileSync('./out/package.json', JSON.stringify(content, undefined, '\t'))
