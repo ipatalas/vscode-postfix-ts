@@ -30,21 +30,21 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     // Custom types (including namespaces) are encapsulated in TypeReferenceNode
-    return node.parent && this.inTypeReference(node.parent)
+    return this.hasParent(node) && this.inTypeReference(node.parent)
   }
 
   protected inAwaitedExpression = (node: ts.Node, checkParent = true): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
-    return node.kind === ts.SyntaxKind.AwaitExpression || (checkParent && node.parent && this.inAwaitedExpression(node.parent, checkParent))
+    return node.kind === ts.SyntaxKind.AwaitExpression || (checkParent && this.hasParent(node) && this.inAwaitedExpression(node.parent, checkParent))
   }
 
   protected inReturnStatement = (node: ts.Node): boolean => {
     if (this.isAnyFunction(node)) {
       return false
     }
-    return node.kind === ts.SyntaxKind.ReturnStatement || (node.parent && this.inReturnStatement(node.parent))
+    return node.kind === ts.SyntaxKind.ReturnStatement || (this.hasParent(node) && this.inReturnStatement(node.parent))
   }
 
   protected inVariableDeclaration = (node: ts.Node): boolean => {
@@ -52,7 +52,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
       return false
     }
 
-    return node.kind === ts.SyntaxKind.VariableDeclaration || node.parent && this.inVariableDeclaration(node.parent)
+    return node.kind === ts.SyntaxKind.VariableDeclaration || (this.hasParent(node) && this.inVariableDeclaration(node.parent))
   }
 
   protected isBinaryExpression = (node: ts.Node): boolean => {
@@ -61,7 +61,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
     }
 
     return ts.isParenthesizedExpression(node) && ts.isBinaryExpression(node.expression)
-      || node.parent && this.isBinaryExpression(node.parent)
+      || (this.hasParent(node) && this.isBinaryExpression(node.parent))
   }
 
   protected unwindBinaryExpression = (node: ts.Node, removeParens = true): ts.Node => {
@@ -93,7 +93,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
       return isAssignmentBinaryExpression(node)
     }
 
-    return node.parent && this.inAssignmentStatement(node.parent)
+    return this.hasParent(node) && this.inAssignmentStatement(node.parent)
   }
 
   protected inIfStatement = (node: ts.Node, expressionNode?: ts.Node): boolean => {
@@ -101,7 +101,7 @@ export abstract class BaseTemplate implements IPostfixTemplate {
       return !expressionNode || node.expression === expressionNode
     }
 
-    return node.parent && this.inIfStatement(node.parent, node)
+    return this.hasParent(node) && this.inIfStatement(node.parent, node)
   }
 
   protected inTypeReference = (node: ts.Node): boolean => {
@@ -109,7 +109,15 @@ export abstract class BaseTemplate implements IPostfixTemplate {
       return true
     }
 
-    return node.parent && this.inTypeReference(node.parent)
+    return this.hasParent(node) && this.inTypeReference(node.parent)
+  }
+
+  // workaround for ts.Node.parent being possibly undefined
+  // cannot use pure node.parent checks because parent is typed as Node (not Node | undefined)
+  // this will make ESLint happy
+  protected hasParent = (node: ts.Node): node is ts.Node & { parent: ts.Node } => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    return (node as any).parent !== undefined
   }
 }
 

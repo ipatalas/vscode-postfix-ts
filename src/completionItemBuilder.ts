@@ -107,14 +107,14 @@ export class CompletionItemBuilder {
     const re = new RegExp(customRegex ?? RegexExpression, 'g')
 
     return replacement.replace(re, (_match, p1: string) => {
-      if (p1 && this.filters[p1]) {
-        return this.filters[p1](code)
+      if (p1 && p1 in this.filters) {
+        return this.filters[p1 as keyof typeof this.filters](code)
       }
       return code
     })
   }
 
-  private filters: Record<string, (x: string) => string> = {
+  private filters = {
     'upper': (x: string) => x.toUpperCase(),
     'lower': (x: string) => x.toLowerCase(),
     'capitalize': (x: string) => x.substring(0, 1).toUpperCase() + x.substring(1),

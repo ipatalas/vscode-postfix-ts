@@ -12,6 +12,6 @@ export class PromisifyTemplate extends BaseTemplate {
   }
 
   canUse(node: ts.Node) {
-    return node.parent && this.isTypeNode(node)
+    return this.hasParent(node) && this.isTypeNode(node)
   }
 }

@@ -72,7 +72,7 @@ function testInvertBinaryExpression(dsl: string) {
   const [input, expected] = dsl.split('>>').map(x => x.trim()) as [string, string]
 
   it(`${input} should invert to ${expected}`, () => {
-    const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
+    const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ESNext, true)
     const expr = (source.statements[0] as ts.ExpressionStatement).expression as ts.BinaryExpression
 
     const result = invertBinaryExpression(expr)
@@ -85,7 +85,7 @@ function testInvertExpression(dsl: string) {
   const [input, expected] = dsl.split('>>').map(x => x.trim()) as [string, string]
 
   it(`${input} should invert to ${expected}`, () => {
-    const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ES5, true)
+    const source = ts.createSourceFile('invertBinaryExpression.ts', input, ts.ScriptTarget.ESNext, true)
     const expr = (source.statements[0] as ts.ExpressionStatement).expression
 
     const result = invertExpression(expr)

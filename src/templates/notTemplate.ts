@@ -60,7 +60,7 @@ export class NotTemplate extends BaseTemplate {
       }
 
       node = node.parent
-    } while (node.parent)
+    } while (this.hasParent(node))
 
     return possibleExpressions
   }
