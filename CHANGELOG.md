@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.14.0] - 2026-04-14
+### Added:
+- Add `postfix.template` command to allow triggering templates from keyboard shortcuts [#123](https://github.com/ipatalas/vscode-postfix-ts/issues/123)
+### Fixed:
+- Support function declarations for `call` template [#117](https://github.com/ipatalas/vscode-postfix-ts/issues/117)
+- Fix `await` template inside awaited expressions [#124](https://github.com/ipatalas/vscode-postfix-ts/issues/124)
+
 ## [1.13.2] - 2024-05-05
 ### Added:
 - option to enable extension based on .enablepostfix file [#116](https://github.com/ipatalas/vscode-postfix-ts/issues/116)
