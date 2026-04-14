@@ -1,25 +1,35 @@
 import * as assert from 'assert'
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
-import { describe, it } from 'mocha'
+import { mock } from 'node:test'
+import { describe, it, afterEach } from 'mocha'
 
 import { getIndentCharacters } from '../src/utils'
 import { invertBinaryExpression, invertExpression } from '../src/utils/invert-expression'
 
 describe('Utils tests', () => {
+  afterEach(() => {
+    mock.reset()
+  })
+
   it('getIndentCharacters when spaces', () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    vsc.window.activeTextEditor!.options.insertSpaces = true
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    vsc.window.activeTextEditor!.options.tabSize = 4
+    mock.getter(vsc.window, 'activeTextEditor', () => ({
+      options: {
+        insertSpaces: true,
+        tabSize: 4
+      }
+    } as vsc.TextEditor))
 
     const result = getIndentCharacters()
     assert.strictEqual(result, '    ')
   })
 
   it('getIndentCharacters when tabs', () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    vsc.window.activeTextEditor!.options.insertSpaces = false
+    mock.getter(vsc.window, 'activeTextEditor', () => ({
+      options: {
+        insertSpaces: false
+      }
+    } as vsc.TextEditor))
 
     const result = getIndentCharacters()
     assert.strictEqual(result, '\t')
