@@ -8,21 +8,18 @@ import { invertBinaryExpression, invertExpression } from '../src/utils/invert-ex
 
 describe('Utils tests', () => {
   it('getIndentCharacters when spaces', () => {
-    if (!vsc.window.activeTextEditor) {
-      assert.fail('No active text editor')
-    }
-    vsc.window.activeTextEditor.options.insertSpaces = true
-    vsc.window.activeTextEditor.options.tabSize = 4
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    vsc.window.activeTextEditor!.options.insertSpaces = true
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    vsc.window.activeTextEditor!.options.tabSize = 4
 
     const result = getIndentCharacters()
     assert.strictEqual(result, '    ')
   })
 
   it('getIndentCharacters when tabs', () => {
-    if (!vsc.window.activeTextEditor) {
-      assert.fail('No active text editor')
-    }
-    vsc.window.activeTextEditor.options.insertSpaces = false
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    vsc.window.activeTextEditor!.options.insertSpaces = false
 
     const result = getIndentCharacters()
     assert.strictEqual(result, '\t')
