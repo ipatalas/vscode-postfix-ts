@@ -3,7 +3,6 @@ import * as ts from 'typescript'
 
 import { IndentInfo, IPostfixTemplate } from './template'
 import { AllTabs, AllSpaces } from './utils/multiline-expressions'
-import { loadBuiltinTemplates, loadCustomTemplates } from './utils/templates'
 import { findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 import { getHtmlLikeEmbedText } from './htmlLikeSupport'
@@ -13,18 +12,16 @@ export const overrideTsxEnabled = { value: false }
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
   private customTemplateNames: string[] = []
-  private mergeMode: 'append' | 'override'
+  private mergeMode!: 'append' | 'override'
 
-  constructor() {
+  constructor(templates: IPostfixTemplate[]) {
+    this.updateConfiguration(templates)
+  }
+
+  updateConfiguration(templates: IPostfixTemplate[]) {
     this.mergeMode = vsc.workspace.getConfiguration('postfix.customTemplate').get('mergeMode', 'append')
-
-    const customTemplates = loadCustomTemplates()
-    this.customTemplateNames = customTemplates.map(t => t.templateName)
-
-    this.templates = [
-      ...loadBuiltinTemplates(),
-      ...customTemplates
-    ]
+    this.customTemplateNames = templates.filter(t => t instanceof CustomTemplate).map(t => t.templateName)
+    this.templates = templates
   }
 
   provideCompletionItems(document: vsc.TextDocument, position: vsc.Position, _token: vsc.CancellationToken): vsc.CompletionItem[] | vsc.CompletionList | Thenable<vsc.CompletionItem[] | vsc.CompletionList> {

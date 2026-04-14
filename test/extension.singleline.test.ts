@@ -4,12 +4,12 @@ import { describe, before, after } from 'mocha'
 
 const config = vsc.workspace.getConfiguration('postfix')
 const withTrimWhitespaces: Options = { trimWhitespaces: true }
+const asCommand: Options = { useCommandForCompletion: true }
 
 describe('Single line template tests', () => {
   before(setInferVarName(config, false))
   after(setInferVarName(config, true))
 
-  Test('not template - already negated expression | !expr{not}               >> expr')
   Test('let template - binary expression #1       | a * 3{let}               >> let name = a * 3')
   Test('let template - binary expression #2       | a * b{let}               >> let name = a * b')
   Test('let template - binary expression - nested | x && a * b{let}          >> let name = x && a * b')
@@ -62,10 +62,10 @@ describe('Single line template tests', () => {
   Test('undefined template    | expr{undefined}    >> if(expr===undefined){}', withTrimWhitespaces)
   Test('notundefined template | expr{notundefined} >> if(expr!==undefined){}', withTrimWhitespaces)
 
-  Test('null template         - inside if | if (x & expr{null})         >> if(x&expr===null)', withTrimWhitespaces)
-  Test('notnull template      - inside if | if (x & expr{notnull})      >> if(x&expr!==null)', withTrimWhitespaces)
-  Test('undefined template    - inside if | if (x & expr{undefined})    >> if(x&expr===undefined)', withTrimWhitespaces)
-  Test('notundefined template - inside if | if (x & expr{notundefined}) >> if(x&expr!==undefined)', withTrimWhitespaces)
+  Test('null template         - inside if | if (x && expr{null})         >> if(x&&expr===null)', withTrimWhitespaces)
+  Test('notnull template      - inside if | if (x && expr{notnull})      >> if(x&&expr!==null)', withTrimWhitespaces)
+  Test('undefined template    - inside if | if (x && expr{undefined})    >> if(x&&expr===undefined)', withTrimWhitespaces)
+  Test('notundefined template - inside if | if (x && expr{notundefined}) >> if(x&&expr!==undefined)', withTrimWhitespaces)
 
   Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', withTrimWhitespaces)
   Test('awaited for      | await expr{for}     >> for(leti=0;i<(awaitexpr).length;i++){}', withTrimWhitespaces)
@@ -97,6 +97,7 @@ describe('Single line template tests', () => {
   Test('not template - inside an if - identifier                | if (expr{not})              >> if(!expr)', withTrimWhitespaces)
   Test('not template - inside an if - binary                    | if (x * 100{not})           >> if(!(x*100))', withTrimWhitespaces)
   Test('not template - inside an if - brackets                  | if ((x * 100){not})         >> if(!(x*100))', withTrimWhitespaces)
+  Test('not template - already negated expression               | !expr{not}                  >> expr')
   Test('not template - already negated expression - method call | !x.method(){not}            >> x.method()')
 
   Test('promisify template - boolean       | const x:boolean{promisify} >> const x:Promise<boolean>')
@@ -228,6 +229,72 @@ describe('Single line template tests', () => {
     run('identifier', `expr{custom}           | expr{custom}        >> Line 1 expr
                                                                     >>  Line 2 expr
                                                                     >>   Line 3 expr`)
+  })
+
+  describe('smoke tests for templates executed via command', () => {
+    Test('let template - binary expression #1       | a * 3{let}      >> let name = a * 3', asCommand)
+    Test('let template - binary expression #2       | a * b{let}      >> let name = a * b', asCommand)
+    Test('let template - binary expression - nested | x && a * b{let} >> let name = x && a * b', asCommand)
+
+    Test('var template          | a.b{var}   >> var name = a.b', asCommand)
+    Test('var template (indent) | \ta.b{var} >> \tvar name = a.b', asCommand)
+    Test('const template        | a.b{const} >> const name = a.b', asCommand)
+
+    Test('log template          | expr{log}   >> console.log(expr)', asCommand)
+    Test('log template - binary | x > y{log}  >> console.log(x > y)', asCommand)
+
+    Test('log template - obj literal (empty) | {}{log}          >> console.log({})', asCommand)
+    Test('log template - obj literal         | {foo:"foo"}{log} >> console.log({foo:"foo"})', asCommand)
+
+    Test('return template | expr{return}       >> return expr', asCommand)
+    Test('return template | x > 1{return}      >> return x > 1', asCommand)
+    Test('return template | new Type(){return} >> return new Type()', asCommand)
+
+    Test('if template                       | expr{if}    >> if(expr){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('if template - binary expression   | a > b{if}   >> if(a>b){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('if template - binary in parens    | (a > b){if} >> if(a>b){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('else template                     | expr{else}  >> if(!expr){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('else template - binary expression | a > b{else} >> if(a<=b){}', { ...withTrimWhitespaces, ...asCommand })
+
+    Test('null template         | expr{null}         >> if(expr===null){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('notnull template      | expr{notnull}      >> if(expr!==null){}', { ...withTrimWhitespaces, ...asCommand })
+
+    Test('null template    - inside if | if (x && expr{null})    >> if(x&&expr===null)', { ...withTrimWhitespaces, ...asCommand })
+    Test('notnull template - inside if | if (x && expr{notnull}) >> if(x&&expr!==null)', { ...withTrimWhitespaces, ...asCommand })
+
+    Test('for template     | expr{for}           >> for(leti=0;i<expr.length;i++){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('forof template   | expr{forof}         >> for(constitemofexpr){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('forin template   | expr{forin}         >> for(constkeyinexpr){}', { ...withTrimWhitespaces, ...asCommand })
+    Test('foreach template | expr{foreach}       >> expr.forEach(item=>)', { ...withTrimWhitespaces, ...asCommand })
+    Test('awaited foreach  | await expr{foreach} >> (await expr).forEach(item => )', asCommand)
+
+    Test('not template                              | expr{not}         >> !expr', asCommand)
+    Test('not template - strict equality            | if (a === b{not}) >> if (a !== b)', asCommand)
+    Test('not template - already negated expression | !expr{not}        >> expr', asCommand)
+
+    Test('cast template                       | expr{cast}         >> (<>expr)', asCommand)
+    Test('castas template                     | expr{castas}       >> (expr as )', asCommand)
+    Test('call template                       | expr{call}         >> (expr)', asCommand)
+    Test('call template - function expression | function(){}{call} >> (function(){})', asCommand)
+
+    Test('await template - expression  | expr{await}       >> await expr', asCommand)
+    Test('await template - method call | obj.call(){await} >> await obj.call()', asCommand)
+
+    describe('Infer variable name', () => {
+      before(setInferVarName(config, true))
+      after(setInferVarName(config, false))
+
+      Test('let template with name - new expression  | new Type(1, 2, 3){let}         >> let type = new Type(1, 2, 3)', asCommand)
+      Test('let template with name - call expression | getSomethingCool(1, 2, 3){let} >> let somethingCool = getSomethingCool(1, 2, 3)', asCommand)
+      Test('forof template with array item name #1   | usersList{forof}               >> for(constuserofusersList){}', { ...withTrimWhitespaces, ...asCommand })
+    })
+
+    describe('custom template with :lower filter', () => {
+      const run = runWithCustomTemplate('{{expr:lower}}', asCommand)
+
+      run('identifier', 'EXPR{custom} | EXPR{custom} >> expr')
+      run('identifier', 'eXPr{custom} | eXPr{custom} >> expr')
+    })
   })
 })
 

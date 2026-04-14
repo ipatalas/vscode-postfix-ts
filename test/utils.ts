@@ -20,10 +20,11 @@ export type TestTemplateOptions = Partial<{
   preAssertAction: () => Thenable<void>
   fileContext: string
   fileLanguage: string
+  useCommandForCompletion: boolean
 }>
 
 export function testTemplate(dslString: string, options: TestTemplateOptions = {}) {
-  const dsl = parseDSL(dslString)
+  const dsl = parseDSL(dslString, options.useCommandForCompletion)
 
   return (done: Mocha.Done) => {
     vsc.workspace.openTextDocument({ language: options.fileLanguage ?? LANGUAGE }).then(async (doc) => {
@@ -91,6 +92,13 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
 
     editor.selection = new vsc.Selection(pos, pos)
 
+    if (dsl.useCommandForCompletion) {
+      await vsc.commands.executeCommand('postfix.template', dsl.template)
+      // awaiting command only awaits for when it's sent so need to wait for actual document change
+      await waitForDocumentChange(doc, 2)
+      return
+    }
+
     const completions = await vsc.commands.executeCommand<vsc.CompletionList>('vscode.executeCompletionItemProvider', doc.uri, pos)
     const sortedItems = sortBy(completions.items, ({ sortText }) => sortText)
 
@@ -119,6 +127,30 @@ async function selectAndAcceptSuggestion(doc: vsc.TextDocument, dsl: ITestDSL, f
       await vsc.commands.executeCommand(completion.command.command, ...(completion.command.arguments ?? []))
     }
   }
+}
+
+function waitForDocumentChange(doc: vsc.TextDocument, expectedEdits = 1) {
+  let edits = 0
+  // const now = Date.now()
+  return new Promise<void>(resolve => {
+    const disposable = vsc.workspace.onDidChangeTextDocument(e => {
+      if (e.document.uri.toString() === doc.uri.toString()) {
+        edits++
+        // console.log(`Document change detected at ${Date.now() - now}ms, edits: ${edits}`)
+        if (edits >= expectedEdits) {
+          disposable.dispose()
+          resolve()
+        }
+      }
+    })
+
+    // Fallback in case onDidChangeTextDocument is not fired
+    setTimeout(() => {
+      // console.log(`Timeout reached after ${Date.now() - now}ms, edits detected: ${edits}`)
+      disposable.dispose()
+      resolve()
+    }, 100)
+  })
 }
 
 function assertText(doc: vsc.TextDocument, expectedResult: string, trimWhitespaces = false) {

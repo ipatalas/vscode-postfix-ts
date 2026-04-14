@@ -32,7 +32,7 @@ function __runTestMultilineQuickPick(func: TestFunction, test: string, trimWhite
 }
 
 
-export function runWithCustomTemplate(template: CustomTemplateBodyType) {
+export function runWithCustomTemplate(template: CustomTemplateBodyType, options: Options = {}) {
   const postfixConfig = vsc.workspace.getConfiguration('postfix')
   return (when: string, ...tests: string[]) =>
     describe(when, () => {
@@ -40,7 +40,7 @@ export function runWithCustomTemplate(template: CustomTemplateBodyType) {
       after(resetCustomTemplates(postfixConfig))
 
       tests.forEach(t => {
-        runTest(t)
+        runTest(t, options)
       })
     })
 }

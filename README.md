@@ -58,6 +58,36 @@ All available templates (`expr` means the expression on which the template is ap
 
 If for any reason you don't like either of those templates you can disable them one by one using `postfix.disabledBuiltinTemplates` setting.
 
+## Template command (Experimental)
+
+Experimental feature: you can execute postfix templates directly through the command postfix.template.
+
+The command accepts exactly one argument: template name as a string.
+When run, it applies the same transformation as typing .template and confirming completion.
+
+Example:
+```ts
+// input
+expression
+
+// run command: postfix.template "log"
+
+// output
+console.log(expression)
+```
+
+This is useful with keybindings for very fast access to common templates.
+
+Keybinding example (keybindings.json):
+```JSON
+{
+  "key": "ctrl+shift+l",
+  "command": "postfix.template",
+  "args": "log",
+  "when": "editorTextFocus"
+}
+```
+
 ## Custom templates (1.6.0 and above)
 
 You can now add your own templates if the defaults are not enough. This will only work for simple ones as some templates require additional tricky handling.

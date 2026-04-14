@@ -1,6 +1,6 @@
 import { EOL } from 'os'
 
-export function parseDSL(input: string) {
+export function parseDSL(input: string, useCommandForCompletion = false): ITestDSL {
   const inputLines: string[] = []
   const expectedLines: string[] = []
   let template = ''
@@ -22,10 +22,13 @@ export function parseDSL(input: string) {
     if (match !== null) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       template = match[1]!
-      input = input.replace(match[0], `.${template}`)
+
+      input = input.replace(match[0], useCommandForCompletion ? '' : `.${template}`)
+
+      const templateOffset = useCommandForCompletion ? 0 : template.length + 1
 
       cursorLine = i
-      cursorCharacter = match.index + template.length + 1
+      cursorCharacter = match.index + templateOffset
     }
 
     inputLines.push(...(input ? [input] : []))
@@ -33,12 +36,14 @@ export function parseDSL(input: string) {
   }
 
   if (template.length === 0) {
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
     throw new Error('DSL must contain template placeholder (ie. {let})')
   }
 
   return {
     input: inputLines.join(EOL),
     template: template,
+    useCommandForCompletion: useCommandForCompletion,
     expected: expectedLines.join(EOL),
     cursorPosition: {
       line: cursorLine,
@@ -50,6 +55,7 @@ export function parseDSL(input: string) {
 export interface ITestDSL {
   input: string,
   template: string,
+  useCommandForCompletion: boolean,
   expected: string,
   cursorPosition: {
     line: number,

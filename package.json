@@ -176,7 +176,14 @@
           "default": []
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "postfix.template",
+        "title": "Execute any postfix template by name",
+        "enablement": "editorTextFocus"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "node build.mjs --production",
