@@ -4,6 +4,14 @@
   "description": "Postfix templates for TypeScript/Javascript",
   "version": "1.13.2",
   "license": "MIT",
+  "keywords": [
+    "typescript",
+    "javascript",
+    "postfix",
+    "completion",
+    "snippets"
+  ],
+  "homepage": "https://github.com/ipatalas/vscode-postfix-ts",
   "publisher": "ipatalas",
   "engines": {
     "vscode": "^1.80.0"
@@ -19,6 +27,12 @@
   },
   "bugs": {
     "url": "https://github.com/ipatalas/vscode-postfix-ts/issues"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
   },
   "activationEvents": [
     "onLanguage:javascript",

@@ -4,3 +4,4 @@ node_modules
 /.vscode/symbols.json
 /coverage
 /.vscode-test
+/.opencode
