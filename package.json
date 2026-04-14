@@ -196,7 +196,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/vscode": "^1.80.0",
     "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^2.18.0",
+    "@vscode/vsce": "^3.7.1",
     "c8": "^11.0.0",
     "cross-env": "^10.1.0",
     "esbuild": "^0.17.4",
