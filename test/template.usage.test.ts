@@ -3,8 +3,8 @@ import * as _ from 'lodash'
 import * as vsc from 'vscode'
 import { describe, afterEach, before, after, TestFunction } from 'mocha'
 
-import { overrideTsxEnabled } from '../src/postfixCompletionProvider'
 import { makeTestFunction } from './utils'
+import { overrideTsxEnabled } from '../src/utils'
 
 const LANGUAGE = 'postfix'
 

@@ -2,8 +2,8 @@
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
 import { findNodeAtPosition } from './utils/typescript'
-import { AllTabs, AllSpaces } from './utils/multiline-expressions'
-import { IndentInfo, IPostfixTemplate } from './template'
+import { IPostfixTemplate } from './template'
+import { convertToScriptKind, getNodeForReplacement, getIndentInfo } from './utils'
 
 export const TEMPLATE_COMMAND = 'postfix.template'
 
@@ -92,57 +92,5 @@ export class TemplateCommand {
     if (completionItem.command) {
       vsc.commands.executeCommand(completionItem.command.command, TEMPLATE_COMMAND, completionItem.command.arguments ?? [])
     }
-  }
-}
-
-// Mirrors PostfixCompletionProvider.getNodeForReplacement
-function getNodeForReplacement(node: ts.Node): ts.Node {
-  if (ts.isTemplateSpan(node)) {
-    return node.parent
-  }
-
-  if (ts.isPrefixUnaryExpression(node.parent) || ts.isPropertyAccessExpression(node.parent)) {
-    return node.parent
-  }
-
-  if (ts.isQualifiedName(node.parent)) {
-    const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
-
-    if (typeRef && ts.isQualifiedName(typeRef.typeName)) {
-      return typeRef.typeName.left
-    }
-
-    return typeRef ?? node
-  }
-
-  return node
-}
-
-// Mirrors PostfixCompletionProvider.getIndentInfo
-function getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
-  const source = node.getSourceFile()
-  const position = ts.getLineAndCharacterOfPosition(source, node.getStart(source))
-
-  const line = document.lineAt(position.line)
-  const whitespaces = line.text.substring(0, line.firstNonWhitespaceCharacterIndex)
-  let indentSize = 0
-
-  if (AllTabs.test(whitespaces)) {
-    indentSize = whitespaces.length
-  } else if (AllSpaces.test(whitespaces)) {
-    indentSize = whitespaces.length / (vsc.window.activeTextEditor?.options.tabSize as number)
-  }
-
-  return { indentSize, leadingWhitespace: whitespaces }
-}
-
-// Mirrors PostfixCompletionProvider.convertToScriptKind
-function convertToScriptKind(document: vsc.TextDocument): ts.ScriptKind {
-  switch (document.languageId) {
-    case 'javascript': return ts.ScriptKind.JS
-    case 'typescript': return ts.ScriptKind.TS
-    case 'javascriptreact': return ts.ScriptKind.JSX
-    case 'typescriptreact': return ts.ScriptKind.TSX
-    default: return ts.ScriptKind.Unknown
   }
 }

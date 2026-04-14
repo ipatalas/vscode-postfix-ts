@@ -1,13 +1,11 @@
 import * as vsc from 'vscode'
 import * as ts from 'typescript'
 
-import { IndentInfo, IPostfixTemplate } from './template'
-import { AllTabs, AllSpaces } from './utils/multiline-expressions'
+import { IPostfixTemplate } from './template'
 import { findNodeAtPosition } from './utils/typescript'
 import { CustomTemplate } from './templates/customTemplate'
 import { getHtmlLikeEmbedText } from './htmlLikeSupport'
-
-export const overrideTsxEnabled = { value: false }
+import { convertToScriptKind, getIndentInfo, getNodeForReplacement } from './utils'
 
 export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private templates: IPostfixTemplate[] = []
@@ -40,9 +38,9 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
       return []
     }
 
-    const indentInfo = this.getIndentInfo(document, currentNode)
+    const indentInfo = getIndentInfo(document, currentNode)
     const node = this.isTypeReference(fullCurrentNode) ? fullCurrentNode : currentNode
-    const replacementNode = this.getNodeForReplacement(node)
+    const replacementNode = getNodeForReplacement(node)
 
     try {
       return this.templates
@@ -67,28 +65,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
   private isTypeReference = (node: ts.Node) => {
     const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
     return !!typeRef
-  }
-
-  private getNodeForReplacement = (node: ts.Node) => {
-    if (ts.isTemplateSpan(node)) {
-      return node.parent
-    }
-
-    if (ts.isPrefixUnaryExpression(node.parent) || ts.isPropertyAccessExpression(node.parent)) {
-      return node.parent
-    }
-
-    if (ts.isQualifiedName(node.parent)) {
-      const typeRef = ts.findAncestor(node, ts.isTypeReferenceNode)
-
-      if (typeRef && ts.isQualifiedName(typeRef.typeName)) {
-        return typeRef.typeName.left
-      }
-
-      return typeRef ?? node
-    }
-
-    return node
   }
 
   private getHtmlLikeEmbeddedText(document: vsc.TextDocument, position: vsc.Position) {
@@ -116,7 +92,7 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     const fullText = speciallyHandledText ?? document.getText()
     const codeBeforeTheDot = fullText.slice(0, dotOffset)
 
-    const scriptKind = this.convertToScriptKind(document)
+    const scriptKind = convertToScriptKind(document)
     const source = ts.createSourceFile('test.ts', codeBeforeTheDot, ts.ScriptTarget.ESNext, true, scriptKind)
     const fullSource = ts.createSourceFile('test.ts', fullText, ts.ScriptTarget.ESNext, true, scriptKind)
 
@@ -133,44 +109,6 @@ export class PostfixCompletionProvider implements vsc.CompletionItemProvider {
     }
 
     return { currentNode: findNormalizedNode(source), fullSource, fullCurrentNode: findNormalizedNode(fullSource) }
-  }
-
-  private convertToScriptKind(document: vsc.TextDocument) {
-    if (overrideTsxEnabled.value) {
-      return ts.ScriptKind.TSX
-    }
-    switch (document.languageId) {
-      case 'javascript':
-        return ts.ScriptKind.JS
-      case 'typescript':
-        return ts.ScriptKind.TS
-      case 'javascriptreact':
-        return ts.ScriptKind.JSX
-      case 'typescriptreact':
-        return ts.ScriptKind.TSX
-      default:
-        return ts.ScriptKind.Unknown
-    }
-  }
-
-  private getIndentInfo(document: vsc.TextDocument, node: ts.Node): IndentInfo {
-    const source = node.getSourceFile()
-    const position = ts.getLineAndCharacterOfPosition(source, node.getStart(source))
-
-    const line = document.lineAt(position.line)
-    const whitespaces = line.text.substring(0, line.firstNonWhitespaceCharacterIndex)
-    let indentSize = 0
-
-    if (AllTabs.test(whitespaces)) {
-      indentSize = whitespaces.length
-    } else if (AllSpaces.test(whitespaces)) {
-      indentSize = whitespaces.length / (vsc.window.activeTextEditor?.options.tabSize as number || 2)
-    }
-
-    return {
-      indentSize,
-      leadingWhitespace: whitespaces
-    }
   }
 
   private shouldBeIgnored(fullSource: ts.SourceFile, position: vsc.Position) {
