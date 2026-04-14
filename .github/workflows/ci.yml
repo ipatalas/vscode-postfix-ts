@@ -29,7 +29,9 @@ jobs:
       - name: Run tests
         run: xvfb-run -a npm run test-with-coverage
       - name: Code coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Publish
         if: success() && startsWith( github.ref, 'refs/tags/v')
         run: npm run deploy
